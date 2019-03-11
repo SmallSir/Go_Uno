@@ -1,12 +1,53 @@
 package controllers
 
+
 type UserCard struct {
 	cards  []Card
 	number int
 }
 
+//手牌排序
 func (user *UserCard) Sort() {
-	
+	user.QuickSort(0,user.number - 1)
+}
+
+//快排
+func (user *UserCard) QuickSort(l,r int){
+	if l >= r{
+		return 
+	}
+	i,j,key := l,r,user.cards[l]
+	for i<j{
+		for i < j && user.Compare(user.cards[j],key) {
+			j--;
+		}
+		if i < j{
+			user.cards[i] = user.cards[j]
+			i++
+		}
+		
+	}
+}
+
+//两张牌比大小
+func (user *UserCard) Compare(x Card,y Card) bool{
+	if(x.color == y.color){
+		if x.number == "-1"{
+			if y.number == "-1"{
+				return x.state < y.state
+			}else{
+				return false
+			}
+		}else{
+			if y.number == "-1"{
+				return true
+			} else{
+				return x.number < y.number
+			}
+		}
+	} else {
+		return x.color < y.color
+	}
 }
 
 //二分查找
@@ -15,38 +56,11 @@ func (user *UserCard) BinaryInsert(new_card Card) int{
 	r := user.number - 1
 	for l < r-1 {
 		mid := (l + r) / 2
-		//如果颜色相同
-		if user.cards[mid].color == new_card.color {
-			//如果新牌他是状态牌
-			if new_card.number == "-1" {
-				//如果mid位置也是状态牌
-				if user.cards[mid].number == "-1" {
-					//比状态牌大小
-					if user.cards[mid].state < new_card.state {
-						l = mid
-					} else {
-						r = mid
-					}
-					//如果mid位置不是状态牌
-				} else {
-					l = mid
-				}
-				//新牌不是状态牌
-			} else {
-				//mid位置是状态牌或他的点数比新牌大
-				if user.cards[mid].number == "-1" || user.cards[mid].number > new_card.number {
-					r = mid
-				} else {
-					l = mid
-				}
-			}
-		//两张牌的颜色不同
-		} else {
-			if user.cards[mid].color < new_card.color {
-				l = mid
-			} else {
-				r = mid
-			}
+		check := user.Compare(user.cards[mid],new_card)
+		if check {
+			l = mid
+		} else{
+			r = mid
 		}
 	}
 	return r
