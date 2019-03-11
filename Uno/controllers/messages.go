@@ -29,3 +29,4 @@ type Card struct{
 	//卡牌功能
 	state string
 }
+
