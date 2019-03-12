@@ -25,7 +25,7 @@ func (user *UserCard) QuickSort(l, r int) {
 		for user.Compare(mid, user.cards[y]) {
 			y--
 		}
-		if x <= y{
+		if x <= y {
 			tmp := user.cards[x]
 			user.cards[x] = user.cards[y]
 			user.cards[y] = tmp
@@ -33,8 +33,8 @@ func (user *UserCard) QuickSort(l, r int) {
 			y--
 		}
 	}
-	user.QuickSort(l,y)
-	user.QuickSort(x,r)
+	user.QuickSort(l, y)
+	user.QuickSort(x, r)
 }
 
 //两张牌比大小
@@ -68,7 +68,7 @@ func (user *UserCard) Compare(x Card, y Card) bool {
 
 //二分查找
 func (user *UserCard) BinaryInsert(new_card Card) int {
-	l := 0
+	l := -1
 	r := user.number - 1
 	for l < r-1 {
 		mid := (l + r) / 2
@@ -86,8 +86,10 @@ func (user *UserCard) BinaryInsert(new_card Card) int {
 func (user *UserCard) Insert_Card(newcards []Card) {
 	for _, new_card := range newcards {
 		r := user.BinaryInsert(new_card)
-		new_cards := append(user.cards[:r-1], new_card)
-		new_cards = append(user.cards[r:])
+		new_cards := make([]Card, 0, len(user.cards)+1)
+		new_cards = append(new_cards, user.cards[:r]...)
+		new_cards = append(new_cards, new_card)
+		new_cards = append(new_cards, user.cards[r:]...)
 		user.cards = new_cards
 		user.number += 1
 	}
@@ -97,8 +99,9 @@ func (user *UserCard) Insert_Card(newcards []Card) {
 func (user *UserCard) Remove_Card(oldcards []Card) {
 	for _, old_card := range oldcards {
 		r := user.BinaryInsert(old_card)
-		new_cards := append(user.cards[:r-1], user.cards[r+1:]...)
+		new_cards := make([]Card, user.number-1)
+		new_cards = append(user.cards[:r], user.cards[r+1:]...)
 		user.cards = new_cards
-		user.number += 1
+		user.number -= 1
 	}
 }
