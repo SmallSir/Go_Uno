@@ -30,3 +30,8 @@ type Card struct{
 	state string
 }
 
+//房间信息
+type Room struct{
+	room_name string
+	room_password string
+}
