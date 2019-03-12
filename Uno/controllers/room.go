@@ -13,6 +13,8 @@ type PlayerRoom struct {
 	player_room Room
 	//目前已有的人数
 	stay_number int
+	//房间的牌
+	room_cards Cards
 }
 
 //创建房间
@@ -42,7 +44,7 @@ func (rm *PlayerRoom) RemovePlayer(player Player) (bool, error) {
 			rm.players = new_player
 			rm.stay_number--
 			if rm.stay_number == 0 {
-				return true,errors.New("房间已经没有人了，可以删除")
+				return true, errors.New("房间已经没有人了，可以删除")
 			}
 			return true, nil
 		}
@@ -51,7 +53,7 @@ func (rm *PlayerRoom) RemovePlayer(player Player) (bool, error) {
 }
 
 //玩家准备
-func (rm *PlayerRoom) ready_player() error {
+func (rm *PlayerRoom) ReadyPlayer() error {
 	if rm.ready_number == rm.players_number {
 		return errors.New("人数已经满了不得再准备")
 	}
@@ -63,10 +65,15 @@ func (rm *PlayerRoom) ready_player() error {
 }
 
 //玩家取消准备
-func (rm *PlayerRoom) unready_player() error {
+func (rm *PlayerRoom) UnreadyPlayer() error {
 	if rm.ready_number == 0 {
 		return errors.New("没有任何人准备，不存在准备状态")
 	}
 	rm.ready_number--
 	return nil
+}
+
+//开始游戏
+func (rm *PlayerRoom) PlayGame() {
+	rm.room_cards.Start()
 }
