@@ -20,7 +20,6 @@ type CardStateMsg struct{
 	State string `json:"state"` 
 }
 
-//卡牌内容
 type Card struct{
 	//卡牌颜色
 	color string
