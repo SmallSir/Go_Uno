@@ -42,3 +42,8 @@ func (p *Player) RemoveCard() {
 func (p *Player) SelectColor(colol string) {
 
 }
+
+//玩家检查上家牌
+func (p *Player) CheckPlay() bool{
+	return true
+}
