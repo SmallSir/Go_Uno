@@ -23,27 +23,3 @@ func (p *Player) Ready(ready bool) bool {
 	}
 }
 */
-//只剩一张牌大声喊出UNO！！！！！！！！！！！！！！！！！！！
-func (p *Player) Uno() {
-	
-}
-
-//玩家摸牌
-func (p *Player) GetCard() {
-	
-}
-
-//玩家出牌
-func (p *Player) RemoveCard() {
-
-}
-
-//玩家选择颜色
-func (p *Player) SelectColor(colol string) {
-
-}
-
-//玩家检查上家牌
-func (p *Player) CheckPlay() bool{
-	return true
-}
