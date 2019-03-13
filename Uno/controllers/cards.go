@@ -68,9 +68,9 @@ func (c *Cards) Shuffle() {
 }
 
 //出牌回收
-func (c *Cards) OutCards(number int, outcard []Card) {
-	c.out_card = append(c.out_card[:], outcard[:]...)
-	c.out_number += number
+func (c *Cards) OutCards(outcard Card) {
+	c.out_card = append(c.out_card[:], outcard)
+	c.out_number++
 }
 
 //摸牌
@@ -82,10 +82,10 @@ func (c *Cards) AddCards(number int) []Card {
 		c.ready_card = append(c.out_card)
 		c.ready_number = c.out_number
 		c.out_number = 0
-		c.out_card = make([]Card,0,108)
+		c.out_card = make([]Card, 0, 108)
 		c.Shuffle()
 	}
-	returncard = append(returncard,c.ready_card[:number]...)
+	returncard = append(returncard, c.ready_card[:number]...)
 	c.ready_card = append(c.ready_card[number:])
 	c.ready_number -= number
 	return returncard
