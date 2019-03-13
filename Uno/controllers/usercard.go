@@ -96,12 +96,11 @@ func (user *UserCard) Insert_Card(newcards []Card) {
 }
 
 //移除牌
-func (user *UserCard) Remove_Card(oldcards []Card) {
-	for _, old_card := range oldcards {
-		r := user.BinaryInsert(old_card)
-		new_cards := make([]Card, 0,user.number-1)
-		new_cards = append(user.cards[:r], user.cards[r+1:]...)
-		user.cards = new_cards
-		user.number -= 1
-	}
+func (user *UserCard) Remove_Card(oldcard Card) {
+	r := user.BinaryInsert(oldcard)
+	new_cards := make([]Card, 0,user.number-1)
+	new_cards = append(user.cards[:r], user.cards[r+1:]...)
+	user.cards = new_cards
+	user.number -= 1
+
 }
