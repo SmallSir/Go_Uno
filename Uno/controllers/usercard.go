@@ -99,7 +99,7 @@ func (user *UserCard) Insert_Card(newcards []Card) {
 func (user *UserCard) Remove_Card(oldcards []Card) {
 	for _, old_card := range oldcards {
 		r := user.BinaryInsert(old_card)
-		new_cards := make([]Card, user.number-1)
+		new_cards := make([]Card, 0,user.number-1)
 		new_cards = append(user.cards[:r], user.cards[r+1:]...)
 		user.cards = new_cards
 		user.number -= 1
