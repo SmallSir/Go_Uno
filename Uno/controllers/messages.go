@@ -15,7 +15,7 @@ type CardStateMsg struct{
 	//出牌的号码
 	Number string `json:"number"`
 	//出牌的数量
-	Numbers string `json:"numbers"`
+	//Numbers string `json:"numbers"`
 	//出牌状态
 	State string `json:"state"` 
 }
