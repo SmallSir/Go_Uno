@@ -102,5 +102,4 @@ func (user *UserCard) Remove_Card(oldcard Card) {
 	new_cards = append(user.cards[:r], user.cards[r+1:]...)
 	user.cards = new_cards
 	user.number -= 1
-
 }

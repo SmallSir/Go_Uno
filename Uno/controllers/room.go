@@ -15,6 +15,12 @@ type PlayerRoom struct {
 	stay_number int
 	//房间的牌
 	room_cards Cards
+	//当前的颜色
+	latest_color string
+	//当前的号码
+	latest_number string
+	//上一个出牌人id
+	//latest_id int
 }
 
 //创建房间
@@ -59,7 +65,7 @@ func (rm *PlayerRoom) ReadyPlayer() error {
 	}
 	rm.ready_number++
 	if rm.ready_number == rm.players_number {
-		//开始比赛
+		rm.PlayGame()
 	}
 	return nil
 }
@@ -75,5 +81,48 @@ func (rm *PlayerRoom) UnreadyPlayer() error {
 
 //开始游戏
 func (rm *PlayerRoom) PlayGame() {
+	rm.latest_color = "null"
+	rm.latest_number = "-1"
+	//rm.latest_id = -1
 	rm.room_cards.Start()
+	for _, p := range rm.players {
+		p.player_cards.cards = append(rm.room_cards.AddCards(7)[:])
+		p.player_cards.number = 7
+		p.player_cards.Sort()
+	}
+}
+
+//获得出牌信息
+func (rm *PlayerRoom) RemoveCard(p_id int, rc Card) (bool, error) {
+	if rm.latest_color != "null" && rm.latest_color != rc.color && rm.latest_number != rc.number && rc.state != "wildraw" && rc.state != "wild" {
+		return false, errors.New("出的牌不对")
+	}
+	for _, p := range rm.players {
+		if p.player_id == p_id {
+			//改变玩家手牌信息
+			p.player_cards.Remove_Card(rc)
+			//改变这把的牌堆信息
+			rm.room_cards.OutCards(rc)
+			//修改目前信息
+			rm.latest_color = rc.color
+			//rm.latest_id = p_id
+			rm.latest_number = rc.number
+			break
+		}
+	}
+	return true, nil
+}
+
+//选择花色
+func (rm *PlayerRoom) SelectColor(color string) {
+	rm.latest_color = color
+}
+
+//获得摸牌信息
+func (rm *PlayerRoom) GetCard(p_id int, rn int) {
+	for _, p := range rm.players {
+		if p.player_id == p_id {
+			p.player_cards.Insert_Card(rm.room_cards.AddCards(rn))
+		}
+	}
 }
