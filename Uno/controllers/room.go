@@ -20,6 +20,8 @@ type PlayerRoom struct {
 	room_cards Cards
 	//当前的颜色
 	latest_color string
+	//执行方向
+	dirction int
 	//当前的号码
 	latest_number string
 	//当前状态 
@@ -33,7 +35,7 @@ type PlayerRoom struct {
 //创建房间
 func (rm *PlayerRoom) Room(room Room, number int, player Player) *PlayerRoom {
 	newroom := PlayerRoom{players_number: number, players: make([]Player, number),
-		player_room: room, ready_number: 0,
+		player_room: room, ready_number: 0,dirction:0,
 		stay_number: 1, playerno: make([]int, 4, 4), nextplayer: 0}
 	_, err := newroom.AddPlayer(player)
 	if err != nil {
@@ -136,21 +138,22 @@ func (rm *PlayerRoom) RemoveCard(p_id int, rc Card) (bool, error) {
 			break
 		}
 	}
-	if rm.latest_state == "skip"{
-		rm.nextplayer+=2
-		rm.nextplayer %= 4
-	} else if rm.latest_state == "reverse"{
-		if rm.nextplayer == 0{
-			rm.nextplayer = 4
-		} else{
-			rm.nextplayer--
-			rm.nextplayer %= 4
+	if rm.latest_state == "reverse"{
+		rm.dirction = 1 - rm.dirction
+	}
+	if rm.dirction == 0{
+		if rm.latest_state == "skip"{
+			rm.nextplayer = (rm.nextplayer + 2) % 4
+		} else {
+			rm.nextplayer = (rm.nextplayer + 1) % 4
 		}
 	} else{
-		rm.nextplayer++
-		rm.nextplayer %= 4
+		if rm.latest_state == "skip"{
+			rm.nextplayer = (rm.nextplayer + 2) % 4
+		} else{
+			rm.nextplayer = (rm.nextplayer + 3 ) % 4
+		}
 	}
-	
 	return true, nil
 }
 
