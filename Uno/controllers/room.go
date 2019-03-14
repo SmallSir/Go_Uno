@@ -1,6 +1,9 @@
 package controllers
 
-import "errors"
+import (
+	"errors"
+	"log"
+)
 
 type PlayerRoom struct {
 	//玩家数量
@@ -19,14 +22,23 @@ type PlayerRoom struct {
 	latest_color string
 	//当前的号码
 	latest_number string
-	//上一个出牌人id
-	//latest_id int
+	//当前状态 
+	latest_state string
+	//玩家编号(东北西南)
+	playerno []int
+	//下一个玩家编号
+	nextplayer int
 }
 
 //创建房间
 func (rm *PlayerRoom) Room(room Room, number int, player Player) *PlayerRoom {
-	newroom := PlayerRoom{players_number: number, players: make([]Player, number), player_room: room, ready_number: 0, stay_number: 1}
-	rm.players = append(rm.players, player)
+	newroom := PlayerRoom{players_number: number, players: make([]Player, number),
+		player_room: room, ready_number: 0,
+		stay_number: 1, playerno: make([]int, 4, 4), nextplayer: 0}
+	_, err := newroom.AddPlayer(player)
+	if err != nil {
+		log.Println(err)
+	}
 	return &newroom
 }
 
@@ -37,6 +49,12 @@ func (rm *PlayerRoom) AddPlayer(player Player) (bool, error) {
 	}
 	rm.stay_number++
 	player.room_name = rm.player_room.room_name
+	for i, p := range rm.playerno {
+		if p == 0 {
+			rm.playerno[i] = player.player_id
+			break
+		}
+	}
 	rm.players = append(rm.players, player)
 	return true, nil
 }
@@ -49,6 +67,12 @@ func (rm *PlayerRoom) RemovePlayer(player Player) (bool, error) {
 			new_player = append(rm.players[:i], rm.players[i+1:]...)
 			rm.players = new_player
 			rm.stay_number--
+			for i, p := range rm.playerno {
+				if p == player.player_id {
+					rm.playerno[i] = 0
+					break
+				}
+			}
 			if rm.stay_number == 0 {
 				return true, errors.New("房间已经没有人了，可以删除")
 			}
@@ -83,6 +107,7 @@ func (rm *PlayerRoom) UnreadyPlayer() error {
 func (rm *PlayerRoom) PlayGame() {
 	rm.latest_color = "null"
 	rm.latest_number = "-1"
+	rm.latest_state = "-1"
 	//rm.latest_id = -1
 	rm.room_cards.Start()
 	for _, p := range rm.players {
@@ -94,7 +119,7 @@ func (rm *PlayerRoom) PlayGame() {
 
 //获得出牌信息
 func (rm *PlayerRoom) RemoveCard(p_id int, rc Card) (bool, error) {
-	if rm.latest_color != "null" && rm.latest_color != rc.color && rm.latest_number != rc.number && rc.state != "wildraw" && rc.state != "wild" {
+	if  rm.latest_state != rc.state && rm.latest_state != "-1" &&rm.latest_color != "null" && rm.latest_color != rc.color && rm.latest_number != rc.number && rc.state != "wildraw" && rc.state != "wild" {
 		return false, errors.New("出的牌不对")
 	}
 	for _, p := range rm.players {
@@ -106,10 +131,26 @@ func (rm *PlayerRoom) RemoveCard(p_id int, rc Card) (bool, error) {
 			//修改目前信息
 			rm.latest_color = rc.color
 			//rm.latest_id = p_id
+			rm.latest_state = rc.state
 			rm.latest_number = rc.number
 			break
 		}
 	}
+	if rm.latest_state == "skip"{
+		rm.nextplayer+=2
+		rm.nextplayer %= 4
+	} else if rm.latest_state == "reverse"{
+		if rm.nextplayer == 0{
+			rm.nextplayer = 4
+		} else{
+			rm.nextplayer--
+			rm.nextplayer %= 4
+		}
+	} else{
+		rm.nextplayer++
+		rm.nextplayer %= 4
+	}
+	
 	return true, nil
 }
 
