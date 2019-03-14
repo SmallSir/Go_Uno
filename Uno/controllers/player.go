@@ -18,14 +18,7 @@ type Player struct {
 	//WebSocket连接
 	rwc *websocket.Conn
 }
-/*
-//玩家选择准备or取消准备
-func (p *Player) Ready(ready bool) bool {
-	if p.state == ready {
-		return false
-	} else {
-		p.state = ready
-		return true
-	}
+
+func NewPlayer(room_name string,rwc *wwebsocket.Conn,player_id string,player_name string) *Player{
+	p := Player{room_name:room_name , rwc:rwc , state:false , player_id:player_id , room_name:room_name , player_cards: UserCard{cards:make([]Card,0,108),number:0}}
 }
-*/
