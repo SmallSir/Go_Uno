@@ -1,6 +1,9 @@
 package controllers
 
-import "sync"
+import (
+	"github.com/gorilla/websocket"
+	"sync"
+)
 
 type roomtable struct {
 	//锁
@@ -27,9 +30,10 @@ func (rt *roomtable) CheckRoom(roomname string) bool{
 }
 
 //创建房间
-func (rt *roomtable) CreateRoom(roomname string roompassword,rwc{
+func (rt *roomtable) CreateRoom(roomname string,roompassword string,playername string,playerid int,ws *websocket.Conn) {
 	rt.lock.Lock()
 	defer rt.lock.Unlock()
-
-
+	roommsg := Room{room_name:roomname,room_password:roompassword}
+	player := NewPlayer(ws,playerid,playername,roomname)
+	rt.rooms[roomname] = NewRoom(roommsg,4,player)
 }
