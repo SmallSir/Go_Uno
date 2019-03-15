@@ -19,6 +19,6 @@ type Player struct {
 	rwc *websocket.Conn
 }
 
-func NewPlayer(rwc *websocket.Conn, player_id int, player_name string) *Player {
-	return &Player{player_name: player_name, player_id: player_id, rwc: rwc, state: false, player_cards: UserCard{cards: make([]Card, 0, 108), number: 0}}
+func NewPlayer(rwc *websocket.Conn, player_id int, player_name string,roomname string) *Player {
+	return &Player{room_name:roomname,player_name: player_name, player_id: player_id, rwc: rwc, state: false, player_cards: UserCard{cards: make([]Card, 0, 108), number: 0}}
 }
