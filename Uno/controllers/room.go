@@ -34,7 +34,7 @@ type PlayerRoom struct {
 
 //创建房间
 func (rm *PlayerRoom) Room(room Room, number int, player_id int) *PlayerRoom {
-	newroom := PlayerRoom{players_number: number, players: make([]Player, number),
+	newroom := PlayerRoom{players_number: number, players: make([]*Player, number),
 		player_room: room, ready_number: 0, dirction: 0,
 		stay_number: 1, playerno: make([]int, 4, 4), nextplayer: 0}
 	_, err := newroom.AddPlayer(player_id)
@@ -50,18 +50,21 @@ func (rm *PlayerRoom) AddPlayer(player_id int) (bool, error) {
 		return false, errors.New("人数已满不能，请稍后再试")
 	}
 	rm.stay_number++
+	//设置玩家的所在房间信息
 	for i, p := range rm.players {
 		if p.player_id == player_id {
 			rm.players[i].room_name = rm.player_room.room_name
 			break
 		}
 	}
+	//给玩家安排位置
 	for i, p := range rm.playerno {
 		if p == 0 {
 			rm.playerno[i] = player.player_id
 			break
 		}
 	}
+	//添加玩家信息
 	rm.players = append(rm.players, player)
 	return true, nil
 }
