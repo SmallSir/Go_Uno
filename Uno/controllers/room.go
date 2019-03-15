@@ -33,11 +33,11 @@ type PlayerRoom struct {
 }
 
 //创建房间
-func (rm *PlayerRoom) Room(room Room, number int, player_id int) *PlayerRoom {
+func NewRoom(room Room, number int, p *Player) *PlayerRoom {
 	newroom := PlayerRoom{players_number: number, players: make([]*Player, number),
 		player_room: room, ready_number: 0, dirction: 0,
 		stay_number: 1, playerno: make([]int, 4, 4), nextplayer: 0}
-	_, err := newroom.AddPlayer(player_id)
+	_, err := newroom.AddPlayer(p)
 	if err != nil {
 		log.Println(err)
 	}
@@ -45,27 +45,28 @@ func (rm *PlayerRoom) Room(room Room, number int, player_id int) *PlayerRoom {
 }
 
 //添加玩家
-func (rm *PlayerRoom) AddPlayer(player_id int) (bool, error) {
+func (rm *PlayerRoom) AddPlayer(pl *Player) (bool, error) {
 	if rm.stay_number == rm.players_number {
 		return false, errors.New("人数已满不能，请稍后再试")
 	}
 	rm.stay_number++
-	//设置玩家的所在房间信息
-	for i, p := range rm.players {
-		if p.player_id == player_id {
-			rm.players[i].room_name = rm.player_room.room_name
-			break
-		}
-	}
+	/*
+		//设置玩家的所在房间信息
+		for i, p := range rm.players {
+			if p.player_id == pl.player_id {
+				rm.players[i].room_name = rm.player_room.room_name
+				break
+			}
+		}*/
 	//给玩家安排位置
 	for i, p := range rm.playerno {
 		if p == 0 {
-			rm.playerno[i] = player.player_id
+			rm.playerno[i] = pl.player_id
 			break
 		}
 	}
 	//添加玩家信息
-	rm.players = append(rm.players, player)
+	rm.players = append(rm.players, pl)
 	return true, nil
 }
 
@@ -73,7 +74,7 @@ func (rm *PlayerRoom) AddPlayer(player_id int) (bool, error) {
 func (rm *PlayerRoom) RemovePlayer(player Player) (bool, error) {
 	for i, p := range rm.players {
 		if p.player_id == player.player_id {
-			new_player := make([]Player, rm.players_number)
+			new_player := make([]*Player, rm.players_number)
 			new_player = append(rm.players[:i], rm.players[i+1:]...)
 			rm.players = new_player
 			rm.stay_number--
@@ -99,7 +100,7 @@ func (rm *PlayerRoom) ReadyPlayer(player_id int) error {
 	}
 	for i, p := range rm.players {
 		if p.player_id == player_id {
-			rm.players[i].state = 1
+			rm.players[i].state = true
 			break
 		}
 	}
@@ -117,7 +118,7 @@ func (rm *PlayerRoom) UnreadyPlayer(player_id int) error {
 	}
 	for i, p := range rm.players {
 		if p.player_id == player_id {
-			rm.players[i].state = 0
+			rm.players[i].state = false
 			break
 		}
 	}
@@ -132,7 +133,7 @@ func (rm *PlayerRoom) PlayGame() {
 	rm.latest_state = "-1"
 	//rm.latest_id = -1
 	rm.room_cards.Start()
-	for i, p := range rm.players {
+	for i, _:= range rm.players {
 		rm.players[i].player_cards.cards = append(rm.room_cards.AddCards(7)[:])
 		rm.players[i].player_cards.number = 7
 		rm.players[i].player_cards.Sort()
