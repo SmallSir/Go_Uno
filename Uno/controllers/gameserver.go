@@ -19,6 +19,7 @@ func init() {
 	roomlist = newRoomTable()
 }
 
+
 //创建房间
 func (game *GameController) Register() {
 	roomname := game.GetString("room_name")
@@ -39,6 +40,7 @@ func (game *GameController) Register() {
 	if flag == true {
 		//房间名已经有了，返回错误让他重新输入
 	}
+	//房间信息发送给redis
 	//建立websocket
 	ws, err := websocket.Upgrade(game.Ctx.ResponseWriter, game.Ctx.Request, nil, 1024, 1024)
 	//检查websocket是否建立成功
@@ -56,6 +58,10 @@ func (game *GameController) Register() {
 
 //加入房间
 func (game *GameController) Join() {
+
+}
+//离开房间
+func (game *GameController) Leave(){
 
 }
 
