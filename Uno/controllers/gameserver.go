@@ -130,7 +130,20 @@ func (game *GameController) Join() {
 
 //离开房间
 func (game *GameController) Leave() {
-	
+	playerid := game.GetSession("id").(int)
+	roomname := game.GetSession("roomname").(string)
+	r := roomlist.rooms[roomname]
+	flag, err := r.RemovePlayer(playerid)
+	//flag删除情况，err表示是否可以把整个房间移除
+	if flag == true{
+		log.Printf("删除成功")
+		if err != nil{
+			roomlist.RemoveRoom(roomname)
+		}
+	} else {
+		log.Printf("玩家 %d 从 %s 房间删除失败",playerid,roomname)
+	}
+
 }
 
 //玩家出牌
