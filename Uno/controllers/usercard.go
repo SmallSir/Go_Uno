@@ -84,7 +84,7 @@ func (user *UserCard) BinaryInsert(new_card Card) int {
 
 //添加新牌
 func (user *UserCard) Insert_Card(newcards []Card) {
-	for i, new_card := range newcards {
+	for _, new_card := range newcards {
 		r := user.BinaryInsert(new_card)
 		new_cards := make([]Card, 0, len(user.cards)+1)
 		new_cards = append(new_cards, user.cards[:r]...)
