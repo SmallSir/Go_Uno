@@ -67,7 +67,7 @@ func (rm *PlayerRoom) AddPlayer(pl *Player) (bool, error) {
 	}
 	//添加玩家信息
 	rm.players = append(rm.players, pl)
-	log.Printf("已经将 %s 玩家 加入到 %s 房间",pl.player_name,rm.player_room.room_name)
+	log.Printf("已经将 %s 玩家 加入到 %s 房间", pl.player_name, rm.player_room.room_name)
 	return true, nil
 }
 
@@ -86,7 +86,7 @@ func (rm *PlayerRoom) RemovePlayer(playerid int) (bool, error) {
 					break
 				}
 			}
-			log.Printf("已经将 %d 玩家从 %s 房间移除",playerid,rm.player_room.room_name)
+			log.Printf("已经将 %d 玩家从 %s 房间移除", playerid, rm.player_room.room_name)
 			//注销房间
 			if rm.stay_number == 0 {
 				return true, errors.New("房间已经没有人了，可以删除")
@@ -137,7 +137,7 @@ func (rm *PlayerRoom) PlayGame() {
 	rm.latest_state = "-1"
 	//rm.latest_id = -1
 	rm.room_cards.Start()
-	for i, _:= range rm.players {
+	for i, _ := range rm.players {
 		rm.players[i].player_cards.cards = append(rm.room_cards.AddCards(7)[:])
 		rm.players[i].player_cards.number = 7
 		rm.players[i].player_cards.Sort()
@@ -145,9 +145,18 @@ func (rm *PlayerRoom) PlayGame() {
 }
 
 //获得出牌信息
-func (rm *PlayerRoom) RemoveCard(p_id int, rc Card) (bool, error) {
+func (rm *PlayerRoom) RemoveCard(p_id int, rc Card) int {
+	/*不同返回值的效果不同
+	-1表示出牌不符合规则
+	0表示正常出牌
+	1表示下一个人要UNO
+	2表示玩家打了+2下一个人必须摸牌跳过
+	3表示玩家打了+4下一个人必须摸牌跳过
+	4表示玩家打了wild选择颜色
+	*/
+	flag := 0
 	if rm.latest_state != rc.state && rm.latest_state != "-1" && rm.latest_color != "null" && rm.latest_color != rc.color && rm.latest_number != rc.number && rc.state != "wildraw" && rc.state != "wild" {
-		return false, errors.New("出的牌不对")
+		return -1
 	}
 	for i, p := range rm.players {
 		if p.player_id == p_id {
@@ -160,6 +169,10 @@ func (rm *PlayerRoom) RemoveCard(p_id int, rc Card) (bool, error) {
 			//rm.latest_id = p_id
 			rm.latest_state = rc.state
 			rm.latest_number = rc.number
+			//检查出了最后一张牌且是状态牌的情况
+			if rm.players[i].player_cards.number == 0 && rm.latest_number == "-1" {
+				rm.GetCard(p_id, 1)
+			}
 			break
 		}
 	}
@@ -179,7 +192,23 @@ func (rm *PlayerRoom) RemoveCard(p_id int, rc Card) (bool, error) {
 			rm.nextplayer = (rm.nextplayer + 3) % 4
 		}
 	}
-	return true, nil
+	if rm.latest_state == "wild"{
+		//表示是选色
+		flag = 4
+	}
+	if rm.latest_state == "wildraw" {
+		//表示是+4
+		flag = 3
+	}
+	if rm.latest_state == "draw" {
+		//表示是+2
+		flag = 2
+	}
+	check := rm.CheckUno()
+	if check == true {
+		flag = 1
+	}
+	return flag
 }
 
 //选择花色
@@ -192,6 +221,27 @@ func (rm *PlayerRoom) GetCard(p_id int, rn int) {
 	for i, p := range rm.players {
 		if p.player_id == p_id {
 			rm.players[i].player_cards.Insert_Card(rm.room_cards.AddCards(rn))
+			break
 		}
 	}
+	if rm.dirction == 0{
+		rm.nextplayer = (rm.nextplayer + 1) % 4
+	} else {
+		rm.nextplayer = (rm.nextplayer + 3) % 4
+	}
+}
+
+//判断UNO
+func (rm *PlayerRoom) CheckUno() bool {
+	id := rm.playerno[rm.nextplayer]
+	for _, p := range rm.players {
+		if id == p.player_id {
+			if p.player_cards.number == 1 {
+				return true
+			} else {
+				return false
+			}
+		}
+	}
+	return false
 }
