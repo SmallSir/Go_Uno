@@ -44,10 +44,6 @@ func NewRoom(room Room, number int) *PlayerRoom {
 	return &newroom
 }
 
-//删除房间
-
-
-
 //添加玩家
 func (rm *PlayerRoom) AddPlayer(pl *Player) (bool, error) {
 	if rm.stay_number == rm.players_number {
@@ -71,6 +67,7 @@ func (rm *PlayerRoom) AddPlayer(pl *Player) (bool, error) {
 	}
 	//添加玩家信息
 	rm.players = append(rm.players, pl)
+	log.Printf("已经将 %s 玩家 加入到 %s 房间",pl.player_name,rm.player_room.room_name)
 	return true, nil
 }
 
@@ -78,6 +75,7 @@ func (rm *PlayerRoom) AddPlayer(pl *Player) (bool, error) {
 func (rm *PlayerRoom) RemovePlayer(player Player) (bool, error) {
 	for i, p := range rm.players {
 		if p.player_id == player.player_id {
+			player.deregister()
 			new_player := make([]*Player, rm.players_number)
 			new_player = append(rm.players[:i], rm.players[i+1:]...)
 			rm.players = new_player
@@ -88,6 +86,8 @@ func (rm *PlayerRoom) RemovePlayer(player Player) (bool, error) {
 					break
 				}
 			}
+			log.Printf("已经将 %s 玩家从 %s 房间移除",player.player_name,rm.player_room.room_name)
+			//注销房间
 			if rm.stay_number == 0 {
 				return true, errors.New("房间已经没有人了，可以删除")
 			}
