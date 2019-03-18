@@ -19,6 +19,16 @@ type Player struct {
 	rwc *websocket.Conn
 }
 
+//创建玩家
 func NewPlayer(rwc *websocket.Conn, player_id int, player_name string,roomname string) *Player {
 	return &Player{room_name:roomname,player_name: player_name, player_id: player_id, rwc: rwc, state: false, player_cards: UserCard{cards: make([]Card, 0, 108), number: 0}}
 }
+
+//注销玩家
+func (p *Player) deregister(){
+	if p.rwc != nil{
+		p.rwc.Close()
+		p.rwc = nil
+	}
+}
+
