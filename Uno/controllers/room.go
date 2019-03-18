@@ -33,16 +33,20 @@ type PlayerRoom struct {
 }
 
 //创建房间
-func NewRoom(room Room, number int, p *Player) *PlayerRoom {
+func NewRoom(room Room, number int) *PlayerRoom {
 	newroom := PlayerRoom{players_number: number, players: make([]*Player, number),
 		player_room: room, ready_number: 0, dirction: 0,
 		stay_number: 1, playerno: make([]int, 4, 4), nextplayer: 0}
-	_, err := newroom.AddPlayer(p)
-	if err != nil {
-		log.Println(err)
-	}
+	//_, err := newroom.AddPlayer(p)
+	//if err != nil {
+	//	log.Println(err)
+	//}
 	return &newroom
 }
+
+//删除房间
+
+
 
 //添加玩家
 func (rm *PlayerRoom) AddPlayer(pl *Player) (bool, error) {
