@@ -72,21 +72,21 @@ func (rm *PlayerRoom) AddPlayer(pl *Player) (bool, error) {
 }
 
 //移除玩家
-func (rm *PlayerRoom) RemovePlayer(player Player) (bool, error) {
-	for i, p := range rm.players {
-		if p.player_id == player.player_id {
-			player.deregister()
+func (rm *PlayerRoom) RemovePlayer(playerid int) (bool, error) {
+	for j, p := range rm.players {
+		if p.player_id == playerid {
+			rm.players[j].deregister()
 			new_player := make([]*Player, rm.players_number)
-			new_player = append(rm.players[:i], rm.players[i+1:]...)
+			new_player = append(rm.players[:j], rm.players[j+1:]...)
 			rm.players = new_player
 			rm.stay_number--
 			for i, p := range rm.playerno {
-				if p == player.player_id {
+				if p == playerid {
 					rm.playerno[i] = 0
 					break
 				}
 			}
-			log.Printf("已经将 %s 玩家从 %s 房间移除",player.player_name,rm.player_room.room_name)
+			log.Printf("已经将 %d 玩家从 %s 房间移除",playerid,rm.player_room.room_name)
 			//注销房间
 			if rm.stay_number == 0 {
 				return true, errors.New("房间已经没有人了，可以删除")
