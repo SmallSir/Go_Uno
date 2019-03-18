@@ -18,22 +18,23 @@ func newRoomTable() *roomtable {
 }
 
 //检测房间号是否存在
-func (rt *roomtable) CheckRoom(roomname string) bool{
+func (rt *roomtable) CheckRoom(roomname string,roompassword string) bool{
 	rt.lock.Lock()
 	defer rt.lock.Unlock()
 
 	r := rt.rooms[roomname]
-	if r == nil{
+	if r.player_room.room_name == roomname && r.player_room.room_password == roompassword{
+		return true
+	} else{
 		return false
 	}
-	return true
 }
 
 //创建房间
-func (rt *roomtable) CreateRoom(roomname string,roompassword string,playername string,playerid int,ws *websocket.Conn) {
+func (rt *roomtable) CreateRoom(roomname string,roompassword string) {
 	rt.lock.Lock()
 	defer rt.lock.Unlock()
 	roommsg := Room{room_name:roomname,room_password:roompassword}
-	player := NewPlayer(ws,playerid,playername,roomname)
-	rt.rooms[roomname] = NewRoom(roommsg,4,player)
+	//player := NewPlayer(ws,playerid,playername,roomname)
+	rt.rooms[roomname] = NewRoom(roommsg,4)
 }
