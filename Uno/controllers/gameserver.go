@@ -25,9 +25,9 @@ func (game *GameController) Register() {
 	roomname := game.GetString("room_name")
 	roompassword := game.GetString("room_password")
 
-	flag := roomlist.CheckRoom(roomname,roompassword)
-	
-	if flag == true{
+	flag := roomlist.CheckRoom(roomname, roompassword)
+
+	if flag == true {
 		//房间存在不得使用
 	}
 	//创建房间
@@ -90,12 +90,12 @@ func (game *GameController) UnReady() {
 
 //加入房间
 func (game *GameController) Join() {
-		//获取房间账号密码
+	//获取房间账号密码
 	roomname := game.GetString("room_name")
 	roompassword := game.GetString("room_password")
 
-	flag := roomlist.CheckRoom(roomname,roompassword)
-	if flag == false{
+	flag := roomlist.CheckRoom(roomname, roompassword)
+	if flag == false {
 		//房间不存在
 	}
 	//获取房间
@@ -135,20 +135,42 @@ func (game *GameController) Leave() {
 	r := roomlist.rooms[roomname]
 	flag, err := r.RemovePlayer(playerid)
 	//flag删除情况，err表示是否可以把整个房间移除
-	if flag == true{
+	if flag == true {
 		log.Printf("删除成功")
-		if err != nil{
+		if err != nil {
 			roomlist.RemoveRoom(roomname)
 		}
 	} else {
-		log.Printf("玩家 %d 从 %s 房间删除失败",playerid,roomname)
+		log.Printf("玩家 %d 从 %s 房间删除失败", playerid, roomname)
 	}
 
 }
 
 //玩家出牌
 func (game *GameController) RemoveCards() {
+	playerid := game.GetSession("id").(int)
+	roomname := game.GetSession("roomname").(string)
 
+	//获取牌信息
+	color := game.GetString("color")
+	state := game.GetString("state")
+	number := game.GetString("number")
+
+	c := Card{color: color, state: state, number: number}
+
+	r := roomlist.rooms[roomname]
+	flag, err := r.RemoveCard(playerid, c)
+	if flag {
+		//返回一个值表示出牌错误
+	} else {
+		if err != nil {
+			//表示下一个出牌的人要先喊uno
+		}
+	}
+	/*
+		发牌信息发给其他玩家
+		轮到下一个玩家
+	*/
 }
 
 //玩家摸牌,在没有上一个出牌人的相同颜色或者相同数字的情况下
