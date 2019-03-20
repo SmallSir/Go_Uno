@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"regexp"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -55,6 +56,26 @@ func (game *GameController) Register() {
 	}
 
 	flag := roomlist.CheckRoom(roomname, roompassword)
+
+	//检查房间名称是否只有英文和数字，密码是否大于六位
+	var hzRegexp = regexp.MustCompile("[a-z0-9A-Z]+$")
+	if hzRegexp.MatchString(roomname) != true {
+		msg = "房间名必须由数字和字母组成"
+		return
+	}
+	if hzRegexp.MatchString(roompassword) != true{
+		msg = "房间密码必须有数字或字母组成"
+		return
+	}
+	if len(roomname) < 3 || len(roomname) > 7 {
+		msg = "房间账号长度不得小于3或者大于7"
+		return
+	}
+	if len(roompassword) < 4 || len(roompassword) > 9{
+		msg = "房间密码长度不得小于4或者大于9"
+		return
+	}
+
 	if flag == true {
 		//房间存在不得使用
 		msg = "房间已存在"
@@ -76,27 +97,68 @@ func (game *GameController) Register() {
 
 //玩家准备
 func (game *GameController) Ready() {
+	//获取玩家信息
 	roomname, _ := game.GetSession("roomname").(string)
 	playerid, _ := game.GetSession("id").(int)
+	//获取所在房间信息
 	r := roomlist.rooms[roomname]
-	flag := r.ReadyPlayer(playerid)
-	if flag != nil {
 
+	//返回信息
+	ok := false
+	msg := ""
+	url := ""
+
+	defer func() {
+		remsg := &ReRoomMsg{}
+		remsg.Msg = msg
+		remsg.Ok = ok
+		remsg.Url = url
+		ret, _ := json.Marshal(remsg)
+		game.Data["json"] = string(ret)
+		game.EnableRender = false
+		game.ServeJSON()
+	}()
+
+	err := r.ReadyPlayer(playerid)
+	if err != nil {
+		msg = err.Error()
 	} else {
-
+		ok = true
+		msg = "已准备"
 	}
 }
 
 //玩家取消准备
 func (game *GameController) UnReady() {
+	//获取玩家信息
 	roomname, _ := game.GetSession("roomname").(string)
 	playerid, _ := game.GetSession("id").(int)
+	
+	//获取所在房间信息
 	r := roomlist.rooms[roomname]
-	flag := r.UnreadyPlayer(playerid)
-	if flag != nil {
 
+	//返回信息
+	ok := false
+	msg := ""
+	url := ""
+
+	defer func() {
+		remsg := &ReRoomMsg{}
+		remsg.Msg = msg
+		remsg.Ok = ok
+		remsg.Url = url
+		ret, _ := json.Marshal(remsg)
+		game.Data["json"] = string(ret)
+		game.EnableRender = false
+		game.ServeJSON()
+	}()
+
+	err := r.UnreadyPlayer(playerid)
+	if err != nil {
+		msg = err.Error()
 	} else {
-
+		ok = true
+		msg = "已取消准备"
 	}
 }
 
