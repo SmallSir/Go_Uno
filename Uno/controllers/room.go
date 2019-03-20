@@ -145,7 +145,7 @@ func (rm *PlayerRoom) PlayGame() {
 }
 
 //获得出牌信息
-func (rm *PlayerRoom) RemoveCard(p_id int, rc Card) int {
+func (rm *PlayerRoom) RemoveCard(p_id int, rc Card) (int,int) {
 	/*不同返回值的效果不同
 	-1表示出牌不符合规则
 	0表示正常出牌
@@ -155,11 +155,13 @@ func (rm *PlayerRoom) RemoveCard(p_id int, rc Card) int {
 	4表示玩家打了wild选择颜色
 	*/
 	flag := 0
+	nowplayer := -1
 	if rm.latest_state != rc.state && rm.latest_state != "-1" && rm.latest_color != "null" && rm.latest_color != rc.color && rm.latest_number != rc.number && rc.state != "wildraw" && rc.state != "wild" {
-		return -1
+		return -1,nowplayer
 	}
 	for i, p := range rm.players {
 		if p.player_id == p_id {
+			nowplayer = i
 			//改变玩家手牌信息
 			rm.players[i].player_cards.Remove_Card(rc)
 			//改变这把的牌堆信息
@@ -208,7 +210,7 @@ func (rm *PlayerRoom) RemoveCard(p_id int, rc Card) int {
 	if check == true {
 		flag = 1
 	}
-	return flag
+	return flag,nowplayer
 }
 
 //选择花色
