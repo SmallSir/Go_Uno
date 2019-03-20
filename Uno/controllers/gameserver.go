@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 
@@ -19,47 +20,58 @@ func init() {
 	roomlist = newRoomTable()
 }
 
+//测试
+func (game *GameController) Get() {
+	game.TplName = "index.html"
+}
+
 //创建房间
 func (game *GameController) Register() {
-	//获取房间账号密码
-	roomname := game.GetString("room_name")
-	roompassword := game.GetString("room_password")
+	//获取账号密码
+	roommsg := RoomMsg{}
+	err := json.Unmarshal([]byte(game.Ctx.Input.RequestBody), roommsg)
+	roomname := roommsg.RoomName
+	roompassword := roommsg.RoomPassWord
+
+	//返回信息
+	ok := false
+	msg := ""
+	url := ""
+
+	defer func() {
+		remsg := &ReRoomMsg{}
+		remsg.Msg = msg
+		remsg.Ok = ok
+		remsg.Url = url
+		ret, _ := json.Marshal(remsg)
+		game.Data["json"] = string(ret)
+		game.EnableRender = false
+		game.ServeJSON()
+	}()
+
+	if err != nil {
+		msg = "无法获取创建房间信息"
+		return
+	}
 
 	flag := roomlist.CheckRoom(roomname, roompassword)
-
 	if flag == true {
 		//房间存在不得使用
+		msg = "房间已存在"
+		return
 	}
+
 	//创建房间
 	roomlist.CreateRoom(roomname, roompassword)
-	//获取房间
-	r := roomlist.rooms[roomname]
-	playername, flag := game.GetSession("name").(string)
-
-	if flag == false {
-		//重新登录界面
-	}
-
-	playerid, flag := game.GetSession("id").(int)
-	if flag == false {
-		//重新登录界面
-	}
 
 	//房间信息发送给redis
-	//建立websocket
-	ws, err := websocket.Upgrade(game.Ctx.ResponseWriter, game.Ctx.Request, nil, 1024, 1024)
-	//检查websocket是否建立成功
-	if _, ok := err.(websocket.HandshakeError); ok {
-		http.Error(game.Ctx.ResponseWriter, "Not a websocket handshake", 400)
-		return
-	} else if err != nil {
-		beego.Error("Cannot setup WebSocket connection:", err)
-		return
-	}
-	p := NewPlayer(ws, playerid, playername, roomname)
-	r.AddPlayer(p)
+
 	//设置seesion中的房间名称
 	game.SetSession("roomname", roomname)
+	ok = true
+	msg = "房间创建成功"
+	url = "/uno/" + roomname
+	return
 }
 
 //玩家准备
@@ -90,30 +102,62 @@ func (game *GameController) UnReady() {
 
 //加入房间
 func (game *GameController) Join() {
-	//获取房间账号密码
-	roomname := game.GetString("room_name")
-	roompassword := game.GetString("room_password")
+	//roomname := game.Ctx.Input.Param(":roomname")
+
+	//获取账号密码
+	roommsg := RoomMsg{}
+	err := json.Unmarshal([]byte(game.Ctx.Input.RequestBody), roommsg)
+	roomname := roommsg.RoomName
+	roompassword := roommsg.RoomPassWord
+
+	//返回信息
+	ok := false
+	msg := ""
+	url := ""
+
+	defer func() {
+		remsg := &ReRoomMsg{}
+		remsg.Msg = msg
+		remsg.Ok = ok
+		remsg.Url = url
+		ret, _ := json.Marshal(remsg)
+		game.Data["json"] = string(ret)
+		game.EnableRender = false
+		game.ServeJSON()
+	}()
+
+	//获取房间名称和密码状态
+	if err != nil {
+		msg = "无法获取创建房间信息"
+		return
+	}
 
 	flag := roomlist.CheckRoom(roomname, roompassword)
-	if flag == false {
-		//房间不存在
-	}
-	//获取房间
-	r := roomlist.rooms[roomname]
-	playername, flag := game.GetSession("name").(string)
 
 	if flag == false {
-		//重新界面
+		msg = "房间不存在或密码错误，请确认后再输入"
+		return
 	}
 
-	playerid, flag := game.GetSession("id").(int)
-	if flag == false {
-		//重新界面
-	}
+	//把信息发送给里面的其他人
 
-	//房间信息发送给redis
+	//设置seesion中的房间名称
+	game.SetSession("roomname", roomname)
+	ok = true
+	msg = "房间创建成功"
+	url = "/uno/" + roomname
+}
+
+//建立WebSocket
+func (game *GameController) ConnectionWebSocket() {
+	//获取玩家的昵称和id，以及所在房间
+	roomname := game.GetSession("roomname").(string)
+	playerid := game.GetSession("id").(int)
+	playername := game.GetSession("name").(string)
+
 	//建立websocket
 	ws, err := websocket.Upgrade(game.Ctx.ResponseWriter, game.Ctx.Request, nil, 1024, 1024)
+
 	//检查websocket是否建立成功
 	if _, ok := err.(websocket.HandshakeError); ok {
 		http.Error(game.Ctx.ResponseWriter, "Not a websocket handshake", 400)
@@ -123,9 +167,9 @@ func (game *GameController) Join() {
 		return
 	}
 	p := NewPlayer(ws, playerid, playername, roomname)
+
+	r := roomlist.rooms[roomname]
 	r.AddPlayer(p)
-	//设置seesion中的房间名称
-	game.SetSession("roomname", roomname)
 }
 
 //离开房间
@@ -159,18 +203,20 @@ func (game *GameController) RemoveCards() {
 	c := Card{color: color, state: state, number: number}
 
 	r := roomlist.rooms[roomname]
-	flag, err := r.RemoveCard(playerid, c)
-	if flag {
-		//返回一个值表示出牌错误
-	} else {
-		if err != nil {
-			//表示下一个出牌的人要先喊uno
-		}
+	flag := r.RemoveCard(playerid, c)
+	if flag == -1 { //出牌有问题
+
+	} else if flag == 0 { //正常出牌
+
+	} else if flag == 1 { //下一个人要喊uno
+
+	} else if flag == 2 { //下一个人+2并跳过
+		r.GetCard(r.nextplayer, 2)
+	} else if flag == 3 { //下一个人+4并跳过
+		r.GetCard(r.nextplayer, 4)
+	} else { //当前玩家选色
+
 	}
-	/*
-		发牌信息发给其他玩家
-		轮到下一个玩家
-	*/
 }
 
 //玩家摸牌,在没有上一个出牌人的相同颜色或者相同数字的情况下
