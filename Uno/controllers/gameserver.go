@@ -1,10 +1,10 @@
 package controllers
 
 import (
-	"regexp"
 	"encoding/json"
 	"log"
 	"net/http"
+	"regexp"
 
 	"github.com/astaxie/beego"
 	"github.com/gorilla/websocket"
@@ -63,7 +63,7 @@ func (game *GameController) Register() {
 		msg = "房间名必须由数字和字母组成"
 		return
 	}
-	if hzRegexp.MatchString(roompassword) != true{
+	if hzRegexp.MatchString(roompassword) != true {
 		msg = "房间密码必须有数字或字母组成"
 		return
 	}
@@ -71,7 +71,7 @@ func (game *GameController) Register() {
 		msg = "房间账号长度不得小于3或者大于7"
 		return
 	}
-	if len(roompassword) < 4 || len(roompassword) > 9{
+	if len(roompassword) < 4 || len(roompassword) > 9 {
 		msg = "房间密码长度不得小于4或者大于9"
 		return
 	}
@@ -133,7 +133,7 @@ func (game *GameController) UnReady() {
 	//获取玩家信息
 	roomname, _ := game.GetSession("roomname").(string)
 	playerid, _ := game.GetSession("id").(int)
-	
+
 	//获取所在房间信息
 	r := roomlist.rooms[roomname]
 
@@ -258,26 +258,68 @@ func (game *GameController) RemoveCards() {
 	roomname := game.GetSession("roomname").(string)
 
 	//获取牌信息
-	color := game.GetString("color")
-	state := game.GetString("state")
-	number := game.GetString("number")
+	outcard := &CardStateMsg{}
+	err := json.Unmarshal([]byte(game.Ctx.Input.RequestBody), outcard)
+	if err != nil {
+		msg = "无法正确获取出牌信息"
+	}
+	color := outcard.Color
+	state := outcard.State
+	number := outcard.Number
+
+	//返回数据信息
+	ok := false
+	msg := ""
+	nowplayer := -1
+	r := roomlist.rooms[roomname]
+
+	//把数据分给所有的玩家
+	defer func(i int) {
+		if ok == false {
+			re := &ReCardMsg{}
+			re.Msg = msg
+			re.Direction = r.dirction
+			re.Ok = ok
+			re.Select = false
+			if nowplayer != -1 {
+				re.CardsNumbers = r.players[i].player_cards.number
+			}
+			ret, _ := json.Marshal(re)
+			game.Data["json"] = string(ret)
+			game.EnableRender = false
+			game.ServeJSON()
+		} else {
+			for _, p := range r.players {
+				if p.player_id == playerid {
+					re := &ReCardMsg{}
+					re.Ok = ok
+					//没写完
+				} else {
+					re := &ReOtherCardMsg{}
+					re.Color = color
+					//没写完
+				}
+			}
+		}
+	}(nowplayer)
 
 	c := Card{color: color, state: state, number: number}
 
-	r := roomlist.rooms[roomname]
-	flag := r.RemoveCard(playerid, c)
+	flag, nowplayer := r.RemoveCard(playerid, c)
 	if flag == -1 { //出牌有问题
-
+		msg = "出牌不符合规则"
 	} else if flag == 0 { //正常出牌
-
+		ok = true
 	} else if flag == 1 { //下一个人要喊uno
-
+		ok = true
 	} else if flag == 2 { //下一个人+2并跳过
+		ok = true
 		r.GetCard(r.nextplayer, 2)
 	} else if flag == 3 { //下一个人+4并跳过
+		ok = true
 		r.GetCard(r.nextplayer, 4)
 	} else { //当前玩家选色
-
+		ok = true
 	}
 }
 
