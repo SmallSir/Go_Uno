@@ -55,7 +55,7 @@ func (game *GameController) Register() {
 		return
 	}
 
-	flag := roomlist.CheckRoom(roomname, roompassword)
+	flag,_ := roomlist.CheckRoom(roomname, roompassword)
 
 	//检查房间名称是否只有英文和数字，密码是否大于六位
 	var hzRegexp = regexp.MustCompile("[a-z0-9A-Z]+$")
@@ -194,11 +194,14 @@ func (game *GameController) Join() {
 		return
 	}
 
-	flag := roomlist.CheckRoom(roomname, roompassword)
+	flag,c := roomlist.CheckRoom(roomname, roompassword)
 
 	if flag == false {
-		msg = "房间不存在或密码错误，请确认后再输入"
+		msg = "房间账号不存在，请确认后再输入"
 		return
+	}
+	if c == false{
+		msg = "房间密码错误，请确认后再输入"
 	}
 
 	//把信息发送给里面的其他人
@@ -257,6 +260,12 @@ func (game *GameController) RemoveCards() {
 	playerid := game.GetSession("id").(int)
 	roomname := game.GetSession("roomname").(string)
 
+	//返回数据信息
+	ok := false
+	msg := ""
+	nowplayer := -1
+	r := roomlist.rooms[roomname]
+
 	//获取牌信息
 	outcard := &CardStateMsg{}
 	err := json.Unmarshal([]byte(game.Ctx.Input.RequestBody), outcard)
@@ -266,12 +275,6 @@ func (game *GameController) RemoveCards() {
 	color := outcard.Color
 	state := outcard.State
 	number := outcard.Number
-
-	//返回数据信息
-	ok := false
-	msg := ""
-	nowplayer := -1
-	r := roomlist.rooms[roomname]
 
 	//把数据分给所有的玩家
 	defer func(i int) {
@@ -314,10 +317,8 @@ func (game *GameController) RemoveCards() {
 		ok = true
 	} else if flag == 2 { //下一个人+2并跳过
 		ok = true
-		r.GetCard(r.nextplayer, 2)
 	} else if flag == 3 { //下一个人+4并跳过
 		ok = true
-		r.GetCard(r.nextplayer, 4)
 	} else { //当前玩家选色
 		ok = true
 	}
@@ -327,8 +328,10 @@ func (game *GameController) RemoveCards() {
 func (game *GameController) AddCards() {
 	roomname, _ := game.GetSession("roomname").(string)
 	playerid, _ := game.GetSession("id").(int)
+	number, _ := game.GetInt("number")
 	r := roomlist.rooms[roomname]
-	r.GetCard(playerid, 2)
+	index := r.GetCard(playerid, number)
+
 }
 
 //玩家选颜色
@@ -337,4 +340,9 @@ func (game *GameController) SelectColor() {
 	roomname := game.GetSession("roomname").(string)
 	r := roomlist.rooms[roomname]
 	r.latest_color = color
+	defer func() {
+		for _, p := range r.players {
+			p.rwc
+		}
+	}()
 }
