@@ -28,6 +28,7 @@ type ReCardMsg struct {
 	Direction    int    `json:"direction"`   //方向
 	CardsNumbers int    `json:"cardsnumber"` //剩余牌的数量
 	Select       bool   `json:"select"`      //是否选色
+	C            []Card `json:"cards"`       //玩家现在手里的牌
 }
 
 //出牌返回数据给其他玩家
