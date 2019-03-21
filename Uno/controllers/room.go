@@ -145,7 +145,7 @@ func (rm *PlayerRoom) PlayGame() {
 }
 
 //获得出牌信息
-func (rm *PlayerRoom) RemoveCard(p_id int, rc Card) (int,int) {
+func (rm *PlayerRoom) RemoveCard(p_id int, rc Card) (int, int) {
 	/*不同返回值的效果不同
 	-1表示出牌不符合规则
 	0表示正常出牌
@@ -157,7 +157,7 @@ func (rm *PlayerRoom) RemoveCard(p_id int, rc Card) (int,int) {
 	flag := 0
 	nowplayer := -1
 	if rm.latest_state != rc.state && rm.latest_state != "-1" && rm.latest_color != "null" && rm.latest_color != rc.color && rm.latest_number != rc.number && rc.state != "wildraw" && rc.state != "wild" {
-		return -1,nowplayer
+		return -1, nowplayer
 	}
 	for i, p := range rm.players {
 		if p.player_id == p_id {
@@ -194,7 +194,7 @@ func (rm *PlayerRoom) RemoveCard(p_id int, rc Card) (int,int) {
 			rm.nextplayer = (rm.nextplayer + 3) % 4
 		}
 	}
-	if rm.latest_state == "wild"{
+	if rm.latest_state == "wild" {
 		//表示是选色
 		flag = 4
 	}
@@ -210,7 +210,7 @@ func (rm *PlayerRoom) RemoveCard(p_id int, rc Card) (int,int) {
 	if check == true {
 		flag = 1
 	}
-	return flag,nowplayer
+	return flag, nowplayer
 }
 
 //选择花色
@@ -219,18 +219,21 @@ func (rm *PlayerRoom) SelectColor(color string) {
 }
 
 //获得摸牌信息
-func (rm *PlayerRoom) GetCard(p_id int, rn int) {
+func (rm *PlayerRoom) GetCard(p_id int, rn int) int {
+	index := -1
 	for i, p := range rm.players {
 		if p.player_id == p_id {
 			rm.players[i].player_cards.Insert_Card(rm.room_cards.AddCards(rn))
+			index = i
 			break
 		}
 	}
-	if rm.dirction == 0{
+	if rm.dirction == 0 {
 		rm.nextplayer = (rm.nextplayer + 1) % 4
 	} else {
 		rm.nextplayer = (rm.nextplayer + 3) % 4
 	}
+	return index
 }
 
 //判断UNO
