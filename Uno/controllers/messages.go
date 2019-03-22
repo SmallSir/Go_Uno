@@ -15,10 +15,12 @@ type ReRoomMsg struct {
 
 //出牌接收数据格式
 type CardStateMsg struct {
-	Color    string `json:"color"`    //出牌的颜色
-	Number   string `json:"number"`   //出牌的号码
-	State    string `json:"state"`    //出牌状态
-	Behavior string `json:"behavior"` //玩家行为
+	Color    string `json:"color"`     //出牌的颜色
+	Number   string `json:"number"`    //出牌的号码
+	State    string `json:"state"`     //出牌状态
+	Behavior int `json:"behavior"`  //玩家行为(1表示摸牌,0表示出牌)
+	PlayerId int    `json:"playerid"`  //玩家id
+	CN       int    `json:"getnumber"` //玩家摸牌个数
 }
 
 //出牌返回数据格式
@@ -61,6 +63,6 @@ type SelectColor struct {
 
 //玩家选择准备or取消准备
 type PlayerReady struct {
-	ready    bool
-	Playerid int
+	ready    bool `json:"ready"`
+	Playerid int  `json:"Playerid"`
 }
