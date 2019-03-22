@@ -167,6 +167,33 @@ func (game *GameController) ConnectionWebSocket() {
 
 	r := roomlist.rooms[roomname]
 	r.subscribe <- p
+	defer r.ReadyPlayer(playerid)
+	for{
+		_,p,err := ws.ReadMessage()
+		if err != nil{
+			//断开连接解决办法
+		}
+		//判断发来的数据是否是选颜色
+		sc := &SelectColor{}
+		err= json.Unmarshal(p,sc) 
+		if err == nil{
+			r.selectcolor <- sc
+			continue
+		}
+		//判断发来的数据是否是准备or取消准备
+		re := &PlayerReady{}
+		err= json.Unmarshal(p,re)
+		if err == nil {
+			r.ready <- p
+			continue
+		}
+		pc := &CardStateMsg{}
+		err = json.Unmarshal(p,re)
+		if err == nil{
+			r.publish <- pc
+			continue
+		}
+	}
 }
 
 
