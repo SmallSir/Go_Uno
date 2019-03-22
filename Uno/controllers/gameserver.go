@@ -54,7 +54,7 @@ func (game *GameController) Register() {
 		return
 	}
 
-	flag,_ := roomlist.CheckRoom(roomname, roompassword)
+	flag, _ := roomlist.CheckRoom(roomname, roompassword)
 
 	//检查房间名称是否只有英文和数字，密码是否大于六位
 	var hzRegexp = regexp.MustCompile("[a-z0-9A-Z]+$")
@@ -126,13 +126,13 @@ func (game *GameController) Join() {
 		return
 	}
 
-	flag,c := roomlist.CheckRoom(roomname, roompassword)
+	flag, c := roomlist.CheckRoom(roomname, roompassword)
 
 	if flag == false {
 		msg = "房间账号不存在，请确认后再输入"
 		return
 	}
-	if c == false{
+	if c == false {
 		msg = "房间密码错误，请确认后再输入"
 	}
 
@@ -168,35 +168,30 @@ func (game *GameController) ConnectionWebSocket() {
 	r := roomlist.rooms[roomname]
 	r.subscribe <- p
 	defer r.ReadyPlayer(playerid)
-	for{
-		_,p,err := ws.ReadMessage()
-		if err != nil{
+	for {
+		_, p, err := ws.ReadMessage()
+		if err != nil {
 			//断开连接解决办法
 		}
 		//判断发来的数据是否是选颜色
-		sc := &SelectColor{}
-		err= json.Unmarshal(p,sc) 
-		if err == nil{
+		sc := SelectColor{}
+		err = json.Unmarshal(p, sc)
+		if err == nil {
 			r.selectcolor <- sc
 			continue
 		}
 		//判断发来的数据是否是准备or取消准备
-		re := &PlayerReady{}
-		err= json.Unmarshal(p,re)
+		re := PlayerReady{}
+		err = json.Unmarshal(p, re)
 		if err == nil {
-			r.ready <- p
+			r.ready <- re
 			continue
 		}
-		pc := &CardStateMsg{}
-		err = json.Unmarshal(p,re)
-		if err == nil{
+		pc := CardStateMsg{}
+		err = json.Unmarshal(p, re)
+		if err == nil {
 			r.publish <- pc
 			continue
 		}
 	}
 }
-
-
-
-
-
