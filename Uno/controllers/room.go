@@ -1,8 +1,12 @@
 package controllers
 
 import (
+	"encoding/json"
 	"errors"
 	"log"
+
+	"github.com/astaxie/beego"
+	"github.com/gorilla/websocket"
 )
 
 type PlayerRoom struct {
@@ -30,18 +34,95 @@ type PlayerRoom struct {
 	playerno []int
 	//下一个玩家编号
 	nextplayer int
+	//玩家进入管道
+	subscribe chan *Player
+	//玩家准备管道
+	ready chan PlayerReady
+	//玩家事件管道
+	publish chan CardStateMsg
+	//玩家退出管道
+	unsubscribe chan int
+	//玩家选色管道
+	selectcolor chan SelectColor
 }
 
 //创建房间
 func NewRoom(room Room, number int) *PlayerRoom {
 	newroom := PlayerRoom{players_number: number, players: make([]*Player, number),
 		player_room: room, ready_number: 0, dirction: 0,
-		stay_number: 1, playerno: make([]int, 4, 4), nextplayer: 0}
+		stay_number: 1, playerno: make([]int, 4, 4), nextplayer: 0,
+		subscribe:   make(chan *Player, 4),
+		ready:       make(chan PlayerReady, 4),
+		publish:     make(chan CardStateMsg),
+		unsubscribe: make(chan int, 4),
+		selectcolor: make(chan SelectColor)}
 	//_, err := newroom.AddPlayer(p)
 	//if err != nil {
 	//	log.Println(err)
 	//}
 	return &newroom
+}
+
+//游戏房间
+func (rm *PlayerRoom) playRoom() {
+	for {
+		select {
+		case sub := <-rm.subscribe:
+			rm.AddPlayer(sub)
+		case event := <-rm.publish:
+			if event.Behavior == 1 { //表示为出牌事件
+				nowplayer,check := rm.RemoveCard(event.PlayerId, Card{number: event.Number, color: event.Color, state: event.State})
+				rm.cbroadcastWebSocket(event,nowplayer,check)
+			} else { //表示为摸牌事件
+				check := 0
+				nowplayer:=rm.GetCard(event.PlayerId, event.CN)
+				rm.cbroadcastWebSocket(event,nowplayer,check)
+			}
+		//case unsub := <-rm.unsubscribe:
+		case re := <-rm.ready:
+			if re.ready == true {
+				rm.UnreadyPlayer(re.Playerid)
+			} else {
+				rm.ReadyPlayer(re.Playerid)
+			}
+			rm.broadcastWebSocket(re)
+		case sc := <-rm.selectcolor:
+			rm.latest_color = sc.color
+			rm.broadcastWebSocket(sc)
+		}
+	}
+}
+func (rm *PlayerRoom) cbroadcastWebSocket(msg CardStateMsg,nowplayer int,check int) {
+	switch{
+	case msg.Behavior == 1: //摸牌
+		for _, p := range rm.players {
+
+		}
+	case msg.Behavior == 0: //出牌
+		for _, p := range rm.players {
+
+		}
+	}
+}
+
+//准备、取消准备、选色广播
+func (rm *PlayerRoom) broadcastWebSocket(msg interface{}) {
+	switch data := msg.(type) {
+	case SelectColor, PlayerReady:
+		d, err := json.Marshal(msg)
+		if err != nil {
+			beego.Error("无法将数据转为json")
+			return
+		}
+		for _, p := range rm.players {
+			ws := p.rwc
+			if ws != nil {
+				if ws.WriteMessage(websocket.TextMessage, d) != nil {
+					beego.Error("玩家 %d 掉线", p.player_id)
+				}
+			}
+		}
+	}
 }
 
 //添加玩家
@@ -50,14 +131,6 @@ func (rm *PlayerRoom) AddPlayer(pl *Player) (bool, error) {
 		return false, errors.New("人数已满不能，请稍后再试")
 	}
 	rm.stay_number++
-	/*
-		//设置玩家的所在房间信息
-		for i, p := range rm.players {
-			if p.player_id == pl.player_id {
-				rm.players[i].room_name = rm.player_room.room_name
-				break
-			}
-		}*/
 	//给玩家安排位置
 	for i, p := range rm.playerno {
 		if p == 0 {
@@ -149,7 +222,7 @@ func (rm *PlayerRoom) RemoveCard(p_id int, rc Card) (int, int) {
 	/*不同返回值的效果不同
 	-1表示出牌不符合规则
 	0表示正常出牌
-	1表示下一个人要UNO
+	1表示这个人要喊UNO
 	2表示玩家打了+2下一个人必须摸牌跳过
 	3表示玩家打了+4下一个人必须摸牌跳过
 	4表示玩家打了wild选择颜色
@@ -206,7 +279,7 @@ func (rm *PlayerRoom) RemoveCard(p_id int, rc Card) (int, int) {
 		//表示是+2
 		flag = 2
 	}
-	check := rm.CheckUno()
+	check := rm.CheckUno(p_id)
 	if check == true {
 		flag = 1
 	}
@@ -237,10 +310,9 @@ func (rm *PlayerRoom) GetCard(p_id int, rn int) int {
 }
 
 //判断UNO
-func (rm *PlayerRoom) CheckUno() bool {
-	id := rm.playerno[rm.nextplayer]
+func (rm *PlayerRoom) CheckUno(p_id int) bool {
 	for _, p := range rm.players {
-		if id == p.player_id {
+		if p_id == p.player_id {
 			if p.player_cards.number == 1 {
 				return true
 			} else {
