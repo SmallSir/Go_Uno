@@ -18,14 +18,17 @@ func newRoomTable() *roomtable {
 }
 
 //检测房间号是否存在
-func (rt *roomtable) CheckRoom(roomname string, roompassword string) bool {
+func (rt *roomtable) CheckRoom(roomname string, roompassword string) (bool, bool) {
 	rt.lock.Lock()
 	defer rt.lock.Unlock()
-	r := rt.rooms[roomname]
+	r, ok := rt.rooms[roomname]
+	if !ok {
+		return false, false
+	}
 	if r.player_room.room_name == roomname && r.player_room.room_password == roompassword {
-		return true
+		return true, true
 	} else {
-		return false
+		return true, false
 	}
 }
 
@@ -36,13 +39,13 @@ func (rt *roomtable) CreateRoom(roomname string, roompassword string) {
 	roommsg := Room{room_name: roomname, room_password: roompassword}
 	//player := NewPlayer(ws,playerid,playername,roomname)
 	rt.rooms[roomname] = NewRoom(roommsg, 4)
-	log.Printf("已经创建了 %s 房间",roomname)
+	log.Printf("已经创建了 %s 房间", roomname)
 }
 
 //删除房间
-func (rt *roomtable) RemoveRoom(roomname string){
+func (rt *roomtable) RemoveRoom(roomname string) {
 	rt.lock.Lock()
 	defer rt.lock.Unlock()
-	delete(rt.rooms,roomname)
-	log.Printf("已经将 %s 房间删除",roomname)
+	delete(rt.rooms, roomname)
+	log.Printf("已经将 %s 房间删除", roomname)
 }
