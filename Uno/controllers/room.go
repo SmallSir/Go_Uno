@@ -6,7 +6,6 @@ import (
 	"log"
 
 	"github.com/astaxie/beego"
-	"github.com/gorilla/websocket"
 )
 
 type PlayerRoom struct {
@@ -71,12 +70,12 @@ func (rm *PlayerRoom) playRoom() {
 			rm.AddPlayer(sub)
 		case event := <-rm.publish:
 			if event.Behavior == 1 { //表示为出牌事件
-				nowplayer,check := rm.RemoveCard(event.PlayerId, Card{number: event.Number, color: event.Color, state: event.State})
-				rm.cbroadcastWebSocket(event,nowplayer,check)
+				nowplayer, check := rm.RemoveCard(event.PlayerId, Card{number: event.Number, color: event.Color, state: event.State})
+				rm.cbroadcastWebSocket(event, nowplayer, check)
 			} else { //表示为摸牌事件
 				check := 0
-				nowplayer:=rm.GetCard(event.PlayerId, event.CN)
-				rm.cbroadcastWebSocket(event,nowplayer,check)
+				nowplayer := rm.GetCard(event.PlayerId, event.CN)
+				rm.cbroadcastWebSocket(event, nowplayer, check)
 			}
 		//case unsub := <-rm.unsubscribe:
 		case re := <-rm.ready:
@@ -92,15 +91,39 @@ func (rm *PlayerRoom) playRoom() {
 		}
 	}
 }
-func (rm *PlayerRoom) cbroadcastWebSocket(msg CardStateMsg,nowplayer int,check int) {
-	switch{
+func (rm *PlayerRoom) cbroadcastWebSocket(msg CardStateMsg, nowplayer int, check int) {
+	switch {
 	case msg.Behavior == 1: //摸牌
 		for _, p := range rm.players {
+			if p.player_id == rm.playerno[nowplayer] {
+				
+			} else {
 
+			}
 		}
 	case msg.Behavior == 0: //出牌
+		if check == -1 {
+			remsg := &ReCardMsg{}
+			remsg.Ok = false
+			data, err := json.Marshal(remsg)
+			if err != nil {
+				beego.Error("无法将数据转为json")
+				return
+			}
+			for _, p := range rm.players {
+				if p.player_id == rm.playerno[nowplayer] {
+					p.rwc.WriteJSON(data)
+					break
+				}
+			}
+			return
+		}
 		for _, p := range rm.players {
+			if p.player_id == rm.playerno[nowplayer] {
 
+			} else {
+
+			}
 		}
 	}
 }
@@ -117,7 +140,7 @@ func (rm *PlayerRoom) broadcastWebSocket(msg interface{}) {
 		for _, p := range rm.players {
 			ws := p.rwc
 			if ws != nil {
-				if ws.WriteMessage(websocket.TextMessage, d) != nil {
+				if ws.WriteJSON(d) != nil {
 					beego.Error("玩家 %d 掉线", p.player_id)
 				}
 			}
@@ -229,6 +252,12 @@ func (rm *PlayerRoom) RemoveCard(p_id int, rc Card) (int, int) {
 	*/
 	flag := 0
 	nowplayer := -1
+	for i, p := range rm.playerno {
+		if p == p_id {
+			nowplayer = i
+			break
+		}
+	}
 	if rm.latest_state != rc.state && rm.latest_state != "-1" && rm.latest_color != "null" && rm.latest_color != rc.color && rm.latest_number != rc.number && rc.state != "wildraw" && rc.state != "wild" {
 		return -1, nowplayer
 	}
