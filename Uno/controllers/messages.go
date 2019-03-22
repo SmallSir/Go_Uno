@@ -52,3 +52,15 @@ type Room struct {
 	room_name     string //房间名称
 	room_password string //房间密码
 }
+
+//玩家选择颜色
+type SelectColor struct {
+	color    string
+	playerid int
+}
+
+//玩家选择准备or取消准备
+type PlayerReady struct {
+	ready    bool
+	Playerid int
+}
