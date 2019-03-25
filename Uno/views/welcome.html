@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>UNO登录</title>
+    <link href="../static/css/welcome.css" rel="stylesheet" type="text/css" media="all"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="login-form">
+        <h1>登录</h1>
+        <div class="login-top">
+        <form>
+            <div class="login-ic">
+                <i ></i>
+                <input type="text"  value="用户" onFocus="this.value = '';" onBlur="if (this.value == '') {this.value = 'User name';}"/>
+                <div class="clear"> </div>
+            </div>
+            <div class="login-ic">
+                <i class="icon"></i>
+                <input type="password"  value="密码" onFocus="this.value = '';" onBlur="if (this.value == '') {this.value = 'password';}"/>
+                <div class="clear"> </div>
+            </div>
+        
+            <div class="log-bwn">
+                <input type="button" value="register">
+                <input type="submit"  value="Login" >
+            </div>
+            </form>
+        </div>
+        <p class="copy">© 2019 最终解释权不归我所有，解释权归育碧土豆所有</p>
+    </div>		
+</body>
+</html>
