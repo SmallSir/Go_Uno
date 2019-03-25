@@ -24,13 +24,13 @@ func (re *UserController) GetRegister() {
 //Register 是实现用户注册功能
 func (User *UserController) Register() {
 	//邮箱
-	email := User.GetString("email")
+	//email := User.GetString("email")
 	//密码
-	password := User.GetString("password")
+	//password := User.GetString("password")
 	//验证码
-	code := User.GetString("code")
+	//code := User.GetString("code")
 	//用户名
-	username := User.GetString("username")
+	//username := User.GetString("username")
 	//读取redis的内容核查验证码
 	//错误就返回，正确就进行数据库操作
 	//数据库操作
