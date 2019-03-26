@@ -61,7 +61,7 @@ body{
     padding: 8px;	
 }
 .login-ic i {
-        background: url(../img/people.png)no-repeat 6px 6px;
+        background: url(../img/zz.png)no-repeat 6px 6px;
     width: 38px;
     height: 38px;
     float: left;
@@ -69,7 +69,7 @@ body{
     display: inline-block;
 }
 .login-ic i.icon {
-    background: url(../img/lock.png)no-repeat 6px 6px;  
+    background: url(../img/mm.png)no-repeat 6px 6px;  
 }
 .login-ic input[type="text"],.login-ic  input[type="password"] {
 	float: left;
