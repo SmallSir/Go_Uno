@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>UNO大厅</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="../static/js/pixi.min.js"></script>
+</head>
+
+<body>
+    <script type="text/javascript">
+        var app = new PIXI.Application(1340, 625, {
+            backgroundColor: 0x1099bb
+        });
+        document.body.appendChild(app.view);
+
+        //退出按钮
+        var exitgame = new PIXI.Text('退出');
+        exitgame.x = 30;
+        exitgame.y = 90;
+        app.stage.addChild(exitgame);
+
+        //用户名
+        var username = new PIXI.Text("邱振豪");
+        username.x = 20
+        username.y = 20
+        app.stage.addChild(username)
+
+
+        var style = new PIXI.TextStyle({
+            fontFamily: 'Arial',
+            fontSize: 36,
+            fontStyle: 'italic',
+            fontWeight: 'bold',
+            fill: ['#ffffff', '#00ff99'], // gradient
+            stroke: '#4a1850',
+            strokeThickness: 5,
+            dropShadow: true,
+            dropShadowColor: '#000000',
+            dropShadowBlur: 4,
+            dropShadowAngle: Math.PI / 6,
+            dropShadowDistance: 6,
+            wordWrap: true,
+            wordWrapWidth: 440
+        });
+
+        var richText = new PIXI.Text('Rich text with a lot of options and across multiple lines', style);
+        richText.x = 30;
+        richText.y = 180;
+
+        app.stage.addChild(richText);
+    </script>
+</body>
+
+</html>
