@@ -1,6 +1,13 @@
 function check(thisBtn) {
     var reg = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$"); //正则表达式
     var obj = document.getElementById("email"); //要验证的对象
+    var username = document.getElementById("username").value.length
+    console.log(username)
+    if (username > 15){
+        alert("用户名太长")
+        return false
+    }
+    
     if (obj.value === "") { //输入不能为空
         alert("输入不能为空!");
         return false;
@@ -9,10 +16,10 @@ function check(thisBtn) {
         return false;
     } else {
         var pas = document.getElementById("password").value
-        //if(length(pas) < 7){
-        //    alert("密码长度必须大于7")
-        //    return false
-        //}
+        if(pas.length < 7){
+            alert("密码长度必须大于7")
+            return false
+        }
         var repas = document.getElementById("repassword").value
         if (pas != repas) {
             alert("两次密码输入不正确");
