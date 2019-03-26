@@ -15,10 +15,17 @@
         <div class="login-top">
         <form>
             <div class="login-ic">
-                <i ></i>
+                <i class="username"></i>
                 <input type="text"  id= "email" value="邮箱" onFocus="this.value = '';" onBlur="if (this.value == '') {this.value = '邮箱';}"/>
                 <div class="clear"> </div>
             </div>
+
+            <div class="login-ic">
+                <i ></i>
+                <input type="text"  id= "username" value="用户名" onFocus="this.value = '';" onBlur="if (this.value == '') {this.value = '用户名';}"/>
+                <div class="clear"> </div>
+            </div>
+
             <div class="login-ic">
                 <i class="icon"></i>
                 <input type="password"  id = "password"value="密码" onFocus="this.value = '';" onBlur="if (this.value == '') {this.value = '密码';}"/>
@@ -36,9 +43,10 @@
                     <input type="text"  value="验证码" onFocus="this.value = '';" onBlur="if (this.value == '') {this.value = '验证码';}"/>
                     <div class="clear"> </div>
             </div>
+
             <div class="log-bwn">
-                <input type="button" class="yzm" value="点击发送验证码" onclick="check(this)">
-                <input type="submit"  value="注册" >
+                <input type="button" class="yzm" value="点击发送验证码" onclick="check(this)"><!--发送验证码-->
+                <input type="submit"  value="注册" ><!--成功后弹框跳转登录界面-->
             </div>
             </form>
         </div>
