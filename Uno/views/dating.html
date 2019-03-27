@@ -6,7 +6,9 @@
     <title>UNO大厅</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
-    <script type="text/javascript" src="../static/js/pixi.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.8.7/pixi.min.js"></script>
+    <script type="text/javascript" src="../static/js/PIXI.TextInput.min.js"></script>
 </head>
 
 <body>
@@ -17,18 +19,39 @@
         document.body.appendChild(app.view);
 
         //退出按钮
-        var exitgame = new PIXI.Text('退出');
-        exitgame.x = 30;
-        exitgame.y = 90;
-        app.stage.addChild(exitgame);
-
+        var exitstyle = new PIXI.TextStyle({
+            fontFamily: 'Arial',
+            fontSize: 30,
+            fill:"red",
+            fontStyle: 'italic',
+            fontWeight: 'bold',
+            dropShadow: true,
+            dropShadowColor: '#000000',
+            dropShadowBlur: 4,
+            dropShadowAngle: Math.PI / 6,
+            dropShadowDistance: 6,
+        });
+        var exitgame = new PIXI.Text('退出',exitstyle);
+        exitgame.x = 1250;
+        exitgame.y = 20;
+        app.stage.addChild(exitgame); //点击退出后会跳转到前端网页
+        
+        exitgame.on("click",check());
+        
         //用户名
-        var username = new PIXI.Text("邱振豪");
+        var usernamestyle = new PIXI.TextStyle({
+            fontFamily: 'Arial',
+            fontSize: 30,
+            fontStyle: 'italic',
+            fontWeight: 'bold',
+        })
+        var username = new PIXI.Text("邱振豪",usernamestyle);
         username.x = 20
         username.y = 20
-        app.stage.addChild(username)
+        app.stage.addChild(username) //username来源是前端发送的内容
 
 
+        //排行榜
         var style = new PIXI.TextStyle({
             fontFamily: 'Arial',
             fontSize: 36,
@@ -45,12 +68,31 @@
             wordWrap: true,
             wordWrapWidth: 440
         });
-
+        
         var richText = new PIXI.Text('Rich text with a lot of options and across multiple lines', style);
         richText.x = 30;
         richText.y = 180;
-
         app.stage.addChild(richText);
+
+        //创建房间和加入房间
+        var roomname = new PIXI.TextInput({fontSize: '25pt'}, {fill: 0xEEEEEE})
+        roomname.x = 100
+        roomname.y = 100
+        roomname.placeholder = '请输入房间号....'
+        app.stage.addChild(roomname)
+        roomname.focus()
+
+        var roompassword = new PIXI.TextInput({fontSize: '25pt'}, {fill: 0xEEEEEE})
+        roompassword.x = 500
+        roompassword.y = 100
+        roompassword.placeholder = '请输入房间密码....'
+        app.stage.addChild(roompassword)
+        //roompassword.focus()
+
+        function check(){
+            console.log("已经点击");
+            console.log(roompassword);
+        }
     </script>
 </body>
 
