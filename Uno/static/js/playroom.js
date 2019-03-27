@@ -71,11 +71,16 @@ var wildraw = Sprite.fromImage('../static/img/Cartas/EspecialCard/coringaCompra.
 //背面
 var back_card = Sprite.fromImage('../static/img/outras/uno_back.jpg')
 //选色按钮(黄，红，绿，蓝) + 操作按钮(出牌，摸牌,+2,+4,uno)
+var yellowbutton = Sprite.fromImage('../static/img/button/yellowbutton.png');
+var redbutton = Sprite.fromImage('../static/img/button/redbutton.png');
+var greenbutton = Sprite.fromImage('../static/img/button/greenbutton.png');
+var bluebutton = Sprite.fromImage('../static/img/button/bluebutton.png');
 var color_container = new container();
-var outcard;
-var getcard;
-var uno;
-var gettwo,getfour;
+var outcard = Sprite.fromImage('../static/img/button/outcard.png');
+var getcard = Sprite.fromImage('../static/img/button/getcard.png');
+var uno = Sprite.fromImage('../static/img/button/uno.png');
+var gettwo = Sprite.fromImage('../static/img/button/addtwo.png');
+var getfour = Sprite.fromImage('../static/img/button/addfour.png');
 
 //四副牌
 var dong_container = new container();
