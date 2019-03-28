@@ -115,6 +115,8 @@ app.stage.addChild(center_cards);
 
 //按钮的位置400,400,选择x相距120
 //效果展示位置在x600,y350
+
+//牌数展示 自己x500,y580 对面x900y50rotation3.14 左手x100y200rotation1.57 右手x1150y400rotation4.71
 var basepath = '../static/img/Cartas/';
 var bluepath = 'BlueCard/';
 var redpath = 'RedCard/';
@@ -229,3 +231,22 @@ ssz.y = 250;
 ssz.scale.x = 2.3;
 ssz.scale.y = 2.3;
 
+
+app.stage.addChild(remaining_dong)
+remaining_dong.x = 500;
+remaining_dong.y = 580;
+
+app.stage.addChild(remaining_xi)
+remaining_xi.x = 100;
+remaining_xi.y = 200;
+remaining_xi.rotation = 1.57;
+
+app.stage.addChild(remaining_nan)
+remaining_nan.x = 900;
+remaining_nan.y = 50;
+remaining_nan.rotation = 3.14;
+
+app.stage.addChild(remaining_bei)
+remaining_bei.x = 1150;
+remaining_bei.y = 400;
+remaining_bei.rotation = 4.71;
