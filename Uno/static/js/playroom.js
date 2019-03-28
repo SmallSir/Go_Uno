@@ -5,11 +5,10 @@ var Application = PIXI.Application,
     Sprite = PIXI.Sprite,
     container = PIXI.Container;
     graphics = PIXI.Graphics;
-    text = PIXI.Text;
 
 //所有的牌+背面
 //蓝色
-var b0 = Sprite.fromImage('../static/img/Cartas/BlueCard/0blue.jpg')
+/*var b0 = Sprite.fromImage('../static/img/Cartas/BlueCard/0blue.jpg')
 var b1 = Sprite.fromImage('../static/img/Cartas/BlueCard/1blue.jpg')
 var b2 = Sprite.fromImage('../static/img/Cartas/BlueCard/2blue.jpg')
 var b3 = Sprite.fromImage('../static/img/Cartas/BlueCard/3blue.jpg')
@@ -68,7 +67,7 @@ var gra = Sprite.fromImage('../static/img/Cartas/YellowCard/yellowCompra.jpg')
 var gre = Sprite.fromImage('../static/img/Cartas/YellowCard/yellowInverte.jpg')//红色
 //功能牌
 var wild = Sprite.fromImage('../static/img/Cartas/EspecialCard/coringa.png')
-var wildraw = Sprite.fromImage('../static/img/Cartas/EspecialCard/coringaCompra.jpg')
+var wildraw = Sprite.fromImage('../static/img/Cartas/EspecialCard/coringaCompra.jpg')*/
 //背面
 var back_card = Sprite.fromImage('../static/img/outras/uno_back.jpg')
 //选色按钮(黄，红，绿，蓝) + 操作按钮(出牌，摸牌,+2,+4,uno)
@@ -77,6 +76,7 @@ var redbutton = Sprite.fromImage('../static/img/button/redbutton.png');
 var greenbutton = Sprite.fromImage('../static/img/button/greenbutton.png');
 var bluebutton = Sprite.fromImage('../static/img/button/bluebutton.png');
 var color_container = new container();
+
 var outcard = Sprite.fromImage('../static/img/button/outcard.png');
 var getcard = Sprite.fromImage('../static/img/button/getcard.png');
 var uno = Sprite.fromImage('../static/img/button/uno.png');
@@ -90,10 +90,10 @@ var xi_container = new container();
 var bei_container = new container();
 
 //东南西北标记(东南西北 + 玩家名称)
-var dong = text('东');
-var nan = text('南');
-var xi = text('西');
-var bei = text('北');
+var dong = new PIXI.Text('aa');
+var nan = new PIXI.Text('南');
+var xi = new PIXI.Text('西');
+var bei = new PIXI.Text('北');
 //倒计时表(东南西北)
 
 
@@ -110,18 +110,52 @@ var nsz = new Sprite.fromImage("../static/img/nishizhen.png")
 
 //功能牌效果展示(选色(红,黄,蓝,绿)，+2，+4，反向，停止，uno)
 var select_color;
-var select_green = text("绿色");
-var select_red = text('红色');
-var select_blue = text('蓝色');
-var select_yellow = text('黄色');
-var two_cards = text('+2！！！');
-var four_cards = text('+4！！！');
-var reverse = text('转！！！');
-var skip = text('禁！！！');
-var call_uno = text('UNO！！！');
+var select_green = new PIXI.Text('绿色');
+var select_red = new PIXI.Text('红色');
+var select_blue = new PIXI.Text('蓝色');
+var select_yellow = new PIXI.Text('黄色');
+var two_cards = new PIXI.Text('+2');
+var four_cards = new PIXI.Text('+4');
+var reverse = new PIXI.Text('转');
+var skip = new PIXI.Text('禁');
+var call_uno = new PIXI.Text('UNO');
 
 
 var app = new PIXI.Application(1340, 625, {backgroundColor : 0x1099bb});
 document.body.appendChild(app.view);
+
+app.stage.addChild(dong_container);
+app.stage.addChild(xi_container);
+app.stage.addChild(nan_container);
+app.stage.addChild(bei_container);
+//玩家这个位置牌堆x400,y450,牌的大小0.4,y相等,x为18相距
+var basepath = '../static/img/Cartas/';
+var bluepath = 'BlueCard/'
+for(var i = 0;i < 3;i++)
+{
+    var one = new Sprite.fromImage('../static/img/Cartas/BlueCard/'+'0blue.jpg')
+    one.x = i*18;
+    one.y = 0;
+    one.scale.x = 0.4;
+    one.scale.y = 0.4;
+    dong_container.addChild(one);
+}
+dong_container.x = 400;
+dong_container.y = 450;
+
+//其他人的牌比例均是0.3
+for(var i = 0;i < 3;i++)
+{
+    var one = back_card
+    one.x = i*18;
+    one.y = 0;
+    one.scale.x = 0.3;
+    one.scale.y = 0.3;
+    one.rotation =1.57; //1.57
+    xi_container.addChild(one);
+}
+xi_container.x = 400;
+xi_container.y = 450;
+
 
 
