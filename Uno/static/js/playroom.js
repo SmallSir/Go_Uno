@@ -5,6 +5,7 @@ var Application = PIXI.Application,
     Sprite = PIXI.Sprite,
     container = PIXI.Container;
     graphics = PIXI.Graphics;
+    text = PIXI.Text;
 
 //所有的牌+背面
 //蓝色
@@ -89,8 +90,10 @@ var xi_container = new container();
 var bei_container = new container();
 
 //东南西北标记(东南西北 + 玩家名称)
-var dong,nan,xi,bei;
-
+var dong = text('东');
+var nan = text('南');
+var xi = text('西');
+var bei = text('北');
 //倒计时表(东南西北)
 
 
@@ -102,20 +105,23 @@ var dong_number,nan_number,xi_number,bei_number;
 
 //顺时针逆时针方向
 var direction = 0;
-var l = new graphics();
+var ssz = new Sprite.fromImage("../static/img/shunshizhen.png")
+var nsz = new Sprite.fromImage("../static/img/nishizhen.png")
 
-l.lineStyle(10, 0xffd900, 1);
-l.arcTo(1200,200,800,400,555);
-var r = new graphics();
-
-//功能牌效果展示(选色，+2，+4，反向，停止)
+//功能牌效果展示(选色(红,黄,蓝,绿)，+2，+4，反向，停止，uno)
 var select_color;
-var two_cards;
-var four_cards;
-var skip;
+var select_green = text("绿色");
+var select_red = text('红色');
+var select_blue = text('蓝色');
+var select_yellow = text('黄色');
+var two_cards = text('+2！！！');
+var four_cards = text('+4！！！');
+var reverse = text('转！！！');
+var skip = text('禁！！！');
+var call_uno = text('UNO！！！');
 
 
 var app = new PIXI.Application(1340, 625, {backgroundColor : 0x1099bb});
 document.body.appendChild(app.view);
-app.stage.addChild(l);
+
 
