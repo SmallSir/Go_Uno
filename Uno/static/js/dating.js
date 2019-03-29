@@ -107,6 +107,7 @@ var style_name = new PIXI.TextStyle({
     wordWrapWidth: 440
 });
 
+var rank = new container();
 var rankname = new PIXI.Text('排行榜',style);
 var first = new PIXI.Text('第一名',style_first);
 var second = new PIXI.Text('第二名',style_second);
@@ -119,6 +120,121 @@ var eighth = new PIXI.Text('第八名',style);
 var nineth = new PIXI.Text('第九名',style);
 var tenth = new PIXI.Text('第十名',style);
 
+
+//接收服务器发来的json
+$.ajax({
+    type: 'get',
+    url: '/dating',
+    data: {
+        rank:"rank"
+    },
+    dataType: "json",
+    success: function (ret) {
+        data = JSON.parse(ret)
+        if(data[one][username] != "NULL")
+        {
+            var onen = new PIXI.Text(data[one][username],style_name)
+            rank.add(onen);
+            onen.x = 120,onen.y = 90;
+            var oneg = new PIXI.Text(data[one][grades],style_name)
+            rank.add(oneg);
+            oneg.x = 120,oneg.y = 60;
+        }
+
+        if(data[two][username] != "NULL")
+        {
+            var twon = new PIXI.Text(data[two][username],style_name)
+            rank.addChild(twon);
+            twon.x = 0,twon.y = 120;
+            var twog = new PIXI.Text(data[two][grades],style_name)
+            rank.addChild(twog);
+            twog.x = 0,twog.y = 90;
+        }
+
+        if(data[three][username] != "NULL")
+        {
+            var threen = new PIXI.Text(data[three][username],style_name)
+            rank.addChild(threen);
+            threen.x = 240,threen.y = 120;
+            var threeg = new PIXI.Text(data[three][grades],style_name)
+            rank.addChild(threeg);
+            threeg.x = 240,threeg.y = 90;
+        }
+
+        if(data[four][username] != "NULL")
+        {
+            var fourn = new PIXI.Text(data[four][username],style_name)
+            rank.addChild(fourn);
+            fourn.x = 240,fourn.y = 180;
+            var fourg = new PIXI.Text(data[four][grades],style_name)
+            rank.addChild(fourg);
+            fourg.x = 120,fourg.y = 180;
+        }
+
+        if(data[four][username] != "NULL")
+        {
+            var fiven = new PIXI.Text(data[five][username],style_name)
+            rank.addChild(fiven);
+            fiven.x = 240,fiven.y = 230;
+            var fiveg = new PIXI.Text(data[five][grades],style_name)
+            rank.addChild(fiveg);
+            fiveg.x = 120,fiveg.y = 230;
+        }
+
+        if(data[six][username] != "NULL")
+        {
+            var sixn = new PIXI.Text(data[six][username],style_name)
+            rank.addChild(sixn);
+            sixn.x = 240,sixn.y = 280;
+            var sixg = new PIXI.Text(data[six][grades],style_name)
+            rank.addChild(sixg);
+            sixg.x= 120,sixg.y = 280;
+        }
+
+        if(data[seven][username] != "NULL")
+        {
+            var sevenn = new PIXI.Text(data[seven][username],style_name) 
+            rank.addChild(sevenn);
+            sevenn.x = 240,sevenn.y = 330;
+            var seveng = new PIXI.Text(data[seven][grades],style_name)
+            rank.addChild(seveng);
+            seveng.x = 120,sevenn.y = 330;
+        }
+
+        if(data[eight][username] != "NULL")
+        {
+            var eighth = new PIXI.Text(data[eight][username],style_name)
+            rank.addChild(eighth);
+            eighth.x = 240,eighth.y = 380;
+            var eightg = new PIXI.Text(data[eight][grades],style_name)
+            rank.addChild(eightg);
+            eightg.x = 120,eightg.y = 380;
+        }
+
+        if(data[nine][username] != "NULL")
+        {
+            var ninen = new PIXI.Text(data[nine][username],style_name)
+            rank.addChild(ninen);
+            ninen.x = 240,ninen.y = 430;
+            var nineg = new PIXI.Text(data[nine][grades],style_name)
+            rank.addChild(nineg);
+            nineg.x = 120,nineg.y = 430;
+        }
+
+        if(data[ten][username] != "NULL")
+        {
+            var tenn = new PIXI.Text(data[ten][username],style_name)
+            rank.addChild(tenn);
+            tenn.x = 240,tenn.y = 480;
+            var teng = new PIXI.Text(data[ten][grades],style_name)
+            rank.addChild(teng);
+            teng.x = 120,teng.y = 480;
+        }
+    },
+    error:function(ret){
+        console.log(ret)
+    }
+});
 //测试样例
 var x = new PIXI.Text('邱振豪',style_name);
 var y = new PIXI.Text('500',style_name);
@@ -130,7 +246,7 @@ var u = new PIXI.Text('邱振豪',style_name);
 var z = new PIXI.Text('100',style_name);
 
 //正式
-var rank = new container();
+
 
 rank.addChild(rankname);
 rank.addChild(first);
