@@ -307,15 +307,19 @@ function oncreate(){
         type:'post',
         url: '/create',
         data: {
-        roomname: roomname.text,
-        roompassword: roompassword.text
+        name: roomname.text,
+        password: roompassword.text
         },
         success:function(ret){
             ret = JSON.parse(ret)
-            window.location = ret.url
+            if(ret.state == true){
+                window.location = ret.url;
+            } else{
+                alert(ret.message);
+            }
         },
         error:function(ret){
-            console.log(ret)
+            alert("请重新输入");
         }
     }) 
 }
@@ -326,12 +330,16 @@ function onjoin(){
         type:'post',
         url: '/join',
         data: {
-        roomname: roomname.text,
-        roompassword: roompassword.text
+        name: roomname.text,
+        password: roompassword.text
         },
         success:function(ret){
             ret = JSON.parse(ret)
-            window.location = ret.url
+            if(ret.state == true){
+                window.location = ret.url
+            } else{
+                alert(ret.message);
+            }
         },
         error:function(ret){
             console.log(ret)

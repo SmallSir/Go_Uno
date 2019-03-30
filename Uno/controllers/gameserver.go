@@ -25,6 +25,20 @@ func (game *GameController) Get() {
 	game.TplName = "index.html"
 }
 
+//获取rank榜单信息
+func (game *GameController) GetRank() {
+	//redis访问获取排行榜的信息
+
+	remsg := &rank{}
+	/*
+		把从redis获取的内容全部传递到remsg中即可
+	*/
+	ret, _ := json.Marshal(remsg)
+	game.Data["json"] = string(ret)
+	game.EnableRender = false
+	game.ServeJSON()
+}
+
 //创建房间
 func (game *GameController) Register() {
 	//获取账号密码
