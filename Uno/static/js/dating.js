@@ -5,7 +5,7 @@ var Application = PIXI.Application,
     container = PIXI.Container;
     graphics = PIXI.Graphics;
 
-var app = new PIXI.Application(1340, 625, {
+var app = new PIXI.Application(document.documentElement.clientWidth,document.documentElement.clientHeight, {
     backgroundColor: 0x1099bb
 });
 document.body.appendChild(app.view);

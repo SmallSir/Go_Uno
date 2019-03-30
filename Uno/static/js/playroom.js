@@ -96,7 +96,7 @@ var skip = new PIXI.Text('禁');
 var call_uno = new PIXI.Text('UNO');
 
 
-var app = new PIXI.Application(1340, 625, {backgroundColor : 0x1099bb});
+var app = new PIXI.Application(document.documentElement.clientWidth,document.documentElement.clientHeight, {backgroundColor : 0x1099bb});
 document.body.appendChild(app.view);
 
 app.stage.addChild(dong_container);
