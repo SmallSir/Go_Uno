@@ -171,7 +171,7 @@ $.ajax({
             fourg.x = 120,fourg.y = 180;
         }
 
-        if(data[four][username] != "NULL")
+        if(data[five][username] != "NULL")
         {
             var fiven = new PIXI.Text(data[five][username],style_name)
             rank.addChild(fiven);

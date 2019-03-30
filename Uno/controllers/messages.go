@@ -68,3 +68,23 @@ type PlayerReady struct {
 	ready    bool `json:"ready"`
 	Playerid int  `json:"Playerid"`
 }
+
+//获取的rank信息包含的内容
+type rankname struct {
+	username   string `json:"username"`
+	usergrades int    `json:"grades"`
+}
+
+//返回到大厅的rank排行榜信息
+type rank struct {
+	one   rankname `json:"one"`
+	two   rankname `json:"two"`
+	three rankname `json:"three"`
+	four  rankname `json:"four"`
+	five  rankname `json:"five"`
+	six   rankname `json:"six"`
+	seven rankname `json:"seven"`
+	eight rankname `json:"eight"`
+	nine  rankname `json:"nine"`
+	ten   rankname `json:"ten"`
+}
