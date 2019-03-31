@@ -1,13 +1,13 @@
 function login(){
-    var name = document.getElementById("username").value
+    var email = document.getElementById("email").value
     var password = document.getElementById("password").value
-    console.log(name)
+    console.log(email)
     console.log(password)
     $.ajax({
         type:'post',
         url: '/login',
         data: {
-            username : username,
+            email : email,
             password : password
         },
         dataType: "json",
