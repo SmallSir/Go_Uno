@@ -40,13 +40,13 @@
             
             <div class="login-ic">
                     <i class="yzm"></i>
-                    <input type="text"  value="验证码" onFocus="this.value = '';" onBlur="if (this.value == '') {this.value = '验证码';}"/>
+                    <input type="text"  value="验证码" id = "veri"onFocus="this.value = '';" onBlur="if (this.value == '') {this.value = '验证码';}"/>
                     <div class="clear"> </div>
             </div>
 
             <div class="log-bwn">
                 <input type="button" class="yzm" value="点击发送验证码" onclick="check(this)"><!--发送验证码-->
-                <input type="submit"  value="注册" ><!--成功后弹框跳转登录界面-->
+                <input type="submit"  value="注册" onclick="registeruser()"><!--成功后弹框跳转登录界面-->
             </div>
             </form>
         </div>

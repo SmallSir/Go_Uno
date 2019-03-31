@@ -2,7 +2,6 @@ function check(thisBtn) {
     var reg = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$"); //正则表达式
     var obj = document.getElementById("email"); //要验证的对象
     var username = document.getElementById("username").value.length
-    console.log(username)
     if (username > 15){
         alert("用户名太长")
         return false
@@ -26,6 +25,7 @@ function check(thisBtn) {
             return false;
         }
         emailCheck(thisBtn)
+        //发送信息给后端生成验证码
         return true;
     }
 }
@@ -52,4 +52,34 @@ function emailCheck(thisBtn) {
     }
 }
 
+
+function registeruser(){
+    var mail = document.getElementById("email").value; 
+    var password = document.getElementById("password").value;
+    var username = document.getElementById("username").value;
+    var veri = document.getElementById("veri").value;
+    console.log(email,password,username,veri)
+    $.ajax({
+        type:'post',
+        url: '/register',
+        data: {
+            username : username,
+            password : password,
+            yzm : veri,
+            email: mail,
+        },
+        dataType: "json",
+        success:function(ret){
+            ret = JSON.parse(ret)
+            if(ret.state == true){
+                window.location = ret.url;
+            } else{
+                alert(ret.message);
+            }
+        },
+        error:function(ret){
+            alert("请重新输入");
+        }
+    }) 
+}
 
