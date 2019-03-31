@@ -7,11 +7,16 @@ import (
 )
 
 func init() {
+	//首页
+	beego.Router("/", &controllers.UserController{})
 	//登录
-	//beego.Router("/",&controllers.UserController{})
+	beego.Router("/login", &controllers.UserController{}, "post:Login")
+	//注册页面
+	beego.Router("/register", &controllers.UserController{}, "get:GetRegister")
 	//注册
-	//beego.Router("/register",&controllers.UserController{},"get:GetRegister")
-	//beego.Router("/register/re",&controllers.UserController{},"post:Register")
+	beego.Router("/register", &controllers.UserController{}, "post:Register")
+	//发送邮箱验证码
+	beego.Router("/emailyzm", &controllers.UserController{}, "post:EmailCheck")
 	//主页面
 	beego.Router("/dating", &controllers.GameController{}, "get:GetRank")
 	//创建房间
