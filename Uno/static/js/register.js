@@ -26,6 +26,21 @@ function check(thisBtn) {
         }
         emailCheck(thisBtn)
         //发送信息给后端生成验证码
+        $.ajax({
+            type:'post',
+            url: '/emailyzm',
+            data: {
+                email : obj.value,
+            },
+            dataType: "json",
+            success:function(ret){
+                ret = JSON.parse(ret)
+                alert("验证码已发送，请前往邮箱")
+            },
+            error:function(ret){
+                alert("请重新输入");
+            }
+        }) 
         return true;
     }
 }
@@ -58,7 +73,31 @@ function registeruser(){
     var password = document.getElementById("password").value;
     var username = document.getElementById("username").value;
     var veri = document.getElementById("veri").value;
-    console.log(email,password,username,veri)
+    
+    //信息验证
+    var reg = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$"); //正则表达式
+    if (username > 15){
+        alert("用户名太长")
+        return false
+    }
+    if (mail === "") { //输入不能为空
+        alert("输入不能为空!");
+        return false;
+    } else if (!reg.test(mail)) { //正则验证不通过，格式不对
+        alert("验证不通过!");
+        return false;
+    } else {
+        if(password.length < 7){
+            alert("密码长度必须大于7")
+            return false
+        }
+        var repas = document.getElementById("repassword").value
+        if (password != repas) {
+            alert("两次密码输入不正确");
+            return false;
+        }
+    }
+
     $.ajax({
         type:'post',
         url: '/register',
