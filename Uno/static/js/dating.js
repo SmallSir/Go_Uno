@@ -310,6 +310,7 @@ function oncreate(){
         name: roomname.text,
         password: roompassword.text
         },
+        dataType: "json",
         success:function(ret){
             ret = JSON.parse(ret)
             if(ret.state == true){
