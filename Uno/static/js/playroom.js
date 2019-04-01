@@ -127,7 +127,7 @@ function djs(){
     clock = setInterval(doLoop, 1000);
     function doLoop(){
         nums--;
-        if(nums > 0){
+        if(nums >  0){
             var x = nums + ""
             if(flag != 0)
             {
@@ -171,9 +171,62 @@ function djs(){
         }
     }
 }
-djs()
+
+//比赛结束后的榜单
+var rank = new container()
+var rank_name = new PIXI.Text("排名")
+var rank_xs = new PIXI.Text("玩家")
+var rank_gr = new PIXI.Text("分数")
+rank.addChild(rank_name);
+rank.addChild(rank_xs);
+rank_xs.x = 200,rank_xs.y = 0;
+rank.addChild(rank_gr);
+rank_gr.x = 400,rank_gr.y = 0;
 
 
+var name_one = new PIXI.Text("第一")
+var xs_one = new PIXI.Text("邱振豪")
+var gr_one = new PIXI.Text("500")
+rank.addChild(name_one)
+name_one.x = 0,name_one.y = 50;
+rank.addChild(xs_one)
+xs_one.x = 200,xs_one.y = 50;
+rank.addChild(gr_one)
+gr_one.x = 400,gr_one.y = 50;
+
+var name_two = new PIXI.Text("第二")
+var xs_two = new PIXI.Text("测试1")
+var gr_two = new PIXI.Text("400")
+rank.addChild(name_two)
+name_two.x = 0,name_two.y = 100;
+rank.addChild(xs_two)
+xs_two.x = 200,xs_two.y = 100;
+rank.addChild(gr_two)
+gr_two.x = 400,gr_two.y = 100;
+
+var name_three = new PIXI.Text("第三")
+var xs_three = new PIXI.Text("测试2")
+var gr_three = new PIXI.Text("200")
+rank.addChild(name_three)
+name_three.x = 0,name_three.y = 150;
+rank.addChild(xs_three)
+xs_three.x = 200,xs_three.y = 150;
+rank.addChild(gr_three)
+gr_three.x = 400,gr_three.y = 150;
+
+var name_four = new PIXI.Text("第四")
+var xs_four = new  PIXI.Text("测试3")
+var gr_four = new PIXI.Text("100")
+rank.addChild(name_four)
+name_four.x = 0,name_four.y = 200;
+rank.addChild(xs_four)
+xs_four.x = 200,xs_four.y = 200;
+rank.addChild(gr_four)
+gr_four.x = 400,gr_four.y = 200;
+
+
+app.stage.addChild(rank)
+rank.x = 400,rank.y = 100;
 
 var basepath = '../static/img/Cartas/';
 var bluepath = 'BlueCard/';
