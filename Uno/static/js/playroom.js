@@ -117,6 +117,64 @@ app.stage.addChild(center_cards);
 //效果展示位置在x600,y350
 
 //牌数展示 自己x500,y580 对面x900y50rotation3.14 左手x100y200rotation1.57 右手x1150y400rotation4.71
+
+//倒计时效果
+function djs(){
+    var clock = '';
+    var nums = 10;
+    var countdown1,countdown2
+    var flag = -1;
+    clock = setInterval(doLoop, 1000);
+    function doLoop(){
+        nums--;
+        if(nums > 0){
+            var x = nums + ""
+            if(flag != 0)
+            {
+                if(flag == -1)
+                {
+                    flag = 0;
+                }
+                else
+                {
+                    flag = 1 - flag;
+                    app.stage.removeChild(countdown2);
+                }
+                countdown1 = new PIXI.Text(x);
+                app.stage.addChild(countdown1);
+                countdown1.x = 900;
+                countdown1.y = 400;
+            }
+            else{
+                flag = 1 - flag;
+                app.stage.removeChild(countdown1);
+                countdown2 = new PIXI.Text(x);
+                app.stage.addChild(countdown2);
+                countdown2.x = 900;
+                countdown2.y = 400;
+            }
+        } else{
+            clearInterval(clock)
+            if(flag != 0)
+            {
+                app.stage.removeChild(countdown2);
+            }
+            else
+            {
+                app.stage.removeChild(countdown1);
+            }
+            flag = -1;
+            nums = 10;//重置时间
+            /*
+            默认选择摸牌操作
+            */
+        }
+    }
+}
+djs()
+
+
+
 var basepath = '../static/img/Cartas/';
 var bluepath = 'BlueCard/';
 var redpath = 'RedCard/';
