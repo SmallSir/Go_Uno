@@ -13,19 +13,23 @@ var wildraw = Sprite.fromImage('../static/img/Cartas/EspecialCard/j.jpg')
 var back_card = Sprite.fromImage('../static/img/outras/uno_back.jpg')
 
 //选色按钮(黄，红，绿，蓝) + 操作按钮(出牌，摸牌,+2,+4,uno)
-var yellowbutton = Sprite.fromImage('../static/img/button/yellowbutton.png');
+var yellowbutton = new graphics();
+yellowbutton.beginFill(0xFFAA01, 1);
 yellowbutton.interactive = true;
 yellowbutton.buttonMode = true;
 
-var redbutton = Sprite.fromImage('../static/img/button/redbutton.png');
+var redbutton = new graphics();
+redbutton.beginFill(0xFF5555,1);
 redbutton.interactive = true;
 redbutton.buttonMode = true;
 
-var greenbutton = Sprite.fromImage('../static/img/button/greenbutton.png');
+var greenbutton = new graphics();
+greenbutton.beginFill(0x55AA55,1);
 greenbutton.interactive = true;
 greenbutton.buttonMode = true;
 
-var bluebutton = Sprite.fromImage('../static/img/button/bluebutton.png');
+var bluebutton = new graphics();
+bluebutton.beginFill(0x5455FF,1);
 bluebutton.interactive = true;
 bluebutton.buttonMode = true;
 
@@ -35,23 +39,45 @@ color_container.addChild(redbutton);
 color_container.addChild(greenbutton);
 color_container.addChild(bluebutton);
 
-var outcard = Sprite.fromImage('../static/img/button/outcard.png');
+//准备按钮
+var ready_people = new graphics();
+ready_people.beginFill(0xc0c0c0,1);
+ready_people.interactive = true;
+ready_people.buttonMode = true;
+
+//不准备按钮
+var unready_people = new graphics();
+unready_people.beginFill(0xc0c0c0,1);
+unready_people.interactive = true;
+unready_people.buttonMode = true;
+
+//出牌按钮
+var outcard = new graphics();
+outcard.beginFill(0xc0c0c0,1);
 outcard.interactive = true;
 outcard.buttonMode = true;
 
-var getcard = Sprite.fromImage('../static/img/button/getcard.png');
+//摸牌按钮
+var getcard = new graphics();
+getcard.beginFill(0xc0c0c0,1);
 getcard.interactive = true;
 getcard.buttonMode = true;
 
-var uno = Sprite.fromImage('../static/img/button/uno.png');
+//喊UNO按钮
+var uno = new graphics();
+uno.beginFill(0xc0c0c0,1);
 uno.interactive = true;
 uno.buttonMode = true;
 
-var gettwo = Sprite.fromImage('../static/img/button/addtwo.png');
+//+2按钮
+var gettwo = new graphics();
+gettwo.beginFill(0xc0c0c0,1);
 gettwo.interactive = true;
 gettwo.buttonMode = true;
 
-var getfour = Sprite.fromImage('../static/img/button/addfour.png');
+//+4按钮
+var getfour = new graphics();
+getfour.beginFill(0xc0c0c0,1);
 getfour.interactive = true;
 getfour.buttonMode = true;
 
@@ -325,11 +351,10 @@ center_cards.y = 250;
 app.stage.addChild(color_container);
 color_container.x = 400;
 color_container.y = 400;
-redbutton.x = 0,redbutton.y = 0;
-greenbutton.x = 120,redbutton.y = 0;
-yellowbutton.x  = 240,yellowbutton = 0;
-bluebutton.x = 360,bluebutton.y = 0;
-
+redbutton.drawRoundedRect(0, 0, 80, 35, 15);
+greenbutton.drawRoundedRect(120,0,80,35,15);
+yellowbutton.drawRoundedRect(240,0,80,35,15);
+bluebutton.drawRoundedRect(360,0,80,35,15);
 
 app.stage.addChild(select_red);
 select_red.x = 600;
@@ -361,3 +386,5 @@ app.stage.addChild(remaining_bei)
 remaining_bei.x = 1150;
 remaining_bei.y = 400;
 remaining_bei.rotation = 4.71;
+
+
