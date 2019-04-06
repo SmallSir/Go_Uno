@@ -27,10 +27,10 @@ func (re *UserController) GetRegister() {
 //Login 是实现用户登录功能
 func (User *UserController) Login() {
 	//获取登录玩家的信息
-	user := userlogin{}
+	user := Userlogin{}
 	err := json.Unmarshal([]byte(User.Ctx.Input.RequestBody), user)
-	email := user.email
-	password := user.password
+	email := user.Email
+	password := user.Password
 
 	//返回信息
 	ok := false
@@ -92,9 +92,9 @@ func (User *UserController) Register() {
 //向邮箱传递验证码
 func (User *UserController) EmailCheck() {
 	//获取邮箱信息
-	user := userlogin{}
+	user := Userlogin{}
 	err := json.Unmarshal([]byte(User.Ctx.Input.RequestBody), user)
-	email := user.email
+	email := user.Email
 
 	//返回信息
 	ok := false

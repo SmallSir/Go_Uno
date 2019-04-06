@@ -65,34 +65,35 @@ type SelectColor struct {
 
 //玩家选择准备or取消准备
 type PlayerReady struct {
-	ready    bool `json:"ready"`    //选择的准备状态
+	Type     int  `json:Type`       //类型
+	Ready    bool `json:"Ready"`    //选择的准备状态
 	Playerid int  `json:"Playerid"` //准备状态更改的玩家id
 }
 
 //获取的rank信息包含的内容
-type rankname struct {
-	username   string `json:"username"` //获取的玩家姓名
-	usergrades int    `json:"grades"`   //玩家得分
+type Rankname struct {
+	Username   string `json:"username"` //获取的玩家姓名
+	Usergrades int    `json:"grades"`   //玩家得分
 }
 
 //返回到大厅的rank排行榜信息
-type rank struct {
-	one   rankname `json:"one"`   //第一名
-	two   rankname `json:"two"`   //第二名
-	three rankname `json:"three"` //第三名
-	four  rankname `json:"four"`  //第四名
-	five  rankname `json:"five"`  //第五名
-	six   rankname `json:"six"`   //第六名
-	seven rankname `json:"seven"` //第七名
-	eight rankname `json:"eight"` //第八名
-	nine  rankname `json:"nine"`  //第九名
-	ten   rankname `json:"ten"`   //第十名
+type Rank struct {
+	One   Rankname `json:"one"`   //第一名
+	Two   Rankname `json:"two"`   //第二名
+	Three Rankname `json:"three"` //第三名
+	Four  Rankname `json:"four"`  //第四名
+	Five  Rankname `json:"five"`  //第五名
+	Six   Rankname `json:"six"`   //第六名
+	Seven Rankname `json:"seven"` //第七名
+	Eight Rankname `json:"eight"` //第八名
+	Nine  Rankname `json:"nine"`  //第九名
+	Ten   Rankname `json:"ten"`   //第十名
 }
 
 //用户登录接收的数据格式
-type userlogin struct {
-	email    string `json:"email"`    //登录邮箱
-	password string `json:"password"` //登录密码
+type Userlogin struct {
+	Email    string `json:"email"`    //登录邮箱
+	Password string `json:"password"` //登录密码
 }
 
 //用户注册接收的数据格式
