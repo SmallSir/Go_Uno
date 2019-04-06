@@ -433,4 +433,19 @@ remaining_bei.x = 1150;
 remaining_bei.y = 400;
 remaining_bei.rotation = 4.71;
 
+//创建webscoket
+socket = new WebSocket('ws://' + window.location.host + '/ws/join?uname=' + $('#uname').text());//websocket的内容需要修改
+socket.onmessage = function(event){
+    var data = JSON.parse(event.data);
 
+    switch(data.Type){
+    case 0: //加入
+        break;
+    case 1: //离开
+        break;
+    case 2: //准备与取消准备
+        break;
+    case 3: //比赛信息
+        break;
+    }
+}
