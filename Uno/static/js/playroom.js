@@ -12,74 +12,116 @@ var wildraw = Sprite.fromImage('../static/img/Cartas/EspecialCard/j.jpg')
 //背面
 var back_card = Sprite.fromImage('../static/img/outras/uno_back.jpg')
 
-//选色按钮(黄，红，绿，蓝) + 操作按钮(出牌，摸牌,+2,+4,uno)
+//按钮中文字style
+var buttonstyle = {
+    fontSize: '20px',
+}
+
+//选色按钮(黄，红，绿，蓝) + 操作按钮(准备,取消准备,出牌，摸牌,+2,+4,uno)
 var yellowbutton = new graphics();
 yellowbutton.beginFill(0xFFAA01, 1);
 yellowbutton.interactive = true;
 yellowbutton.buttonMode = true;
+var yellowbutton_text = new PIXI.Text("黄色",buttonstyle);
+yellowbutton_text.interactive = true;
+yellowbutton_text.buttonMode = true;
 
 var redbutton = new graphics();
 redbutton.beginFill(0xFF5555,1);
 redbutton.interactive = true;
 redbutton.buttonMode = true;
+var redbutton_text = new PIXI.Text("红色",buttonstyle);
+redbutton_text.interactive = true;
+redbutton_text.buttonMode = true;
 
 var greenbutton = new graphics();
 greenbutton.beginFill(0x55AA55,1);
 greenbutton.interactive = true;
 greenbutton.buttonMode = true;
+var greenbutton_text = new PIXI.Text("绿色",buttonstyle);
+greenbutton_text.interactive = true;
+greenbutton_text.buttonMode = true;
 
 var bluebutton = new graphics();
 bluebutton.beginFill(0x5455FF,1);
 bluebutton.interactive = true;
 bluebutton.buttonMode = true;
+var bluebutton_text = new PIXI.Text("蓝色",buttonstyle);
+bluebutton_text.interactive = true;
+bluebutton_text.buttonMode = true;
 
 var color_container = new container();
 color_container.addChild(yellowbutton);
+color_container.addChild(yellowbutton_text);
 color_container.addChild(redbutton);
+color_container.addChild(redbutton_text);
 color_container.addChild(greenbutton);
+color_container.addChild(greenbutton_text);
 color_container.addChild(bluebutton);
+color_container.addChild(bluebutton_text);
 
 //准备按钮
 var ready_people = new graphics();
 ready_people.beginFill(0xc0c0c0,1);
 ready_people.interactive = true;
 ready_people.buttonMode = true;
+var ready_people_text = new PIXI.Text("准备",buttonstyle);
+ready_people_text.interactive = true;
+ready_people_text.buttonMode = true;
 
 //不准备按钮
 var unready_people = new graphics();
 unready_people.beginFill(0xc0c0c0,1);
 unready_people.interactive = true;
 unready_people.buttonMode = true;
+var unready_people_text = new PIXI.Text("不准备",buttonstyle);
+unready_people_text.interactive = true;
+unready_people_text.buttonMode = true;
 
 //出牌按钮
 var outcard = new graphics();
 outcard.beginFill(0xc0c0c0,1);
 outcard.interactive = true;
 outcard.buttonMode = true;
+var outcard_text = new PIXI.Text("出牌",buttonstyle);
+outcard_text.interactive = true;
+outcard_text.buttonMode = true;
 
 //摸牌按钮
 var getcard = new graphics();
 getcard.beginFill(0xc0c0c0,1);
 getcard.interactive = true;
 getcard.buttonMode = true;
+var getcard_text = new PIXI.Text("摸牌",buttonstyle);
+getcard_text.interactive = true;
+getcard_text.buttonMode = true;
 
 //喊UNO按钮
 var uno = new graphics();
 uno.beginFill(0xc0c0c0,1);
 uno.interactive = true;
 uno.buttonMode = true;
+var uno_text = new PIXI.Text("UNO",buttonstyle);
+uno_text.interactive = true;
+uno_text.buttonMode = true;
 
 //+2按钮
 var gettwo = new graphics();
 gettwo.beginFill(0xc0c0c0,1);
 gettwo.interactive = true;
 gettwo.buttonMode = true;
+var gettwo_text = new PIXI.Text("+2",buttonstyle);
+gettwo_text.interactive = true;
+gettwo_text.buttonMode = true;
 
 //+4按钮
 var getfour = new graphics();
 getfour.beginFill(0xc0c0c0,1);
 getfour.interactive = true;
 getfour.buttonMode = true;
+var getfour_text = new PIXI.Text("+4",buttonstyle);
+getfour_text.interactive = true;
+getfour_text.buttonMode = true;
 
 //四副牌
 var dong_container = new container();
@@ -352,9 +394,13 @@ app.stage.addChild(color_container);
 color_container.x = 400;
 color_container.y = 400;
 redbutton.drawRoundedRect(0, 0, 80, 35, 15);
+redbutton_text.x = 20,redbutton_text.y = 5;
 greenbutton.drawRoundedRect(120,0,80,35,15);
+greenbutton_text.x = 140,greenbutton_text.y = 5;
 yellowbutton.drawRoundedRect(240,0,80,35,15);
+yellowbutton_text.x = 260,yellowbutton_text.y = 5;
 bluebutton.drawRoundedRect(360,0,80,35,15);
+bluebutton_text.x = 380,bluebutton_text.y = 5;
 
 app.stage.addChild(select_red);
 select_red.x = 600;
