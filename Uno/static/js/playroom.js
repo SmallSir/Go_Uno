@@ -17,36 +17,37 @@ var buttonstyle = {
     fontSize: '20px',
 }
 
+var yellowbutton,yellowbutton_text,redbutton,redbutton_text,greenbutton,greenbutton_text,bluebutton,bluebutton_text; //选色按钮
 //选色按钮(黄，红，绿，蓝) + 操作按钮(准备,取消准备,出牌，摸牌,+2,+4,uno)
-var yellowbutton = new graphics();
+yellowbutton = new graphics();
 yellowbutton.beginFill(0xFFAA01, 1);
 yellowbutton.interactive = true;
 yellowbutton.buttonMode = true;
-var yellowbutton_text = new PIXI.Text("黄色",buttonstyle);
+yellowbutton_text = new PIXI.Text("黄色",buttonstyle);
 yellowbutton_text.interactive = true;
 yellowbutton_text.buttonMode = true;
 
-var redbutton = new graphics();
+redbutton = new graphics();
 redbutton.beginFill(0xFF5555,1);
 redbutton.interactive = true;
 redbutton.buttonMode = true;
-var redbutton_text = new PIXI.Text("红色",buttonstyle);
+redbutton_text = new PIXI.Text("红色",buttonstyle);
 redbutton_text.interactive = true;
 redbutton_text.buttonMode = true;
 
-var greenbutton = new graphics();
+greenbutton = new graphics();
 greenbutton.beginFill(0x55AA55,1);
 greenbutton.interactive = true;
 greenbutton.buttonMode = true;
-var greenbutton_text = new PIXI.Text("绿色",buttonstyle);
+greenbutton_text = new PIXI.Text("绿色",buttonstyle);
 greenbutton_text.interactive = true;
 greenbutton_text.buttonMode = true;
 
-var bluebutton = new graphics();
+bluebutton = new graphics();
 bluebutton.beginFill(0x5455FF,1);
 bluebutton.interactive = true;
 bluebutton.buttonMode = true;
-var bluebutton_text = new PIXI.Text("蓝色",buttonstyle);
+bluebutton_text = new PIXI.Text("蓝色",buttonstyle);
 bluebutton_text.interactive = true;
 bluebutton_text.buttonMode = true;
 
@@ -59,6 +60,17 @@ color_container.addChild(greenbutton);
 color_container.addChild(greenbutton_text);
 color_container.addChild(bluebutton);
 color_container.addChild(bluebutton_text);
+
+color_container.x = 400;
+color_container.y = 400;
+redbutton.drawRoundedRect(0, 0, 80, 35, 15);
+redbutton_text.x = 20,redbutton_text.y = 5;
+greenbutton.drawRoundedRect(120,0,80,35,15);
+greenbutton_text.x = 140,greenbutton_text.y = 5;
+yellowbutton.drawRoundedRect(240,0,80,35,15);
+yellowbutton_text.x = 260,yellowbutton_text.y = 5;
+bluebutton.drawRoundedRect(360,0,80,35,15);
+bluebutton_text.x = 380,bluebutton_text.y = 5;
 
 //准备按钮
 var ready_people = new graphics();
@@ -134,8 +146,6 @@ var dong = new PIXI.Text('东');
 var nan = new PIXI.Text('南');
 var xi = new PIXI.Text('西');
 var bei = new PIXI.Text('北');
-//倒计时表(东南西北)
-
 
 //中央出牌牌堆
 var center_cards = new container();
@@ -187,10 +197,11 @@ app.stage.addChild(center_cards);
 //牌数展示 自己x500,y580 对面x900y50rotation3.14 左手x100y200rotation1.57 右手x1150y400rotation4.71
 
 //倒计时效果
-function djs(){
+//比赛倒计时
+function bsdjs(){
     var clock = '';
     var nums = 10;
-    var countdown1,countdown2
+    var countdown1,countdown2;
     var flag = -1;
     clock = setInterval(doLoop, 1000);
     function doLoop(){
@@ -240,61 +251,80 @@ function djs(){
     }
 }
 
+
+
 //比赛结束后的榜单
+var xs_one,gr_one,xs_two,gr_two,xs_three,gr_three,xs_four,gr_four;
 var rank = new container()
 var rank_name = new PIXI.Text("排名")
 var rank_xs = new PIXI.Text("玩家")
 var rank_gr = new PIXI.Text("分数")
-rank.addChild(rank_name);
-rank.addChild(rank_xs);
-rank_xs.x = 200,rank_xs.y = 0;
-rank.addChild(rank_gr);
-rank_gr.x = 400,rank_gr.y = 0;
-
-
 var name_one = new PIXI.Text("第一")
-var xs_one = new PIXI.Text("邱振豪")
-var gr_one = new PIXI.Text("500")
-rank.addChild(name_one)
-name_one.x = 0,name_one.y = 50;
-rank.addChild(xs_one)
-xs_one.x = 200,xs_one.y = 50;
-rank.addChild(gr_one)
-gr_one.x = 400,gr_one.y = 50;
-
+gr_one = new PIXI.Text("获胜")
 var name_two = new PIXI.Text("第二")
-var xs_two = new PIXI.Text("测试1")
-var gr_two = new PIXI.Text("400")
-rank.addChild(name_two)
-name_two.x = 0,name_two.y = 100;
-rank.addChild(xs_two)
-xs_two.x = 200,xs_two.y = 100;
-rank.addChild(gr_two)
-gr_two.x = 400,gr_two.y = 100;
-
 var name_three = new PIXI.Text("第三")
-var xs_three = new PIXI.Text("测试2")
-var gr_three = new PIXI.Text("200")
-rank.addChild(name_three)
-name_three.x = 0,name_three.y = 150;
-rank.addChild(xs_three)
-xs_three.x = 200,xs_three.y = 150;
-rank.addChild(gr_three)
-gr_three.x = 400,gr_three.y = 150;
-
 var name_four = new PIXI.Text("第四")
-var xs_four = new  PIXI.Text("测试3")
-var gr_four = new PIXI.Text("100")
-rank.addChild(name_four)
-name_four.x = 0,name_four.y = 200;
-rank.addChild(xs_four)
-xs_four.x = 200,xs_four.y = 200;
-rank.addChild(gr_four)
-gr_four.x = 400,gr_four.y = 200;
+xs_one = new PIXI.Text("hhh");
+        xs_two = new PIXI.Text("ss");
+        gr_two = new PIXI.Text("uuu");
+        xs_three = new PIXI.Text("data.xs_three");
+        gr_three = new PIXI.Text("data.gr_three");
+        xs_four = new PIXI.Text("data.xs_four");
+        gr_four = new PIXI.Text("data.gr_four");
+function frank(){
+    rank.addChild(rank_name);
+    rank.addChild(rank_xs);
+    rank_xs.x = 200,rank_xs.y = 0;
+    rank.addChild(rank_gr);
+    rank_gr.x = 400,rank_gr.y = 0;
 
+    rank.addChild(name_one)
+    name_one.x = 0,name_one.y = 50;
+    rank.addChild(xs_one)
+    xs_one.x = 200,xs_one.y = 50;
+    rank.addChild(gr_one)
+    gr_one.x = 400,gr_one.y = 50;
 
-app.stage.addChild(rank)
-rank.x = 400,rank.y = 100;
+    rank.addChild(name_two)
+    name_two.x = 0,name_two.y = 100;
+    rank.addChild(xs_two)
+    xs_two.x = 200,xs_two.y = 100;
+    rank.addChild(gr_two)
+    gr_two.x = 400,gr_two.y = 100;
+
+    rank.addChild(name_three)
+    name_three.x = 0,name_three.y = 150;
+    rank.addChild(xs_three)
+    xs_three.x = 200,xs_three.y = 150;
+    rank.addChild(gr_three)
+    gr_three.x = 400,gr_three.y = 150;
+
+    rank.addChild(name_four)
+    name_four.x = 0,name_four.y = 200;
+    rank.addChild(xs_four)
+    xs_four.x = 200,xs_four.y = 200;
+    rank.addChild(gr_four)
+    gr_four.x = 400,gr_four.y = 200;
+
+    app.stage.addChild(rank)
+    rank.x = 400,rank.y = 100;
+}
+//榜单倒计时
+function bddjs(){
+    var clock = '';
+    var nums = 5;
+    var countdown1,countdown2;
+    var flag = -1;
+    clock = setInterval(doLoop,1000);
+    function doLoop(){
+        nums--;
+        if(nums <= 0){
+            clearInterval(clock);
+            nums = 10;
+            app.stage.removeChild(rank)
+        }
+    }
+}
 
 var basepath = '../static/img/Cartas/';
 var bluepath = 'BlueCard/';
@@ -390,17 +420,7 @@ for(var i = 0;i < 3;i++)
 center_cards.x = 650;
 center_cards.y = 250;
 
-app.stage.addChild(color_container);
-color_container.x = 400;
-color_container.y = 400;
-redbutton.drawRoundedRect(0, 0, 80, 35, 15);
-redbutton_text.x = 20,redbutton_text.y = 5;
-greenbutton.drawRoundedRect(120,0,80,35,15);
-greenbutton_text.x = 140,greenbutton_text.y = 5;
-yellowbutton.drawRoundedRect(240,0,80,35,15);
-yellowbutton_text.x = 260,yellowbutton_text.y = 5;
-bluebutton.drawRoundedRect(360,0,80,35,15);
-bluebutton_text.x = 380,bluebutton_text.y = 5;
+
 
 app.stage.addChild(select_red);
 select_red.x = 600;
@@ -437,7 +457,7 @@ remaining_bei.rotation = 4.71;
 socket = new WebSocket('ws://' + window.location.host + '/ws/join?uname=' + $('#uname').text());//websocket的内容需要修改
 socket.onmessage = function(event){
     var data = JSON.parse(event.data);
-
+    data.Type
     switch(data.Type){
     case 0: //加入
         break;
@@ -445,7 +465,18 @@ socket.onmessage = function(event){
         break;
     case 2: //准备与取消准备
         break;
-    case 3: //比赛信息
+    case 3: //榜单信息
+        xs_one = new PIXI.Text(data.xs_one);
+        xs_two = new PIXI.Text(data.xs_two);
+        gr_two = new PIXI.Text(data.gr_two);
+        xs_three = new PIXI.Text(data.xs_three);
+        gr_three = new PIXI.Text(data.gr_three);
+        xs_four = new PIXI.Text(data.xs_four);
+        gr_four = new PIXI.Text(data.gr_four);
+        frank();
+        bddjs();
+        break;
+    case 4: //比赛信息
         break;
     }
 }
