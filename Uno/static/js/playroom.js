@@ -173,7 +173,6 @@ var reverse = new PIXI.Text('转');
 var skip = new PIXI.Text('禁');
 var call_uno = new PIXI.Text('UNO');
 
-
 var app = new PIXI.Application(document.documentElement.clientWidth,document.documentElement.clientHeight, {backgroundColor : 0x1099bb});
 document.body.appendChild(app.view);
 
@@ -264,13 +263,7 @@ gr_one = new PIXI.Text("获胜")
 var name_two = new PIXI.Text("第二")
 var name_three = new PIXI.Text("第三")
 var name_four = new PIXI.Text("第四")
-xs_one = new PIXI.Text("hhh");
-        xs_two = new PIXI.Text("ss");
-        gr_two = new PIXI.Text("uuu");
-        xs_three = new PIXI.Text("data.xs_three");
-        gr_three = new PIXI.Text("data.gr_three");
-        xs_four = new PIXI.Text("data.xs_four");
-        gr_four = new PIXI.Text("data.gr_four");
+
 function frank(){
     rank.addChild(rank_name);
     rank.addChild(rank_xs);
@@ -306,6 +299,28 @@ function frank(){
     rank.addChild(gr_four)
     gr_four.x = 400,gr_four.y = 200;
 
+    //移除内容
+    dong_container.removeChildren();
+    xi_container.removeChildren();
+    nan_container.removeChildren();
+    bei_container.removeChildren();
+    center_cards.removeChildren();
+    if(direction == 0)
+    {
+        app.stage.removeChild(ssz);
+    } else{
+        app.stage.removeChild(nsz);
+    }
+    app.stage.removeChild(dong_container);
+    app.stage.removeChild(xi_container);
+    app.stage.removeChild(nan_container);
+    app.stage.removeChild(bei_container);
+    app.stage.removeChild(center_cards);
+    app.stage.removeChild(dong_number);
+    app.stage.removeChild(xi_number);
+    app.stage.removeChild(nan_number);
+    app.stage.removeChild(bei_number);
+
     app.stage.addChild(rank)
     rank.x = 400,rank.y = 100;
 }
@@ -313,8 +328,6 @@ function frank(){
 function bddjs(){
     var clock = '';
     var nums = 5;
-    var countdown1,countdown2;
-    var flag = -1;
     clock = setInterval(doLoop,1000);
     function doLoop(){
         nums--;
@@ -322,6 +335,10 @@ function bddjs(){
             clearInterval(clock);
             nums = 10;
             app.stage.removeChild(rank)
+            app.stage.addChild(ready_people);
+            app.stage.addChild(ready_people_text);
+            ready_people.drawRoundedRect(600,400,80,35,15);
+            ready_people_text.x = 620,ready_people_text.y = 405;
         }
     }
 }
