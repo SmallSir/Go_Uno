@@ -34,6 +34,31 @@ type ReCardMsg struct {
 	Uno          bool   `json:"uno"`         //是否需要喊UNO
 }
 
+//加入房间返回的数据格式
+type JoinRoom struct {
+	Type       int    `json:"Type"`       //返回的状态
+	Position   int    `json:"position"`   //加入玩家所处的位置
+	PlayerId   string `json:"playerid"`   //玩家的id
+	PlayerName string `json:"playername"` //玩家的名字
+}
+
+//离开房间返回的数据格式
+type LeaveRoom struct {
+	Type     int `json:"Type"`     //返回的状态
+	Position int `json:"position"` //离开玩家所处的位置
+}
+
+//比赛结束后的返回的榜单数据格式
+type GameOverRank struct {
+	xs_one   string `json:"name_one"` //第一名名字
+	xs_two   string `json:"xs_two"`   //第二个名字
+	gr_two   string `json:"gr_two"`   //第二名分数
+	xs_three string `json:"xs_three"` //第三名名字
+	gr_three string `json:"gr_three"` //第三名分数
+	xs_four  string `json:"xs_four"`  //第四名名字
+	gr_four  string `json:"gr_four"`  //第四名分数
+}
+
 //出牌返回数据给其他玩家
 type ReOtherCardMsg struct {
 	Color       string `json:"color"`       //出牌的颜色
@@ -59,14 +84,14 @@ type Room struct {
 
 //玩家选择颜色
 type SelectColor struct {
-	color    string //选择颜色
-	playerid int    //选择颜色的玩家id
+	Color    string `json:"color"`    //选择颜色
+	Playerid int    `json:"playerid"` //选择颜色的玩家id
 }
 
 //玩家选择准备or取消准备
 type PlayerReady struct {
-	Type     int  `json:Type`       //类型
-	Ready    bool `json:"Ready"`    //选择的准备状态
+	Type     int  `json:"Type"`     //类型
+	Ready    bool `json:"ready"`    //选择的准备状态
 	Playerid int  `json:"Playerid"` //准备状态更改的玩家id
 }
 
