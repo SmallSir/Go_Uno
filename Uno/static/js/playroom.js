@@ -77,18 +77,22 @@ var ready_people = new graphics();
 ready_people.beginFill(0xc0c0c0,1);
 ready_people.interactive = true;
 ready_people.buttonMode = true;
+ready_people.drawRoundedRect(600,400,80,35,15);
 var ready_people_text = new PIXI.Text("准备",buttonstyle);
 ready_people_text.interactive = true;
 ready_people_text.buttonMode = true;
+ready_people_text.x = 620,ready_people_text.y = 405;
 
 //不准备按钮
 var unready_people = new graphics();
 unready_people.beginFill(0xc0c0c0,1);
 unready_people.interactive = true;
 unready_people.buttonMode = true;
-var unready_people_text = new PIXI.Text("不准备",buttonstyle);
+unready_people.drawRoundedRect(600,400,80,35,15);
+var unready_people_text = new PIXI.Text("取消准备",buttonstyle);
 unready_people_text.interactive = true;
 unready_people_text.buttonMode = true;
+unready_people_text.x = 620,unready_people_text.y = 405;
 
 //出牌按钮
 var outcard = new graphics();
@@ -98,6 +102,8 @@ outcard.buttonMode = true;
 var outcard_text = new PIXI.Text("出牌",buttonstyle);
 outcard_text.interactive = true;
 outcard_text.buttonMode = true;
+outcard.drawRoundedRect(500,400,80,35,15);
+outcard_text.x = 520,outcard_text.y = 405;
 
 //摸牌按钮
 var getcard = new graphics();
@@ -107,16 +113,20 @@ getcard.buttonMode = true;
 var getcard_text = new PIXI.Text("摸牌",buttonstyle);
 getcard_text.interactive = true;
 getcard_text.buttonMode = true;
+getcard.drawRoundedRect(650,400,80,35,15);
+getcard_text.x = 670,getcard_text.y = 405;
 
 //喊UNO按钮
 var uno = new graphics();
 uno.beginFill(0xc0c0c0,1);
 uno.interactive = true;
 uno.buttonMode = true;
+uno.drawRoundedRect(600,400,80,35,15);
 var uno_text = new PIXI.Text("UNO",buttonstyle);
 uno_text.interactive = true;
 uno_text.buttonMode = true;
 
+/*
 //+2按钮
 var gettwo = new graphics();
 gettwo.beginFill(0xc0c0c0,1);
@@ -133,7 +143,7 @@ getfour.interactive = true;
 getfour.buttonMode = true;
 var getfour_text = new PIXI.Text("+4",buttonstyle);
 getfour_text.interactive = true;
-getfour_text.buttonMode = true;
+getfour_text.buttonMode = true;*/
 
 //四副牌
 var dong_container = new container();
@@ -157,6 +167,11 @@ var remaining_xi = new PIXI.Text('剩余牌数');
 var remaining_nan = new PIXI.Text('剩余牌数');
 var remaining_bei = new PIXI.Text('剩余牌数');
 
+//玩家名称和id
+var dong_id,xi_id,nan_id,bei_id;
+var dong_name,xi_name,nan_name,bei_name;
+var my_dir;//玩家所处的位置
+
 //顺时针逆时针方向
 var direction = 0;
 var ssz = new Sprite.fromImage("../static/img/shunshizhen.png")
@@ -172,6 +187,10 @@ var four_cards = new PIXI.Text('+4');
 var reverse = new PIXI.Text('转');
 var skip = new PIXI.Text('禁');
 var call_uno = new PIXI.Text('UNO');
+var ready_dong  = new PIXI.Text('准备');
+var ready_nan  = new PIXI.Text('准备');
+var ready_xi  = new PIXI.Text('准备');
+var ready_bei  = new PIXI.Text('准备');
 
 var app = new PIXI.Application(document.documentElement.clientWidth,document.documentElement.clientHeight, {backgroundColor : 0x1099bb});
 document.body.appendChild(app.view);
@@ -481,6 +500,71 @@ socket.onmessage = function(event){
     case 1: //离开
         break;
     case 2: //准备与取消准备
+        if(data.playerid == nan_id)
+        {
+            if(data.ready == false)
+            {
+                if(my_dir != "nan")
+                {
+                    app.stage.removeChild(ready_nan);
+                }
+                else
+                {
+                    app.stage.removeChild(ready_nan);
+                    app.stage.removeChild(unready_people);
+                    app.stage.removeChild(unready_people_text);
+                    app.stage.addChild(ready_people);
+                    app.stage.addChild(ready_people_text);
+                    /*
+                    缺少按钮位置
+                    */
+                }
+            }
+            else
+            {
+                if(my_dir != "nan")
+                {
+                    app.stage.addChild(ready_nan);
+                    
+                }
+                else
+                {
+                    app.stage.addChild(ready_nan);
+                    ready_nan.x = 600,ready_nan.y = 350;
+                    app.stage.addChild(unready_people);
+                    app.stage.addChild(unready_people_text);
+                    app.stage.removeChild(ready_people);
+                    app.stage.removeChild(ready_people_text);
+                    /*
+                    缺少按钮位置
+                    */
+                }
+            }
+        }
+        else if(data.playerid == bei_id)
+        {
+            if(data.ready == false)
+            {
+
+            }
+            else
+            {
+
+            }
+        }
+        else if(data.playerid == xi_id)
+        {
+            if(data.ready == false)
+            {
+
+            }
+        }
+        else{
+            if(data.ready == false)
+            {
+
+            }
+        }
         break;
     case 3: //榜单信息
         xs_one = new PIXI.Text(data.xs_one);
