@@ -80,12 +80,14 @@ func (User *UserController) Register() {
 		User.ServeJSON()
 	}()
 
-	/*
-		检查注册信息用户名和邮箱是否唯一，否则报错
-	*/
-
 	//检查验证码与邮箱是否一一对应
 
+	/*
+		检测用户名的唯一性
+	*/
+	/*
+		用户信息输入到MySQL
+	*/
 	return
 }
 
@@ -121,7 +123,7 @@ func (User *UserController) EmailCheck() {
 
 	// 创建一个字符串变量，存放邮件的配置信息
 	config :=
-		`{"username":"280690956@qq.com","password":"qiu970505.","host":"smtp.qq.com","port":25}`
+		`{"username":"280690956@qq.com","password":"ylrwvidjqlagbhjb","host":"smtp.qq.com","port":25}`
 	// 通过存放配置信息的字符串，创建Email对象
 	temail := utils.NewEMail(config)
 	// 指定邮件的基本信息

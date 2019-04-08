@@ -81,7 +81,7 @@ func (game *GameController) Register() {
 		return
 	}
 	if len(roomname) < 3 || len(roomname) > 7 {
-		msg = "房间账号长度不得小于3或者大于7"
+		msg = "房间名长度不得小于3或者大于7"
 		return
 	}
 	if len(roompassword) < 4 || len(roompassword) > 9 {

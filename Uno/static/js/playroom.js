@@ -341,7 +341,7 @@ function bddjs(){
             ready_people_text.x = 620,ready_people_text.y = 405;
         }
     }
-}
+} 
 
 var basepath = '../static/img/Cartas/';
 var bluepath = 'BlueCard/';
