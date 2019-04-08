@@ -92,7 +92,7 @@ type SelectColor struct {
 type PlayerReady struct {
 	Type     int  `json:"Type"`     //类型
 	Ready    bool `json:"ready"`    //选择的准备状态
-	Playerid int  `json:"Playerid"` //准备状态更改的玩家id
+	Playerid int  `json:"playerid"` //准备状态更改的玩家id
 }
 
 //获取的rank信息包含的内容
