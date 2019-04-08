@@ -40,6 +40,7 @@ type JoinRoom struct {
 	Position   int    `json:"position"`   //加入玩家所处的位置
 	PlayerId   string `json:"playerid"`   //玩家的id
 	PlayerName string `json:"playername"` //玩家的名字
+	Host       bool   `json:host`         //是否为当事人
 }
 
 //离开房间返回的数据格式
