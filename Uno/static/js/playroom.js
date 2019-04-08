@@ -538,7 +538,52 @@ socket.onmessage = function(event){
     data.Type
     switch(data.Type){
     case 0: //加入
-        
+        if(data.host == true)
+        {
+            if(data.position == 0)//表示东
+            {
+
+            }
+            else if(data.position == 1)//表示北
+            {
+
+            }
+            else if(data.position == 2)//表示西
+            {
+
+            }
+            else//表示南
+            {
+
+            }
+        }
+        else
+        {
+            if(data.position == 0)//表示东
+            {
+                dong_id = data.playerid;
+                dong_name = new PIXI.Text(data.playername);
+                dong.addChild(dong_name);
+            }
+            else if(data.position == 1)//表示北
+            {
+                bei_id = data.playerid;
+                bei_name = new PIXI.Text(data.playername);
+                bei.addChild(bei_name);
+            }
+            else if(data.position == 2)//表示西
+            {
+                xi_id = data.playerid;
+                xi_name = new PIXI.Text(data.playername);
+                xi.addChild(xi_name);
+            }
+            else //表示南
+            {
+                nan_id = nan.playerid;
+                nan_name = new PIXI.Text(data.playername);
+                nan.addChild(nan_name);
+            }
+        }
         break;
     case 1: //离开
         break;
