@@ -62,7 +62,7 @@ color_container.addChild(bluebutton);
 color_container.addChild(bluebutton_text);
 
 color_container.x = 400;
-color_container.y = 400;
+color_container.y = 430;
 redbutton.drawRoundedRect(0, 0, 80, 35, 15);
 redbutton_text.x = 20,redbutton_text.y = 5;
 greenbutton.drawRoundedRect(120,0,80,35,15);
@@ -77,22 +77,22 @@ var ready_people = new graphics();
 ready_people.beginFill(0xc0c0c0,1);
 ready_people.interactive = true;
 ready_people.buttonMode = true;
-ready_people.drawRoundedRect(600,400,80,35,15);
+ready_people.drawRoundedRect(600,430,80,35,15);
 var ready_people_text = new PIXI.Text("准备",buttonstyle);
 ready_people_text.interactive = true;
 ready_people_text.buttonMode = true;
-ready_people_text.x = 620,ready_people_text.y = 405;
+ready_people_text.x = 620,ready_people_text.y = 435;
 
 //不准备按钮
 var unready_people = new graphics();
 unready_people.beginFill(0xc0c0c0,1);
 unready_people.interactive = true;
 unready_people.buttonMode = true;
-unready_people.drawRoundedRect(600,400,80,35,15);
+unready_people.drawRoundedRect(600,430,80,35,15);
 var unready_people_text = new PIXI.Text("取消准备",buttonstyle);
 unready_people_text.interactive = true;
 unready_people_text.buttonMode = true;
-unready_people_text.x = 620,unready_people_text.y = 405;
+unready_people_text.x = 600,unready_people_text.y = 435;
 
 //出牌按钮
 var outcard = new graphics();
@@ -102,8 +102,8 @@ outcard.buttonMode = true;
 var outcard_text = new PIXI.Text("出牌",buttonstyle);
 outcard_text.interactive = true;
 outcard_text.buttonMode = true;
-outcard.drawRoundedRect(500,400,80,35,15);
-outcard_text.x = 520,outcard_text.y = 405;
+outcard.drawRoundedRect(500,430,80,35,15);
+outcard_text.x = 520,outcard_text.y = 435;
 
 //摸牌按钮
 var getcard = new graphics();
@@ -113,19 +113,19 @@ getcard.buttonMode = true;
 var getcard_text = new PIXI.Text("摸牌",buttonstyle);
 getcard_text.interactive = true;
 getcard_text.buttonMode = true;
-getcard.drawRoundedRect(650,400,80,35,15);
-getcard_text.x = 670,getcard_text.y = 405;
+getcard.drawRoundedRect(650,430,80,35,15);
+getcard_text.x = 670,getcard_text.y = 435;
 
 //喊UNO按钮
 var uno = new graphics();
 uno.beginFill(0xc0c0c0,1);
 uno.interactive = true;
 uno.buttonMode = true;
-uno.drawRoundedRect(600,400,80,35,15);
+uno.drawRoundedRect(600,430,80,35,15);
 var uno_text = new PIXI.Text("UNO",buttonstyle);
 uno_text.interactive = true;
 uno_text.buttonMode = true;
-
+uno_text.x = 620,uno_text.y = 435;
 /*
 //+2按钮
 var gettwo = new graphics();
@@ -159,7 +159,7 @@ var bei = new PIXI.Text('北');
 
 //中央出牌牌堆
 var center_cards = new container();
-
+center_cards.x = 650,center_cards.y = 300;
 //剩余牌数(东南西北)
 var dong_number,nan_number,xi_number,bei_number;
 var remaining_dong = new PIXI.Text('剩余牌数');
@@ -175,7 +175,19 @@ var my_dir;//玩家所处的位置
 //顺时针逆时针方向
 var direction = 0;
 var ssz = new Sprite.fromImage("../static/img/shunshizhen.png")
+ssz.anchor.set(0.5);
+ssz.anchor.set(0.5);
+ssz.x = 650;
+ssz.y = 300;
+ssz.scale.x = 2.3;
+ssz.scale.y = 2.3;
+
 var nsz = new Sprite.fromImage("../static/img/nishizhen.png")
+nsz.anchor.set(0.5);
+nsz.x = 650;
+nsz.y = 300;
+nsz.scale.x = 2.3;
+nsz.scale.y = 2.3;
 
 //功能牌效果展示(选色(红,黄,蓝,绿)，+2，+4，反向，停止，uno)
 var select_green = new PIXI.Text('绿色');
@@ -209,7 +221,6 @@ app.stage.addChild(center_cards);
 //东南西北标记 玩家x400,y500 左手边rotation1.57,x150,y100 对面rotation3.14,x900,y100
 //右手边x1050 y300,rotation4.71
 
-//按钮的位置400,400,选择x相距120
 //效果展示位置在x600,y350
 
 //牌数展示 自己x500,y580 对面x900y50rotation3.14 左手x100y200rotation1.57 右手x1150y400rotation4.71
@@ -453,21 +464,15 @@ for(var i = 0;i < 3;i++)
     one.rotation = (Math.random()*(6-0) + 0).toFixed(3);
     center_cards.addChild(one);
 }
-center_cards.x = 650;
-center_cards.y = 250;
+
 
 
 
 app.stage.addChild(select_red);
 select_red.x = 600;
-select_red.y = 350;
+select_red.y = 400;
 
 app.stage.addChild(ssz);
-ssz.anchor.set(0.5);
-ssz.x = 650;
-ssz.y = 250;
-ssz.scale.x = 2.3;
-ssz.scale.y = 2.3;
 
 
 app.stage.addChild(remaining_dong)
@@ -489,6 +494,8 @@ remaining_bei.x = 1150;
 remaining_bei.y = 400;
 remaining_bei.rotation = 4.71;
 
+app.stage.addChild(ready_nan);
+ready_nan.x = 900,ready_nan.y = 300;
 //创建webscoket
 socket = new WebSocket('ws://' + window.location.host + '/ws/join?uname=' + $('#uname').text());//websocket的内容需要修改
 socket.onmessage = function(event){
@@ -515,9 +522,6 @@ socket.onmessage = function(event){
                     app.stage.removeChild(unready_people_text);
                     app.stage.addChild(ready_people);
                     app.stage.addChild(ready_people_text);
-                    /*
-                    缺少按钮位置
-                    */
                 }
             }
             else
@@ -525,7 +529,18 @@ socket.onmessage = function(event){
                 if(my_dir != "nan")
                 {
                     app.stage.addChild(ready_nan);
-                    
+                    if(my_dir == "bei")
+                    {
+                        ready_nan.x = 600,ready_nan.y = 150;
+                    }
+                    else if(my_dir == "xi")
+                    {
+                        ready_nan.x = 300,ready_nan.y = 300;
+                    }
+                    else
+                    {
+                        ready_nan.x = 900,ready_nan.y = 300;
+                    }
                 }
                 else
                 {
@@ -535,9 +550,6 @@ socket.onmessage = function(event){
                     app.stage.addChild(unready_people_text);
                     app.stage.removeChild(ready_people);
                     app.stage.removeChild(ready_people_text);
-                    /*
-                    缺少按钮位置
-                    */
                 }
             }
         }
@@ -545,24 +557,137 @@ socket.onmessage = function(event){
         {
             if(data.ready == false)
             {
-
+                if(my_dir != "bei")
+                {
+                    app.stage.removeChild(ready_bei);
+                }
+                else
+                {
+                    app.stage.removeChild(ready_bei);
+                    app.stage.removeChild(unready_people);
+                    app.stage.removeChild(unready_people_text);
+                    app.stage.addChild(ready_people);
+                    app.stage.addChild(ready_people_text);
+                }
             }
             else
             {
-
+                if(my_dir != "bei")
+                {
+                    app.stage.addChild(ready_bei);
+                    if(my_dir == "nan")
+                    {
+                        ready_bei.x = 600,ready_bei.y = 150;
+                    }
+                    else if(my_dir == "dong")
+                    {
+                        ready_bei.x = 300,ready_bei.y = 300;
+                    }
+                    else
+                    {
+                        ready_bei.x = 900,ready_bei.y = 300;
+                    }
+                }
+                else
+                {
+                    app.stage.addChild(ready_bei);
+                    ready_bei.x = 600,ready_bei.y = 350;
+                    app.stage.addChild(unready_people);
+                    app.stage.addChild(unready_people_text);
+                    app.stage.removeChild(ready_people);
+                    app.stage.removeChild(ready_people_text);
+                }
             }
         }
         else if(data.playerid == xi_id)
         {
             if(data.ready == false)
             {
-
+                if(my_dir != "xi")
+                {
+                    app.stage.removeChild(ready_xi);
+                }
+                else
+                {
+                    app.stage.removeChild(ready_xi);
+                    app.stage.removeChild(unready_people);
+                    app.stage.removeChild(unready_people_text);
+                    app.stage.addChild(ready_people);
+                    app.stage.addChild(ready_people_text);
+                }
+            }
+            else
+            {
+                if(my_dir != "xi")
+                {
+                    app.stage.addChild(ready_xi);
+                    if(my_dir == "dong")
+                    {
+                        ready_xi.x = 600,ready_xi.y = 150;
+                    }
+                    else if(my_dir == "bei")
+                    {
+                        ready_xi.x = 300,ready_xi.y = 300;
+                    }
+                    else
+                    {
+                        ready_xi.x = 900,ready_xi.y = 300;
+                    }
+                }
+                else
+                {
+                    app.stage.addChild(ready_xi);
+                    ready_xi.x = 600,ready_xi.y = 350;
+                    app.stage.addChild(unready_people);
+                    app.stage.addChild(unready_people_text);
+                    app.stage.removeChild(ready_people);
+                    app.stage.removeChild(ready_people_text);
+                }
             }
         }
         else{
             if(data.ready == false)
             {
-
+                if(my_dir != "dong")
+                {
+                    app.stage.removeChild(ready_dong);
+                }
+                else
+                {
+                    app.stage.removeChild(ready_dong);
+                    app.stage.removeChild(unready_people);
+                    app.stage.removeChild(unready_people_text);
+                    app.stage.addChild(ready_people);
+                    app.stage.addChild(ready_people_text);
+                }
+            }
+            else
+            {
+                if(my_dir != "dong")
+                {
+                    app.stage.addChild(ready_dong);
+                    if(my_dir == "xi")
+                    {
+                        ready_dong.x = 600,ready_dong.y = 150;
+                    }
+                    else if(my_dir == "nan")
+                    {
+                        ready_dong.x = 300,ready_dong.y = 300;
+                    }
+                    else
+                    {
+                        ready_dong.x = 900,ready_dong.y = 300;
+                    }
+                }
+                else
+                {
+                    app.stage.addChild(ready_dong);
+                    ready_dong.x = 600,ready_dong.y = 350;
+                    app.stage.addChild(unready_people);
+                    app.stage.addChild(unready_people_text);
+                    app.stage.removeChild(ready_people);
+                    app.stage.removeChild(ready_people_text);
+                }
             }
         }
         break;
