@@ -145,6 +145,7 @@ var getfour_text = new PIXI.Text("+4",buttonstyle);
 getfour_text.interactive = true;
 getfour_text.buttonMode = true;*/
 
+
 //四副牌
 var dong_container = new container();
 var nan_container = new container();
@@ -152,10 +153,10 @@ var xi_container = new container();
 var bei_container = new container();
 
 //东南西北标记(东南西北 + 玩家名称)
-var dong = new PIXI.Text('东');
-var nan = new PIXI.Text('南');
-var xi = new PIXI.Text('西');
-var bei = new PIXI.Text('北');
+var dongmark = new PIXI.Text('东');
+var nanmark = new PIXI.Text('南');
+var ximark = new PIXI.Text('西');
+var beimark = new PIXI.Text('北');
 
 //中央出牌牌堆
 var center_cards = new container();
@@ -203,6 +204,10 @@ var ready_dong  = new PIXI.Text('准备');
 var ready_nan  = new PIXI.Text('准备');
 var ready_xi  = new PIXI.Text('准备');
 var ready_bei  = new PIXI.Text('准备');
+var exit_dong = new PIXI.Text("离开");
+var exit_nan = new PIXI.Text("离开");
+var exit_xi = new PIXI.Text("离开");
+var exit_bei = new PIXI.Text("离开");
 
 var app = new PIXI.Application(document.documentElement.clientWidth,document.documentElement.clientHeight, {backgroundColor : 0x1099bb});
 document.body.appendChild(app.view);
@@ -224,6 +229,36 @@ app.stage.addChild(center_cards);
 //效果展示位置在x600,y350
 
 //牌数展示 自己x500,y580 对面x900y50rotation3.14 左手x100y200rotation1.57 右手x1150y400rotation4.71
+
+//东南西北四个对象
+var dong = new container();
+dong.addChild(dong_container);
+dong.addChild(dongmark);
+dong.addChild(remaining_dong);
+//dong.addChild(dong_number);
+//dong.addChild(dong_id);
+//dong.addChild(dong_name);
+var xi = new container();
+xi.addChild(xi_container);
+xi.addChild(ximark);
+xi.addChild(remaining_xi);
+//xi.addChild(xi_number);
+//xi.addChild(xi_id);
+//xi.addChild(xi_name);
+var nan = new container();
+nan.addChild(nan_container);
+nan.addChild(nanmark);
+nan.addChild(remaining_nan);
+//nan.addChild(nan_number);
+//nan.addChild(nan_id);
+//nan.addChild(nan_name);
+var bei = new container();
+bei.addChild(bei_container);
+bei.addChild(beimark);
+bei.addChild(remaining_bei);
+//bei.addChild(bei_number);
+//bei.addChild(bei_id);
+//bei.addChild(bei_name);
 
 //倒计时效果
 //比赛倒计时
@@ -503,6 +538,7 @@ socket.onmessage = function(event){
     data.Type
     switch(data.Type){
     case 0: //加入
+        
         break;
     case 1: //离开
         break;
