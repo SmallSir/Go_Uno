@@ -643,24 +643,88 @@ socket.onmessage = function(event){
                 dong_id = data.playerid;
                 dong_name = new PIXI.Text(data.playername);
                 dong.addChild(dong_name);
+                if(my_dir == "dong")
+                {
+                    dong_name.x = 180,dong_name.y = 150;
+                } 
+                else if(my_dir == "xi")
+                {
+                    dong_name.x = 130,dong_name.y = 50;
+                } 
+                else if(my_dir == "nan")
+                {
+                    dong_name.x = 80,dong_name.y = 150;
+                }
+                else
+                {
+                    dong_name.x = 180,dong_name.y = 50;
+                }
             }
             else if(data.position == 1)//表示北
             {
                 bei_id = data.playerid;
                 bei_name = new PIXI.Text(data.playername);
                 bei.addChild(bei_name);
+                if(my_dir == "dong")
+                {
+                    bei_name.x = 80,bei_name.y = 150;
+                } 
+                else if(my_dir == "xi")
+                {
+                    bei_name.x = 180,bei_name.y = 50;
+                } 
+                else if(my_dir == "nan")
+                {
+                    bei_name.x = 130,bei_name.y = 50;
+                }
+                else
+                {
+                    bei_name.x = 180,bei_name.y = 150;
+                }
             }
             else if(data.position == 2)//表示西
             {
                 xi_id = data.playerid;
                 xi_name = new PIXI.Text(data.playername);
                 xi.addChild(xi_name);
+                if(my_dir == "dong")
+                {
+                    xi_name.x = 130,xi_name.y = 50;
+                } 
+                else if(my_dir == "xi")
+                {
+                    xi_name.x = 180,xi_name.y = 150;
+                } 
+                else if(my_dir == "nan")
+                {
+                    xi_name.x = 180,xi_name.y = 50;
+                }
+                else
+                {
+                    xi_name.x = 80,xi_name.y = 150;
+                }
             }
             else //表示南
             {
                 nan_id = nan.playerid;
                 nan_name = new PIXI.Text(data.playername);
                 nan.addChild(nan_name);
+                if(my_dir == "dong")
+                {
+                    nan_name.x = 180,nan_name.y = 50;
+                } 
+                else if(my_dir == "xi")
+                {
+                    nan_name.x = 80,xi_name.y = 150;
+                } 
+                else if(my_dir == "nan")
+                {
+                    nan_name.x = 180,nan_name.y = 150;
+                }
+                else
+                {
+                    nan_name.x = 130,nan_name.y = 50;
+                }
             }
         }
         break;
