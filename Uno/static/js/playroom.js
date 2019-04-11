@@ -235,27 +235,34 @@ var dong = new container();
 dong.addChild(dong_container);
 dong.addChild(dongmark);
 dong.addChild(remaining_dong);
-//dong.addChild(dong_number);
-//dong.addChild(dong_name);
+dong_number = new PIXI.Text("8");
+dong_name = new PIXI.Text("测试1");
+dong.addChild(dong_number);
+dong.addChild(dong_name);
 var xi = new container();
 xi.addChild(xi_container);
 xi.addChild(ximark);
 xi.addChild(remaining_xi);
-//xi.addChild(xi_number);
-//xi.addChild(xi_name);
+xi_name = new PIXI.Text("测试2");
+xi_number = new PIXI.Text("10");
+xi.addChild(xi_number);
+xi.addChild(xi_name);
 var nan = new container();
 nan.addChild(nan_container);
 nan.addChild(nanmark);
 nan.addChild(remaining_nan);
-//nan.addChild(nan_number);
-//nan.addChild(nan_name);
+nan_number = new PIXI.Text("20");
+nan_name = new PIXI.Text("WhaleFall");
+nan.addChild(nan_number);
+nan.addChild(nan_name);
 var bei = new container();
 bei.addChild(bei_container);
 bei.addChild(beimark);
 bei.addChild(remaining_bei);
-//bei.addChild(bei_number);
-//bei.addChild(bei_id);
-//bei.addChild(bei_name);
+bei_number = new PIXI.Text("15");
+bei_name = new PIXI.Text("吃葡萄不吐葡萄皮");
+bei.addChild(bei_number);
+bei.addChild(bei_name);
 
 //倒计时效果
 //比赛倒计时
@@ -421,62 +428,79 @@ for(var i = 0;i < 3;i++)
     one.buttonMode = true;
     dong_container.addChild(one);
 }
-dong_container.x = 0;
-dong_container.y = 0;
+dong_container.x = 100;
+dong_container.y = 80;
+dongmark.x = 0;
+dongmark.y = 80;
+remaining_dong.x = 0;
+remaining_dong.y = 150;
+dong_number.x = 120;
+dong_number.y = 150;
+dong_name.x = 180;
+dong_name.y = 150;
 dong.x = 400
 dong.y = 500;
 app.stage.addChild(dong);
 
-for(var i = 0;i < 3;i++)
+for(var i = 0;i < 8;i++)
 {
     var one = new Sprite.fromImage('../static/img/outras/uno_back.jpg')
-    one.x = 0;
+    one.x = i*35;
     one.anchor.set(0.5);
-    one.y = i*18;
-    one.scale.x = 0.3;
-    one.scale.y = 0.3;
-    one.rotation =1.57; //1.57
+    one.y = 0;
     xi_container.addChild(one);
 }
 xi_container.x = 0;
 xi_container.y = 0;
+xi_container.scale.x = 0.3,xi_container.scale.y = 0.3;
+xi_container.x = 100,xi_container.y = -50;
+ximark.x = 0,ximark.y = -100;
+remaining_xi.x = 0,remaining_xi.y = 50;
+xi_number.x = 120,xi_number.y = 50;
+xi_name.x = 180,xi_name.y = 50
 xi.x = 150;
-xi.y = 100;
+xi.y = 150;
 xi.rotation = 1.57;
 app.stage.addChild(xi);
 
-for(var i = 0;i < 3;i++)
+for(var i = 0;i < 50;i++)
 {
     var one = new Sprite.fromImage('../static/img/outras/uno_back.jpg')
-    one.x = i*18;
+    one.x = i*35;
     one.y = 0;
     one.anchor.set(0.5);
-    one.scale.x = 0.3;
-    one.scale.y = 0.3;
-    one.rotation =3.14; //1.57
     nan_container.addChild(one);
 }
 nan_container.x = 0;
 nan_container.y = 0;
+nan_container.scale.x = 0.3,nan_container.scale.y = 0.3;
+nan_container.x = 50,nan_container.y = -50;
+nanmark.x = -50,nanmark.y = -50;
+remaining_nan.x = -50,remaining_nan.y = 50;
+nan_number.x = 70,nan_number.y = 50;
+nan_name.x = 130,nan_name.y = 50;
 nan.x = 900;
 nan.y = 100;
 nan.rotation = 3.14;
 app.stage.addChild(nan);
 
 
-for(var i = 0;i < 3;i++)
+for(var i = 0;i < 20;i++)
 {
     var one = new Sprite.fromImage('../static/img/outras/uno_back.jpg')
-    one.x = 0;
-    one.y = i*18;
+    one.x = i*35;
+    one.y = 0;
     one.anchor.set(0.5);
-    one.scale.x = 0.3;
-    one.scale.y = 0.3;
-    one.rotation =4.71; //1.57
     bei_container.addChild(one);
 }
 bei_container.x = 0;
 bei_container.y = 0;
+bei_container.scale.x = 0.3,bei_container.scale.y = 0.3;
+bei_container.x = 0,bei_container.y = 50;
+beimark.x = -100,beimark.y = 50;
+remaining_bei.x = -100,remaining_bei.y = 150;
+bei_number.x = 20,bei_number.y = 150;
+bei_name.x = 80,bei_name.y = 150;
 bei.x = 1050;
 bei.y = 400;
 bei.rotation = 4.71;
@@ -514,18 +538,102 @@ socket.onmessage = function(event){
             if(data.position == 0)//表示东
             {
                 my_dir = "dong";
+                dong_id = data.playerid;
+
+                dong.x = 400,dong.y = 500;
+                remaining_dong.x = 0,remaining_dong.y = 150;
+                dongmark.x = 0,dongmark.y = 80;
+                dong_container.x = 100,dong_container.y = 80;
+
+                ximark.x = -50,ximark.y = -50;
+                xi_container.x = 50,xi_container.y = -50;
+                remaining_xi.x = -50,remaining_xi.y = 50;
+                xi.x = 900,xi.y = 100;
+
+                nan.x = 150,nan.y = 150;
+                nanmark.x = 0,nanmark.y = -100;
+                nan_container.x = 100,nan_container.y = -50;
+                remaining_nan.x = 0,remaining_nan.y = 50;
+
+                beimark.x = -100,beimark.y = 50;
+                bei_container.x = 0,bei_container.y = 50;
+                remaining_bei.x = -100,remaining_bei.y = 150;
+                bei.x = 1050,bei.y = 400;
             }
             else if(data.position == 1)//表示北
             {
                 my_dir = "bei";
+                bei_id = data.playerid;
+
+                beimark.x = 0,beimark.y = 80;
+                bei_container.x = 100,bei_container.y = 80;
+                remaining_bei.x = 0,remaining_bei.y = 150;
+                bei.x = 400,bei.y = 500;
+
+                nanmark.x = -50,nanmark.y = -50;
+                nan_container.x = 50,nan_container.y = -50;
+                remaining_nan.x = -50,remaining_nan.y = 50;
+                nan.x = 900,nan.y = 100;
+
+                dongmark.x = 0,dongmark.y = -100;
+                dong_container.x = 100,dong_container.y = -50;
+                remaining_dong.x = 0,remaining_dong.y = 50;
+                dong.x = 150,dong.y = 150;
+
+                ximark.x = -100,ximark.y = 50;
+                xi_container.x = 0,xi_container.y = 50;
+                remaining_xi.x = -100,remaining_xi.y = 150;
+                xi.x = 1050,xi.y = 400;
             }
             else if(data.position == 2)//表示西
             {
                 my_dir = "xi";
+                xi_id = data.playerid;
+
+                ximark.x = 0,ximark.y = 80;
+                xi_container.x = 100,xi_container.y = 80;
+                remaining_xi.x = 0,remaining_xi.y = 150;
+                xi.x = 400,xi.y = 500;
+
+                dongmark.x = -50,dongmark.y = -50;
+                dong_container.x = 50,dong_container.y = -50;
+                remaining_dong.x = -50,remaining_dong.y = 50;
+                dong.x = 900,dong.y = 100;
+
+                nanmark.x = 0,nanmark.y = -100;
+                nan_container.x = 100,nan_container.y = -50;
+                remaining_nan.x = 0,remaining_nan.y = 50;
+                nan.x = 150,nan.y = 150;
+
+                beimark.x = -100,beimark.y = 50;
+                bei_container.x = 0,bei_container.y = 50;
+                remaining_bei.x = -100,remaining_bei.y = 150;
+                bei.x = 1050,bei.y = 400;
             }
             else//表示南
             {
                 my_dir = "nan";
+                nan_id = data.playerid;
+
+                nanmark.x = 0,nanmark.y = 80;
+                nan_container.x = 100,nan_container.y = 80;
+                remaining_nan.x = 0,remaining_nan.y = 150;
+                nan.x = 400,nan.y = 500;
+
+                beimark.x = -50,beimark.y = -50;
+                bei_container.x = 50,bei_container.y = -50;
+                remaining_bei.x = -50,remaining_bei.y = 50;
+                bei.x = 900,bei.y = 100;
+
+                ximark.x = 0,ximark.y = -100;
+                xi_container.x = 100,xi_container.y = -50;
+                remaining_xi.x = 0,remaining_xi.y = 50;
+                xi.x = 150,xi.y = 150;
+
+                dongmark.x = -100,dongmark.y = 50;
+                dong_container.x = 0,dong_container.y = 50;
+                remaining_dong.x = -100,remaining_dong.y = 150;
+                dong.x = 1050,dong.y = 400;
             }
         }
         else
