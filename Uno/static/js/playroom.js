@@ -236,21 +236,18 @@ dong.addChild(dong_container);
 dong.addChild(dongmark);
 dong.addChild(remaining_dong);
 //dong.addChild(dong_number);
-//dong.addChild(dong_id);
 //dong.addChild(dong_name);
 var xi = new container();
 xi.addChild(xi_container);
 xi.addChild(ximark);
 xi.addChild(remaining_xi);
 //xi.addChild(xi_number);
-//xi.addChild(xi_id);
 //xi.addChild(xi_name);
 var nan = new container();
 nan.addChild(nan_container);
 nan.addChild(nanmark);
 nan.addChild(remaining_nan);
 //nan.addChild(nan_number);
-//nan.addChild(nan_id);
 //nan.addChild(nan_name);
 var bei = new container();
 bei.addChild(bei_container);
@@ -315,8 +312,6 @@ function bsdjs(){
     }
 }
 
-
-
 //比赛结束后的榜单
 var xs_one,gr_one,xs_two,gr_two,xs_three,gr_three,xs_four,gr_four;
 var rank = new container()
@@ -376,15 +371,15 @@ function frank(){
     } else{
         app.stage.removeChild(nsz);
     }
-    app.stage.removeChild(dong_container);
-    app.stage.removeChild(xi_container);
-    app.stage.removeChild(nan_container);
-    app.stage.removeChild(bei_container);
+    dong.removeChild(dong_container);
+    dong.removeChild(dong_number);
+    nan.removeChild(nan_container);
+    nan.removeChild(nan_number);
+    xi.removeChild(xi_container);
+    xi.removeChild(xi_number);
+    bei.removeChild(bei_container);
+    bei.removeChild(bei_number);
     app.stage.removeChild(center_cards);
-    app.stage.removeChild(dong_number);
-    app.stage.removeChild(xi_number);
-    app.stage.removeChild(nan_number);
-    app.stage.removeChild(bei_number);
 
     app.stage.addChild(rank)
     rank.x = 400,rank.y = 100;
@@ -426,8 +421,8 @@ for(var i = 0;i < 3;i++)
     one.buttonMode = true;
     dong_container.addChild(one);
 }
-dong_container.x = 500;
-dong_container.y = 530;
+dong_container.x = 0;
+dong_container.y = 0;
 dong.x = 400
 dong.y = 500;
 app.stage.addChild(dong);
@@ -443,8 +438,8 @@ for(var i = 0;i < 3;i++)
     one.rotation =1.57; //1.57
     xi_container.addChild(one);
 }
-xi_container.x = 150;
-xi_container.y = 200;
+xi_container.x = 0;
+xi_container.y = 0;
 xi.x = 150;
 xi.y = 100;
 xi.rotation = 1.57;
@@ -461,8 +456,8 @@ for(var i = 0;i < 3;i++)
     one.rotation =3.14; //1.57
     nan_container.addChild(one);
 }
-nan_container.x = 800;
-nan_container.y = 100;
+nan_container.x = 0;
+nan_container.y = 0;
 nan.x = 900;
 nan.y = 100;
 nan.rotation = 3.14;
@@ -480,8 +475,8 @@ for(var i = 0;i < 3;i++)
     one.rotation =4.71; //1.57
     bei_container.addChild(one);
 }
-bei_container.x = 1050;
-bei_container.y = 300;
+bei_container.x = 0;
+bei_container.y = 0;
 bei.x = 1050;
 bei.y = 400;
 bei.rotation = 4.71;
@@ -500,37 +495,13 @@ for(var i = 0;i < 3;i++)
     center_cards.addChild(one);
 }
 
-
-
-
 app.stage.addChild(select_red);
 select_red.x = 600;
 select_red.y = 400;
 
 app.stage.addChild(ssz);
+app.stage.addChild(color_container);
 
-
-app.stage.addChild(remaining_dong)
-remaining_dong.x = 500;
-remaining_dong.y = 580;
-
-app.stage.addChild(remaining_xi)
-remaining_xi.x = 100;
-remaining_xi.y = 200;
-remaining_xi.rotation = 1.57;
-
-app.stage.addChild(remaining_nan)
-remaining_nan.x = 900;
-remaining_nan.y = 50;
-remaining_nan.rotation = 3.14;
-
-app.stage.addChild(remaining_bei)
-remaining_bei.x = 1150;
-remaining_bei.y = 400;
-remaining_bei.rotation = 4.71;
-
-app.stage.addChild(ready_nan);
-ready_nan.x = 900,ready_nan.y = 300;
 //创建webscoket
 socket = new WebSocket('ws://' + window.location.host + '/ws/join?uname=' + $('#uname').text());//websocket的内容需要修改
 socket.onmessage = function(event){
@@ -542,19 +513,19 @@ socket.onmessage = function(event){
         {
             if(data.position == 0)//表示东
             {
-
+                my_dir = "dong";
             }
             else if(data.position == 1)//表示北
             {
-
+                my_dir = "bei";
             }
             else if(data.position == 2)//表示西
             {
-
+                my_dir = "xi";
             }
             else//表示南
             {
-
+                my_dir = "nan";
             }
         }
         else
