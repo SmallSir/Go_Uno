@@ -6,6 +6,87 @@ var Application = PIXI.Application,
     container = PIXI.Container;
     graphics = PIXI.Graphics;
 
+//统计用户点击牌数目
+var card_num = false;
+
+//鼠标与纸牌的交互
+function cardout(){
+    this.y = this.y + 20;
+}
+function cardover(){
+    this.y = this.y - 20;
+}
+function cardclick(){
+    if(my_dir == "nan")
+        var x = nan_container.getChildIndex(this);
+    else if(my_dir == "dong")
+        var x = dong_container.getChildIndex(this);
+    else if(my_dir == "bei")
+        var x = bei_container.getChildIndex(this);
+    else
+        var x = xi_container.getChildIndex(this);
+    if(card_num == false)
+    {
+        this.y = this.y - 20;
+        card_num = true;
+        if(my_dir == "dong")
+            dongcards[x].sc = true;
+        else if(my_dir == "xi")
+            xicards[x].sc = true;
+        else if(my_dir == "nan")
+            nancards[x].sc = true;
+        else
+            beicards[x].sc = true;
+    }
+    else
+    {
+        if(my_dir == "dong")
+        {
+            if(dongcards[x].sc == true)
+            {
+                this.y = this.y + 20;
+                card_num = false;
+                dongcards[x].sc = false;
+            }
+            else
+                alert("不能选多张牌");
+        }
+        else if(my_dir == "xi")
+        {
+            if(xicards[x].sc == true)
+            {
+                this.y = this.y + 20;
+                card_num = false;
+                xicards[x].sc = false;
+            }
+            else
+                alert("不能选多张牌");
+        }
+        else if(my_dir == "nan")
+        {
+            if(nancards[x].sc == true)
+            {
+                this.y = this.y + 20;
+                card_num = false;
+                nancards[x].sc = false;
+            }
+            else
+                alert("不能选多张牌");
+        }
+        else
+        {
+            if(beicards[x].sc == true)
+            {
+                this.y = this.y + 20;
+                card_num = false;
+                beicards[x].sc = false;
+            }
+            else
+                alert("不能选多张牌");
+        }
+    }
+}
+
 //功能牌
 var wild = Sprite.fromImage('../static/img/Cartas/EspecialCard/x.png')
 var wildraw = Sprite.fromImage('../static/img/Cartas/EspecialCard/j.jpg')
@@ -16,9 +97,6 @@ var back_card = Sprite.fromImage('../static/img/outras/uno_back.jpg')
 var buttonstyle = {
     fontSize: '20px',
 }
-
-//统计用户点击牌数目
-var card_num = 0;
 
 var yellowbutton,yellowbutton_text,redbutton,redbutton_text,greenbutton,greenbutton_text,bluebutton,bluebutton_text; //选色按钮
 //选色按钮(黄，红，绿，蓝) + 操作按钮(准备,取消准备,出牌，摸牌,+2,+4,uno)
@@ -151,9 +229,13 @@ getfour_text.buttonMode = true;*/
 
 //四副牌
 var dong_container = new container();
+var dongcards = [];
 var nan_container = new container();
+var nancards = [];
 var xi_container = new container();
+var xicards = [];
 var bei_container = new container();
+var beicards = [];
 
 //东南西北标记(东南西北 + 玩家名称)
 var dongmark = new PIXI.Text('东');
@@ -427,7 +509,8 @@ var redpath = 'RedCard/';
 var greenpath = 'GreenCard/';
 var yellowpath = 'YellowCard/';
 var specialpath = 'EspecialCard/';
-for(var i = 0;i < 3;i++)
+my_dir = "dong";
+for(var i = 0;i < 15;i++)
 {
     var one = new Sprite.fromImage(basepath + bluepath + '0.jpg')
     one.x = i*18;
@@ -437,6 +520,11 @@ for(var i = 0;i < 3;i++)
     one.scale.y = 0.4;
     one.interactive = true;
     one.buttonMode = true;
+    card = {color : "blue",number : 0, state : -1,sc : false};
+    dongcards.push(card);
+    one.on('pointerover',cardover);
+    one.on('pointerout',cardout);
+    one.on('pointertap',cardclick);
     dong_container.addChild(one);
 }
 dong_container.x = 100;
