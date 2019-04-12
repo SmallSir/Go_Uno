@@ -17,6 +17,9 @@ var buttonstyle = {
     fontSize: '20px',
 }
 
+//统计用户点击牌数目
+var card_num = 0;
+
 var yellowbutton,yellowbutton_text,redbutton,redbutton_text,greenbutton,greenbutton_text,bluebutton,bluebutton_text; //选色按钮
 //选色按钮(黄，红，绿，蓝) + 操作按钮(准备,取消准备,出牌，摸牌,+2,+4,uno)
 yellowbutton = new graphics();
@@ -173,6 +176,12 @@ var dong_id,xi_id,nan_id,bei_id;
 var dong_name,xi_name,nan_name,bei_name;
 var my_dir;//玩家所处的位置
 
+//玩家退出标识
+var dong_exit = new PIXI.Text("已离开");
+var xi_exit = new PIXI.Text("已离开");
+var nan_exit = new PIXI.Text("已离开");
+var bei_exit = new PIXI.Text("已离开");
+
 //顺时针逆时针方向
 var direction = 0;
 var ssz = new Sprite.fromImage("../static/img/shunshizhen.png")
@@ -212,11 +221,6 @@ var exit_bei = new PIXI.Text("离开");
 var app = new PIXI.Application(document.documentElement.clientWidth,document.documentElement.clientHeight, {backgroundColor : 0x1099bb});
 document.body.appendChild(app.view);
 
-app.stage.addChild(dong_container);
-app.stage.addChild(xi_container);
-app.stage.addChild(nan_container);
-app.stage.addChild(bei_container);
-
 app.stage.addChild(center_cards);
 //玩家这个位置牌堆x500,y530,牌的大小0.4,y相等,x为18相距
 //其他人的牌比例均是0.3,左手边x150，y200,x相等,y间距18,rotation1.57
@@ -239,6 +243,8 @@ dong_number = new PIXI.Text("8");
 dong_name = new PIXI.Text("测试1");
 dong.addChild(dong_number);
 dong.addChild(dong_name);
+dong.addChild(dong_exit);
+
 var xi = new container();
 xi.addChild(xi_container);
 xi.addChild(ximark);
@@ -247,6 +253,8 @@ xi_name = new PIXI.Text("测试2");
 xi_number = new PIXI.Text("10");
 xi.addChild(xi_number);
 xi.addChild(xi_name);
+xi.addChild(xi_exit);
+
 var nan = new container();
 nan.addChild(nan_container);
 nan.addChild(nanmark);
@@ -255,6 +263,8 @@ nan_number = new PIXI.Text("20");
 nan_name = new PIXI.Text("WhaleFall");
 nan.addChild(nan_number);
 nan.addChild(nan_name);
+nan.addChild(nan_exit);
+
 var bei = new container();
 bei.addChild(bei_container);
 bei.addChild(beimark);
@@ -263,6 +273,7 @@ bei_number = new PIXI.Text("15");
 bei_name = new PIXI.Text("吃葡萄不吐葡萄皮");
 bei.addChild(bei_number);
 bei.addChild(bei_name);
+bei.addChild(bei_exit);
 
 //倒计时效果
 //比赛倒计时
@@ -450,8 +461,6 @@ for(var i = 0;i < 8;i++)
     one.y = 0;
     xi_container.addChild(one);
 }
-xi_container.x = 0;
-xi_container.y = 0;
 xi_container.scale.x = 0.3,xi_container.scale.y = 0.3;
 xi_container.x = 100,xi_container.y = -50;
 ximark.x = 0,ximark.y = -100;
@@ -471,8 +480,6 @@ for(var i = 0;i < 50;i++)
     one.anchor.set(0.5);
     nan_container.addChild(one);
 }
-nan_container.x = 0;
-nan_container.y = 0;
 nan_container.scale.x = 0.3,nan_container.scale.y = 0.3;
 nan_container.x = 50,nan_container.y = -50;
 nanmark.x = -50,nanmark.y = -50;
@@ -493,10 +500,8 @@ for(var i = 0;i < 20;i++)
     one.anchor.set(0.5);
     bei_container.addChild(one);
 }
-bei_container.x = 0;
-bei_container.y = 0;
 bei_container.scale.x = 0.3,bei_container.scale.y = 0.3;
-bei_container.x = 0,bei_container.y = 50;
+bei_container.x = 0,bei_container.y = 100;
 beimark.x = -100,beimark.y = 50;
 remaining_bei.x = -100,remaining_bei.y = 150;
 bei_number.x = 20,bei_number.y = 150;
@@ -556,7 +561,7 @@ socket.onmessage = function(event){
                 remaining_nan.x = 0,remaining_nan.y = 50;
 
                 beimark.x = -100,beimark.y = 50;
-                bei_container.x = 0,bei_container.y = 50;
+                bei_container.x = 0,bei_container.y = 100;
                 remaining_bei.x = -100,remaining_bei.y = 150;
                 bei.x = 1050,bei.y = 400;
             }
@@ -581,7 +586,7 @@ socket.onmessage = function(event){
                 dong.x = 150,dong.y = 150;
 
                 ximark.x = -100,ximark.y = 50;
-                xi_container.x = 0,xi_container.y = 50;
+                xi_container.x = 0,xi_container.y = 100;
                 remaining_xi.x = -100,remaining_xi.y = 150;
                 xi.x = 1050,xi.y = 400;
             }
@@ -606,7 +611,7 @@ socket.onmessage = function(event){
                 nan.x = 150,nan.y = 150;
 
                 beimark.x = -100,beimark.y = 50;
-                bei_container.x = 0,bei_container.y = 50;
+                bei_container.x = 0,bei_container.y = 100;
                 remaining_bei.x = -100,remaining_bei.y = 150;
                 bei.x = 1050,bei.y = 400;
             }
@@ -631,7 +636,7 @@ socket.onmessage = function(event){
                 xi.x = 150,xi.y = 150;
 
                 dongmark.x = -100,dongmark.y = 50;
-                dong_container.x = 0,dong_container.y = 50;
+                dong_container.x = 0,dong_container.y = 100;
                 remaining_dong.x = -100,remaining_dong.y = 150;
                 dong.x = 1050,dong.y = 400;
             }
@@ -729,6 +734,44 @@ socket.onmessage = function(event){
         }
         break;
     case 1: //离开
+        if(data.state == true)
+        {
+            if(data.position == 0)
+            {
+                dong.addChild(dong_exit);
+            }
+            else if(data.position == 1)
+            {
+                bei.addChild(bei_exit);
+            }
+            else if(data.position == 2)
+            {
+                xi.addChild(xi_exit);
+            }
+            else
+            {
+                nan.addChild(nan_exit);
+            }
+        }
+        else
+        {
+            if(data.position == 0)
+            {
+                dong.removeChild(dong_name);
+            }
+            else if(data.position == 1)
+            {
+                bei.removeChild(bei_name);
+            }
+            else if(data.position == 2)
+            {
+                xi.removeChild(xi_name);
+            }
+            else
+            {
+                nan.removeChild(nan_name);
+            }
+        }
         break;
     case 2: //准备与取消准备
         if(data.playerid == nan_id)
