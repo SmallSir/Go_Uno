@@ -41,12 +41,14 @@ type JoinRoom struct {
 	PlayerId   string `json:"playerid"`   //玩家的id
 	PlayerName string `json:"playername"` //玩家的名字
 	Host       bool   `json:host`         //是否为当事人
+	State      bool   `json:state`        //是否在游戏中重新加入
 }
 
 //离开房间返回的数据格式
 type LeaveRoom struct {
-	Type     int `json:"Type"`     //返回的状态
-	Position int `json:"position"` //离开玩家所处的位置
+	Type     int  `json:"Type"`     //返回的状态
+	Position int  `json:"position"` //离开玩家所处的位置
+	State    bool `json:state`      //是否是在游戏中离开
 }
 
 //比赛结束后的返回的榜单数据格式
