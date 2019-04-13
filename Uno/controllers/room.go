@@ -35,14 +35,12 @@ type PlayerRoom struct {
 	nextplayer int
 	//玩家进入管道
 	subscribe chan *Player
-	//玩家准备管道
-	ready chan PlayerReady
 	//玩家事件管道
-	publish chan CardStateMsg
+	publish chan Incident
 	//玩家退出管道
 	unsubscribe chan int
-	//玩家选色管道
-	selectcolor chan SelectColor
+	//累计的需要的摸牌数量
+	getcardsnumber int
 }
 
 //创建房间
@@ -51,10 +49,8 @@ func NewRoom(room Room, number int) *PlayerRoom {
 		player_room: room, ready_number: 0, dirction: 0,
 		stay_number: 1, playerno: make([]int, 4, 4), nextplayer: 0,
 		subscribe:   make(chan *Player, 4),
-		ready:       make(chan PlayerReady, 4),
-		publish:     make(chan CardStateMsg),
-		unsubscribe: make(chan int, 4),
-		selectcolor: make(chan SelectColor)}
+		publish:     make(chan Incident),
+		unsubscribe: make(chan int, 4)}
 	//_, err := newroom.AddPlayer(p)
 	//if err != nil {
 	//	log.Println(err)
@@ -96,7 +92,7 @@ func (rm *PlayerRoom) cbroadcastWebSocket(msg CardStateMsg, nowplayer int, check
 	case msg.Behavior == 1: //摸牌
 		for _, p := range rm.players {
 			if p.player_id == rm.playerno[nowplayer] {
-				
+
 			} else {
 
 			}

@@ -154,3 +154,14 @@ type useregister struct {
 	username string `json:"username"` //用户名
 	code     string `json:"yzm"`      //邮箱验证码
 }
+
+//用户事件接收数据格式
+type Incident struct {
+	Type     int    `json:"type"`     //事件状态,0出牌1准备或取消准备2选色3UNO4摸牌
+	Position int    `json:"position"` //事件操作用户的位置
+	Sccolor  string `json:"sccolor"`  //事件为选择时选择的颜色
+	Ccolor   string `json:"ccolor"`   //事件为出牌时牌的颜色
+	Cstate   string `json:"cstate"`   //事件为出牌时牌的状态
+	Cnumber  int    `json:"cnumber"`  //事件为出牌时牌的号码
+	Ready    bool   `json:"ready"`    //事件为准备时状态
+}
