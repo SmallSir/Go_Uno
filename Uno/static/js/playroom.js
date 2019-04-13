@@ -122,6 +122,20 @@ var buttonstyle = {
 
 var yellowbutton,yellowbutton_text,redbutton,redbutton_text,greenbutton,greenbutton_text,bluebutton,bluebutton_text; //选色按钮
 //选色按钮(黄，红，绿，蓝) + 操作按钮(准备,取消准备,出牌，摸牌,+2,+4,uno)
+function yellowclick()
+{
+    if(my_dir == "dong")
+        var x = 0;
+    else if(my_dir == "bei")
+        var x = 1;
+    else if(my_dir == "xi")
+        var x = 2;
+    else
+        var x = 3;
+    var msg = {type:2,sccolor:"yellow",position:x};
+    var msgjson = JSON.stringify(msg);
+    socket.send(msgjson);
+}
 yellowbutton = new graphics();
 yellowbutton.beginFill(0xFFAA01, 1);
 yellowbutton.interactive = true;
@@ -129,7 +143,22 @@ yellowbutton.buttonMode = true;
 yellowbutton_text = new PIXI.Text("黄色",buttonstyle);
 yellowbutton_text.interactive = true;
 yellowbutton_text.buttonMode = true;
+yellowbutton.on('pointertap',yellowclick);
+yellowbutton_text.on('pointertap',yellowclick);
 
+function redclick(){
+    if(my_dir == "dong")
+        var x = 0;
+    else if(my_dir == "bei")
+        var x = 1;
+    else if(my_dir == "xi")
+        var x = 2;
+    else
+        var x = 3;
+    var msg = {type:2,sccolor:"red",position:x};
+    var msgjson = JSON.stringify(msg);
+    socket.send(msgjson);
+}
 redbutton = new graphics();
 redbutton.beginFill(0xFF5555,1);
 redbutton.interactive = true;
@@ -137,7 +166,23 @@ redbutton.buttonMode = true;
 redbutton_text = new PIXI.Text("红色",buttonstyle);
 redbutton_text.interactive = true;
 redbutton_text.buttonMode = true;
+redbutton.on('pointertap',redclick);
+redbutton_text.on('pointertap',redclick);
 
+function greenclick()
+{
+    if(my_dir == "dong")
+        var x = 0;
+    else if(my_dir == "bei")
+        var x = 1;
+    else if(my_dir == "xi")
+        var x = 2;
+    else
+        var x = 3;
+    var msg = {type:2,sccolor:"green",position:x};
+    var msgjson = JSON.stringify(msg);
+    socket.send(msgjson);
+}
 greenbutton = new graphics();
 greenbutton.beginFill(0x55AA55,1);
 greenbutton.interactive = true;
@@ -145,7 +190,23 @@ greenbutton.buttonMode = true;
 greenbutton_text = new PIXI.Text("绿色",buttonstyle);
 greenbutton_text.interactive = true;
 greenbutton_text.buttonMode = true;
+greenbutton.on('pointertap',greenclick);
+greenbutton_text.on('pointertap',greenclick);
 
+function blueclick()
+{
+    if(my_dir == "dong")
+        var x = 0;
+    else if(my_dir == "bei")
+        var x = 1;
+    else if(my_dir == "xi")
+        var x = 2;
+    else
+        var x = 3;
+    var msg = {type:2,sccolor:"blue",position:x};
+    var msgjson = JSON.stringify(msg);
+    socket.send(msgjson);
+}
 bluebutton = new graphics();
 bluebutton.beginFill(0x5455FF,1);
 bluebutton.interactive = true;
@@ -153,6 +214,8 @@ bluebutton.buttonMode = true;
 bluebutton_text = new PIXI.Text("蓝色",buttonstyle);
 bluebutton_text.interactive = true;
 bluebutton_text.buttonMode = true;
+bluebutton.on('pointertap',blueclick);
+bluebutton_text.on('pointertap',blueclick);
 
 var color_container = new container();
 color_container.addChild(yellowbutton);
@@ -176,6 +239,20 @@ bluebutton.drawRoundedRect(360,0,80,35,15);
 bluebutton_text.x = 380,bluebutton_text.y = 5;
 
 //准备按钮
+function readyclick()
+{
+    if(my_dir == "dong")
+        var x = 0;
+    else if(my_dir == "bei")
+        var x = 1;
+    else if(my_dir == "xi")
+        var x = 2;
+    else
+        var x = 3;
+    var msg = {type:1,ready:true,position:x};
+    var msgjson = JSON.stringify(msg);
+    socket.send(msgjson);
+}
 var ready_people = new graphics();
 ready_people.beginFill(0xc0c0c0,1);
 ready_people.interactive = true;
@@ -185,8 +262,24 @@ var ready_people_text = new PIXI.Text("准备",buttonstyle);
 ready_people_text.interactive = true;
 ready_people_text.buttonMode = true;
 ready_people_text.x = 620,ready_people_text.y = 435;
+ready_people.on('pointertap',readyclick);
+ready_people_text.on('pointertap',readyclick);
 
 //不准备按钮
+function unreadyclick()
+{
+    if(my_dir == "dong")
+        var x = 0;
+    else if(my_dir == "bei")
+        var x = 1;
+    else if(my_dir == "xi")
+        var x = 2;
+    else
+        var x = 3;
+    var msg = {type:1,ready:false,position:x};
+    var msgjson = JSON.stringify(msg);
+    socket.send(msgjson);
+}
 var unready_people = new graphics();
 unready_people.beginFill(0xc0c0c0,1);
 unready_people.interactive = true;
@@ -196,8 +289,24 @@ var unready_people_text = new PIXI.Text("取消准备",buttonstyle);
 unready_people_text.interactive = true;
 unready_people_text.buttonMode = true;
 unready_people_text.x = 600,unready_people_text.y = 435;
+unready_people.on('pointertap',unreadyclick);
+unready_people_text.on('pointertap',unreadyclick);
 
 //出牌按钮
+function outcardclick()
+{
+    if(my_dir == "dong")
+        var x = 0;
+    else if(my_dir == "bei")
+        var x = 1;
+    else if(my_dir == "xi")
+        var x = 2;
+    else
+        var x = 3;
+    var msg = {type:0,position:x,ccolor:cs_color,cnumber:sc_number,cstate:sc_state};
+    var msgjson = JSON.stringify(msg);
+    socket.send(msgjson);
+}
 var outcard = new graphics();
 outcard.beginFill(0xc0c0c0,1);
 outcard.interactive = true;
@@ -207,8 +316,24 @@ outcard_text.interactive = true;
 outcard_text.buttonMode = true;
 outcard.drawRoundedRect(500,430,80,35,15);
 outcard_text.x = 520,outcard_text.y = 435;
+outcard.on('pointertap',outcardclick);
+outcard_text.on('pointertap',outcardclick);
 
 //摸牌按钮
+function getcardclick()
+{
+    if(my_dir == "dong")
+        var x = 0;
+    else if(my_dir == "bei")
+        var x = 1;
+    else if(my_dir == "xi")
+        var x = 2;
+    else
+        var x = 3;
+    var msg = {type:4,position:x};
+    var msgjson = JSON.stringify(msg);
+    socket.send(msgjson);
+}
 var getcard = new graphics();
 getcard.beginFill(0xc0c0c0,1);
 getcard.interactive = true;
@@ -218,8 +343,24 @@ getcard_text.interactive = true;
 getcard_text.buttonMode = true;
 getcard.drawRoundedRect(650,430,80,35,15);
 getcard_text.x = 670,getcard_text.y = 435;
+getcard.on('pointertap',getcardclick);
+getcard_text.on('pointertap',getcardclick);
 
 //喊UNO按钮
+function unoclick()
+{
+    if(my_dir == "dong")
+        var x = 0;
+    else if(my_dir == "bei")
+        var x = 1;
+    else if(my_dir == "xi")
+        var x = 2;
+    else
+        var x = 3;
+    var msg = {type:3,position:x};
+    var msgjson = JSON.stringify(msg);
+    socket.send(msgjson);
+}
 var uno = new graphics();
 uno.beginFill(0xc0c0c0,1);
 uno.interactive = true;
@@ -229,25 +370,8 @@ var uno_text = new PIXI.Text("UNO",buttonstyle);
 uno_text.interactive = true;
 uno_text.buttonMode = true;
 uno_text.x = 620,uno_text.y = 435;
-/*
-//+2按钮
-var gettwo = new graphics();
-gettwo.beginFill(0xc0c0c0,1);
-gettwo.interactive = true;
-gettwo.buttonMode = true;
-var gettwo_text = new PIXI.Text("+2",buttonstyle);
-gettwo_text.interactive = true;
-gettwo_text.buttonMode = true;
-
-//+4按钮
-var getfour = new graphics();
-getfour.beginFill(0xc0c0c0,1);
-getfour.interactive = true;
-getfour.buttonMode = true;
-var getfour_text = new PIXI.Text("+4",buttonstyle);
-getfour_text.interactive = true;
-getfour_text.buttonMode = true;*/
-
+uno.on('pointertap',unoclick);
+uno_text.on('pointertap',unoclick);
 
 //四副牌
 var dong_container = new container();
