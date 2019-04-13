@@ -8,6 +8,8 @@ var Application = PIXI.Application,
 
 //统计用户点击牌数目
 var card_num = false;
+//选中卡牌信息
+var cs_color,cs_state,sc_number;
 
 //鼠标与纸牌的交互
 function cardout(){
@@ -30,13 +32,33 @@ function cardclick(){
         this.y = this.y - 20;
         card_num = true;
         if(my_dir == "dong")
+        {
             dongcards[x].sc = true;
+            sc_color = dongcards[x].color;
+            sc_number = dongcards[x].number;
+            sc_state = dongcards[x].state;
+        }
         else if(my_dir == "xi")
+        {
             xicards[x].sc = true;
+            sc_number = xicards[x].number;
+            sc_color = xicards[x].color;
+            sc_state = xicards[x].state;
+        }
         else if(my_dir == "nan")
+        {
             nancards[x].sc = true;
+            sc_number = nancards[x].number;
+            sc_color = nancards[x].color;
+            sc_state = nancards[x].state;
+        }
         else
+        {
             beicards[x].sc = true;
+            sc_number = beicards[x].number;
+            sc_color = beicards[x].color;
+            sc_state = beicards[x].state;
+        }    
     }
     else
     {
@@ -520,7 +542,7 @@ for(var i = 0;i < 15;i++)
     one.scale.y = 0.4;
     one.interactive = true;
     one.buttonMode = true;
-    card = {color : "blue",number : 0, state : -1,sc : false};
+    card = {color : "blue",number : "0", state : "-1",sc : false};
     dongcards.push(card);
     one.on('pointerover',cardover);
     one.on('pointerout',cardout);
