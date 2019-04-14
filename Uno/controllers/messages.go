@@ -180,4 +180,6 @@ type Reincident struct {
 	OutPeople   bool   `json:"outpeople"`   //是否轮到操作
 	Sc          bool   `json:"sc"`          //是否需要选色
 	Uno         bool   `json:"uno"`         //是否需要UNO
+	Wsc         string `json:"wsc"`         //事件为选色时选择的颜色
+	Wuno        bool   `json:wuno`          //事件为喊UNO时喊出UNO
 }
