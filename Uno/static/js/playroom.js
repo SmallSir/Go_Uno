@@ -1338,9 +1338,10 @@ socket.onmessage = function(event){
                 app.stage.addChild(ssz);
             }
         }
-        if(data.incident == 0)
+        if(data.incident == 0 || data.incident == 1)
         {
-            cardsmsg(data.ccolor,data.cstate,data.cnumber,"center");
+            if(data.incident == 0)
+                cardsmsg(data.ccolor,data.cstate,data.cnumber,"center");
             if(my_dir == ps[data.position])
             {
                 if(my_dir == "dong")
@@ -1390,12 +1391,49 @@ socket.onmessage = function(event){
             }
             else
             {
-
+                if(data.position == 0)
+                    dong_number = data.cardsnumber;
+                else if(data.position == 1)
+                    bei_number = data.cardsnumber;
+                else if(data.position == 2)
+                    xi_number = data.cardsnumber;
+                else
+                    nan_number = data.cardsnumber;
+                for(var i = 0;i < data.cardsnumber;i++)
+                {
+                    var one = new Sprite.fromImage('../static/img/outras/uno_back.jpg')
+                    one.x = i*35;
+                    one.y = 0;
+                    one.anchor.set(0.5);
+                    if(data.position == 0)
+                        dong_container.addChild(one);
+                    else if(data.position == 1)
+                        bei_container.addChild(one);
+                    else if(data.position == 2)
+                        xi_container.addChild(one);
+                    else
+                        nan_container.addChild(one);
+                }
             }
-        }
-        else if(data.incident == 1)
-        {
-
+            if(data.outpeople == true)
+            {
+                if(data.sc == false && data.uno == false)
+                {
+                    app.stage.addChild(outcard);
+                    app.stage.addChild(outcard_text);
+                    app.stage.addChild(getcard);
+                    app.stage.addChild(getcard_text);
+                }
+                if(data.sc == true)
+                {
+                    app.stage.addChild(color_container);
+                }
+                if(data.uno == true)
+                {
+                    app.stage.addChild(uno);
+                    app.stage.addChild(uno_text);
+                }
+            }
         }
         else if(data.incident == 2)
         {
