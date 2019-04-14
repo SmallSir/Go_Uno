@@ -8,8 +8,26 @@ var Application = PIXI.Application,
 
 //统计用户点击牌数目
 var card_num = false;
+var inde;
 //选中卡牌信息
 var cs_color,cs_state,sc_number;
+//位置对应
+var ps = ["dong","bei","xi","nan"];
+//检查卡牌点击情况
+function check()
+{
+    card_num = false;
+    if(my_dir == "dong")
+        var one = dong_container.getChildAt(inde);
+    else if(my_dir == "xi")
+        var one = xi_container.getChildAt(inde)
+    else if(my_dir == "nan")
+        var one = nan_container.getChildAt(inde);
+    else
+        var one = bei_container.getChildAt(inde);
+    one.y = one.y + 20;
+}
+
 
 //鼠标与纸牌的交互
 function cardout(){
@@ -20,13 +38,14 @@ function cardover(){
 }
 function cardclick(){
     if(my_dir == "nan")
-        var x = nan_container.getChildIndex(this);
+        inde = nan_container.getChildIndex(this);
     else if(my_dir == "dong")
-        var x = dong_container.getChildIndex(this);
+        inde = dong_container.getChildIndex(this);
     else if(my_dir == "bei")
-        var x = bei_container.getChildIndex(this);
+        inde = bei_container.getChildIndex(this);
     else
-        var x = xi_container.getChildIndex(this);
+        inde = xi_container.getChildIndex(this);
+    var x = inde;
     if(card_num == false)
     {
         this.y = this.y - 20;
@@ -135,6 +154,7 @@ function yellowclick()
     var msg = {type:2,sccolor:"yellow",position:x};
     var msgjson = JSON.stringify(msg);
     socket.send(msgjson);
+    check();
 }
 yellowbutton = new graphics();
 yellowbutton.beginFill(0xFFAA01, 1);
@@ -158,6 +178,7 @@ function redclick(){
     var msg = {type:2,sccolor:"red",position:x};
     var msgjson = JSON.stringify(msg);
     socket.send(msgjson);
+    check();
 }
 redbutton = new graphics();
 redbutton.beginFill(0xFF5555,1);
@@ -182,6 +203,7 @@ function greenclick()
     var msg = {type:2,sccolor:"green",position:x};
     var msgjson = JSON.stringify(msg);
     socket.send(msgjson);
+    check();
 }
 greenbutton = new graphics();
 greenbutton.beginFill(0x55AA55,1);
@@ -206,6 +228,7 @@ function blueclick()
     var msg = {type:2,sccolor:"blue",position:x};
     var msgjson = JSON.stringify(msg);
     socket.send(msgjson);
+    check();
 }
 bluebutton = new graphics();
 bluebutton.beginFill(0x5455FF,1);
@@ -252,6 +275,7 @@ function readyclick()
     var msg = {type:1,ready:true,position:x};
     var msgjson = JSON.stringify(msg);
     socket.send(msgjson);
+    check();
 }
 var ready_people = new graphics();
 ready_people.beginFill(0xc0c0c0,1);
@@ -306,6 +330,7 @@ function outcardclick()
     var msg = {type:0,position:x,ccolor:cs_color,cnumber:sc_number,cstate:sc_state};
     var msgjson = JSON.stringify(msg);
     socket.send(msgjson);
+    check();
 }
 var outcard = new graphics();
 outcard.beginFill(0xc0c0c0,1);
@@ -333,6 +358,7 @@ function getcardclick()
     var msg = {type:4,position:x};
     var msgjson = JSON.stringify(msg);
     socket.send(msgjson);
+    check();
 }
 var getcard = new graphics();
 getcard.beginFill(0xc0c0c0,1);
@@ -360,6 +386,7 @@ function unoclick()
     var msg = {type:3,position:x};
     var msgjson = JSON.stringify(msg);
     socket.send(msgjson);
+    check();
 }
 var uno = new graphics();
 uno.beginFill(0xc0c0c0,1);
@@ -625,7 +652,6 @@ function frank(){
     xi.removeChild(xi_number);
     bei.removeChild(bei_container);
     bei.removeChild(bei_number);
-    app.stage.removeChild(center_cards);
 
     app.stage.addChild(rank)
     rank.x = 400,rank.y = 100;
@@ -655,24 +681,172 @@ var redpath = 'RedCard/';
 var greenpath = 'GreenCard/';
 var yellowpath = 'YellowCard/';
 var specialpath = 'EspecialCard/';
+var unobackpath = '../static/img/outras/uno_back.jpg';
 my_dir = "dong";
+function addcard(base,color,s,flag,x)
+{
+    var one = new Sprite.fromImage(base+color+s);
+    if(flag == "center")
+    {
+        one.x = 0,one.y = 0;
+        one.anchor.set(0.5);
+        one.scale.x = 0.4;
+        one.scale.y = 0.4;
+        one.rotation = (Math.random()*(6-0) + 0).toFixed(3);
+        center_cards.addChild(one);
+    }
+    else
+    {
+        one.x = x*35;
+        one.anchor.set(0.5);
+        one.y = 0;
+        one.interactive = true;
+        one.buttonMode = true;
+        one.on('pointerover',cardover);
+        one.on('pointerout',cardout);
+        one.on('pointertap',cardclick);
+        if(flag == "dong")
+            dong_container.addChild(one);
+        else if(flag == "bei")
+            bei_container.addChild(one);
+        else if(flag == "nan")
+            nan_container.addChild(one);
+        else
+            xi_container.addChild(one);
+    }
+}
+function cardsmsg(color,state,number,flag,i){
+    if(color == "blue")//是蓝牌
+    {
+        if(number == "0")
+            addcard(basepath,bluepath,'0.jpg',flag,i);
+        else if(number == "1")
+            addcard(basepath,bluepath,'1.jpg',flag,i);
+        else if(number == "2")
+            addcard(basepath,bluepath,'2.jpg',flag,i);
+        else if(number == "3")
+            addcard(basepath,bluepath,'3.jpg',flag,i);
+        else if(number == "4")
+            addcard(basepath,bluepath,'4.jpg',flag,i);
+        else if(number == "5")
+            addcard(basepath,bluepath,'5.jpg',flag,i);
+        else if(number == "6")
+            addcard(basepath,bluepath,'6.jpg',flag,i);
+        else if(number == "7")
+            addcard(basepath,bluepath,'7.jpg',flag,i);
+        else if(data.cnumber == "8")
+            addcard(basepath,bluepath,'8.jpg',flag,i);
+        else if(data.cnumber == "9")
+            addcard(basepath,bluepath,'9.jpg',flag,i);
+        else if(data.cstate == "skip")
+            addcard(basepath,bluepath,'t.jpg',flag,i);
+        else if(data.cstate == "reverse")
+            addcard(basepath,bluepath,'z.jpg',flag,i);
+        else if(data.cstate == "raw")
+            addcard(basepath,bluepath,'j.jpg',flag,i);
+    }
+    else if(data.ccolor == "red")//是红牌
+    {
+        if(number == "0")
+            addcard(basepath,redpath,'0.png',flag,i);
+        else if(number == "1")
+            addcard(basepath,redpath,'1.png',flag,i);
+        else if(number == "2")
+            addcard(basepath,redpath,'2.png',flag,i);
+        else if(number == "3")
+            addcard(basepath,redpath,'3.png',flag,i);
+        else if(number == "4")
+            addcard(basepath,redpath,'4.png',flag,i);
+        else if(number == "5")
+            addcard(basepath,redpath,'5.png',flag,i);
+        else if(number == "6")
+            addcard(basepath,redpath,'6.png',flag,i);
+        else if(number == "7")
+            addcard(basepath,redpath,'7.png',flag,i);
+        else if(data.cnumber == "8")
+            addcard(basepath,redpath,'8.png',flag,i);
+        else if(data.cnumber == "9")
+            addcard(basepath,redpath,'9.png',flag,i);
+        else if(data.cstate == "skip")
+            addcard(basepath,redpath,'t.png',flag,i);
+        else if(data.cstate == "reverse")
+            addcard(basepath,redpath,'z.png',flag,i);
+        else if(data.cstate == "raw")
+            addcard(basepath,redpath,'j.png',flag,i);
+    }
+    else if(data.ccolor == "green")//是绿牌
+    {
+        if(number == "0")
+            addcard(basepath,greenpath,'0.jpg',flag,i);
+        else if(number == "1")
+            addcard(basepath,greenpath,'1.jpg',flag,i);
+        else if(number == "2")
+            addcard(basepath,greenpath,'2.jpg',flag,i);
+        else if(number == "3")
+            addcard(basepath,greenpath,'3.jpg',flag,i);
+        else if(number == "4")
+            addcard(basepath,greenpath,'4.jpg',flag,i);
+        else if(number == "5")
+            addcard(basepath,greenpath,'5.jpg',flag,i);
+        else if(number == "6")
+            addcard(basepath,greenpath,'6.jpg',flag,i);
+        else if(number == "7")
+            addcard(basepath,greenpath,'7.jpg',flag,i);
+        else if(data.cnumber == "8")
+            addcard(basepath,greenpath,'8.jpg',flag,i);
+        else if(data.cnumber == "9")
+            addcard(basepath,greenpath,'9.jpg',flag,i);
+        else if(data.cstate == "skip")
+            addcard(basepath,greenpath,'t.jpg',flag,i);
+        else if(data.cstate == "reverse")
+            addcard(basepath,greenpath,'z.jpg',flag,i);
+        else if(data.cstate == "raw")
+            addcard(basepath,greenpath,'j.jpg',flag,i);
+    }
+    else if(data.ccolor == "yellow")//是黄牌
+    {
+        if(number == "0")
+            addcard(basepath,yellowpath,'0.jpg',flag,i);
+        else if(number == "1")
+            addcard(basepath,yellowpath,'1.jpg',flag,i);
+        else if(number == "2")
+            addcard(basepath,yellowpath,'2.jpg',flag,i);
+        else if(number == "3")
+            addcard(basepath,yellowpath,'3.jpg',flag,i);
+        else if(number == "4")
+            addcard(basepath,yellowpath,'4.jpg',flag,i);
+        else if(number == "5")
+            addcard(basepath,yellowpath,'5.jpg',flag,i);
+        else if(number == "6")
+            addcard(basepath,yellowpath,'6.jpg',flag,i);
+        else if(number == "7")
+            addcard(basepath,yellowpath,'7.jpg',flag,i);
+        else if(data.cnumber == "8")
+            addcard(basepath,yellowpath,'8.jpg',flag,i);
+        else if(data.cnumber == "9")
+            addcard(basepath,yellowpath,'9.jpg',flag,i);
+        else if(data.cstate == "skip")
+            addcard(basepath,yellowpath,'t.jpg',flag,i);
+        else if(data.cstate == "reverse")
+            addcard(basepath,yellowpath,'z.jpg',flag,i);
+        else if(data.cstate == "raw")
+            addcard(basepath,yellowpath,'j.jpg',flag,i);
+    }
+    else//是功能牌
+    {
+        if(state == wild)
+            addcard(basepath,specialpath,'x.png',flag,i);
+        else
+            addcard(basepath,specialpath,'j.jpg',flag,i);
+    }
+}
 for(var i = 0;i < 15;i++)
 {
-    var one = new Sprite.fromImage(basepath + bluepath + '0.jpg')
-    one.x = i*18;
-    one.anchor.set(0.5);
-    one.y = 0;
-    one.scale.x = 0.4;
-    one.scale.y = 0.4;
-    one.interactive = true;
-    one.buttonMode = true;
+    addcard(basepath,bluepath,'0.jpg',"dong",i);
     card = {color : "blue",number : "0", state : "-1",sc : false};
     dongcards.push(card);
-    one.on('pointerover',cardover);
-    one.on('pointerout',cardout);
-    one.on('pointertap',cardclick);
-    dong_container.addChild(one);
 }
+dong_container.scale.x = 0.4,dong_container.scale.y = 0.4;
 dong_container.x = 100;
 dong_container.y = 80;
 dongmark.x = 0;
@@ -748,14 +922,7 @@ app.stage.addChild(bei);
 
 for(var i = 0;i < 3;i++)
 {
-    var one = new Sprite.fromImage(basepath + bluepath + '0.jpg')
-    one.x = 0;
-    one.y = 0;
-    one.anchor.set(0.5);
-    one.scale.x = 0.4;
-    one.scale.y = 0.4;
-    one.rotation = (Math.random()*(6-0) + 0).toFixed(3);
-    center_cards.addChild(one);
+    addcard(basepath,bluepath,'0.jpg',"center");
 }
 
 app.stage.addChild(select_red);
@@ -883,21 +1050,13 @@ socket.onmessage = function(event){
                 dong_name = new PIXI.Text(data.playername);
                 dong.addChild(dong_name);
                 if(my_dir == "dong")
-                {
                     dong_name.x = 180,dong_name.y = 150;
-                } 
                 else if(my_dir == "xi")
-                {
                     dong_name.x = 130,dong_name.y = 50;
-                } 
                 else if(my_dir == "nan")
-                {
                     dong_name.x = 80,dong_name.y = 150;
-                }
                 else
-                {
                     dong_name.x = 180,dong_name.y = 50;
-                }
             }
             else if(data.position == 1)//表示北
             {
@@ -905,21 +1064,13 @@ socket.onmessage = function(event){
                 bei_name = new PIXI.Text(data.playername);
                 bei.addChild(bei_name);
                 if(my_dir == "dong")
-                {
                     bei_name.x = 80,bei_name.y = 150;
-                } 
                 else if(my_dir == "xi")
-                {
                     bei_name.x = 180,bei_name.y = 50;
-                } 
                 else if(my_dir == "nan")
-                {
                     bei_name.x = 130,bei_name.y = 50;
-                }
                 else
-                {
                     bei_name.x = 180,bei_name.y = 150;
-                }
             }
             else if(data.position == 2)//表示西
             {
@@ -927,21 +1078,13 @@ socket.onmessage = function(event){
                 xi_name = new PIXI.Text(data.playername);
                 xi.addChild(xi_name);
                 if(my_dir == "dong")
-                {
                     xi_name.x = 130,xi_name.y = 50;
-                } 
                 else if(my_dir == "xi")
-                {
                     xi_name.x = 180,xi_name.y = 150;
-                } 
                 else if(my_dir == "nan")
-                {
                     xi_name.x = 180,xi_name.y = 50;
-                }
                 else
-                {
                     xi_name.x = 80,xi_name.y = 150;
-                }
             }
             else //表示南
             {
@@ -949,21 +1092,13 @@ socket.onmessage = function(event){
                 nan_name = new PIXI.Text(data.playername);
                 nan.addChild(nan_name);
                 if(my_dir == "dong")
-                {
                     nan_name.x = 180,nan_name.y = 50;
-                } 
                 else if(my_dir == "xi")
-                {
                     nan_name.x = 80,xi_name.y = 150;
-                } 
                 else if(my_dir == "nan")
-                {
                     nan_name.x = 180,nan_name.y = 150;
-                }
                 else
-                {
                     nan_name.x = 130,nan_name.y = 50;
-                }
             }
         }
         break;
@@ -971,40 +1106,24 @@ socket.onmessage = function(event){
         if(data.state == true)
         {
             if(data.position == 0)
-            {
                 dong.addChild(dong_exit);
-            }
             else if(data.position == 1)
-            {
                 bei.addChild(bei_exit);
-            }
             else if(data.position == 2)
-            {
                 xi.addChild(xi_exit);
-            }
             else
-            {
                 nan.addChild(nan_exit);
-            }
         }
         else
         {
             if(data.position == 0)
-            {
                 dong.removeChild(dong_name);
-            }
             else if(data.position == 1)
-            {
                 bei.removeChild(bei_name);
-            }
             else if(data.position == 2)
-            {
                 xi.removeChild(xi_name);
-            }
             else
-            {
                 nan.removeChild(nan_name);
-            }
         }
         break;
     case 2: //准备与取消准备
@@ -1204,6 +1323,88 @@ socket.onmessage = function(event){
         bddjs();
         break;
     case 4: //比赛信息
+        if(data.direction != direction)
+        {
+            if(direction == 1)
+            {
+                app.stage.removeChild(ssz);
+                app.stage.addChild(nsz);
+                direction = 1;
+            }
+            else
+            {
+                direction = 0;
+                app.stage.removeChild(nsz);
+                app.stage.addChild(ssz);
+            }
+        }
+        if(data.incident == 0)
+        {
+            cardsmsg(data.ccolor,data.cstate,data.cnumber,"center");
+            if(my_dir == ps[data.position])
+            {
+                if(my_dir == "dong")
+                {
+                    dong_number = data.cardsnumber;
+                    dongcards = [];
+                    for(var i = 0;i < data.cards.length;i++)
+                    {
+                        card = {color:data.cards[i].color,number:data.cards[i].number,sc:false,state:data.cards[i].state};
+                        dongcards.push(card);
+                        cardsmsg(data.cards[i].color,data.cards[i].state,data.cards[i].number,"dong",i);
+                    }
+                }
+                else if(my_dir == "nan")
+                {
+                    nan_number = data.cardsnumber;
+                    nancards = [];
+                    for(var i = 0;i < data.cards.length;i++)
+                    {
+                        card = {color:data.cards[i].color,number:data.cards[i].number,sc:false,state:data.cards[i].state};
+                        nancards.push(card);
+                        cardsmsg(data.cards[i].color,data.cards[i].state,data.cards[i].number,"nan",i);
+                    }
+                }
+                else if(my_dir == "bei")
+                {
+                    bei_number = data.cardsnumber;
+                    beicards = [];
+                    for(var i = 0;i < data.cards.length;i++)
+                    {
+                        card = {color:data.cards[i].color,number:data.cards[i].number,sc:false,state:data.cards[i].state};
+                        beicards.push(card);
+                        cardsmsg(data.cards[i].color,data.cards[i].state,data.cards[i].number,"bei",i);
+                    }
+                }
+                else 
+                {
+                    xi_number = data.cardsnumber;
+                    xicards = [];
+                    for(var i = 0;i < data.cards.length;i++)
+                    {
+                        card = {color:data.cards[i].color,number:data.cards[i].number,sc:false,state:data.cards[i].state};
+                        xicards.push(card);
+                        cardsmsg(data.cards[i].color,data.cards[i].state,data.cards[i].number,"xi",i);
+                    }
+                }
+            }
+            else
+            {
+
+            }
+        }
+        else if(data.incident == 1)
+        {
+
+        }
+        else if(data.incident == 2)
+        {
+
+        }
+        else
+        {
+
+        }
         break;
     }
 }
