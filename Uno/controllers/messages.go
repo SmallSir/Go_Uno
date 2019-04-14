@@ -165,3 +165,19 @@ type Incident struct {
 	Cnumber  int    `json:"cnumber"`  //事件为出牌时牌的号码
 	Ready    bool   `json:"ready"`    //事件为准备时状态
 }
+
+//用户事件返回数据格式
+type Reincident struct {
+	Type        int    `json:"Type"`        //类型
+	Incident    int    `json:"incident"`    //事件类型0出牌1摸牌2选色3UNO
+	Ccolor      string `json:"ccolor"`      //事件为出牌时牌的颜色
+	Cstate      string `json:"cstate"`      //事件为出牌时牌的状态
+	Cnumber     string `json:"cnumber"`     //事件为出牌时牌的号码
+	Position    int    `json:"position"`    //事件为出牌时出牌人位置
+	CardsNumber int    `json:"cardsnumber"` //事件人剩余牌数目
+	Cardss      []Card `json:"cards"`       //事件人剩余牌信息
+	Direction   int    `json:"direction"`   //方向
+	OutPeople   bool   `json:"outpeople"`   //是否轮到操作
+	Sc          bool   `json:"sc"`          //是否需要选色
+	Uno         bool   `json:"uno"`         //是否需要UNO
+}
