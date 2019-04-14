@@ -143,6 +143,7 @@ var yellowbutton,yellowbutton_text,redbutton,redbutton_text,greenbutton,greenbut
 //选色按钮(黄，红，绿，蓝) + 操作按钮(准备,取消准备,出牌，摸牌,+2,+4,uno)
 function yellowclick()
 {
+    app.stage.removeChild(color_container);
     if(my_dir == "dong")
         var x = 0;
     else if(my_dir == "bei")
@@ -167,6 +168,7 @@ yellowbutton.on('pointertap',yellowclick);
 yellowbutton_text.on('pointertap',yellowclick);
 
 function redclick(){
+    app.stage.removeChild(color_container);
     if(my_dir == "dong")
         var x = 0;
     else if(my_dir == "bei")
@@ -192,6 +194,7 @@ redbutton_text.on('pointertap',redclick);
 
 function greenclick()
 {
+    app.stage.removeChild(color_container);
     if(my_dir == "dong")
         var x = 0;
     else if(my_dir == "bei")
@@ -217,6 +220,7 @@ greenbutton_text.on('pointertap',greenclick);
 
 function blueclick()
 {
+    app.stage.removeChild(color_container);
     if(my_dir == "dong")
         var x = 0;
     else if(my_dir == "bei")
@@ -264,6 +268,8 @@ bluebutton_text.x = 380,bluebutton_text.y = 5;
 //准备按钮
 function readyclick()
 {
+    app.stage.removeChild(ready_people);
+    app.stage.removeChild(ready_people_text);
     if(my_dir == "dong")
         var x = 0;
     else if(my_dir == "bei")
@@ -292,6 +298,8 @@ ready_people_text.on('pointertap',readyclick);
 //不准备按钮
 function unreadyclick()
 {
+    app.stage.removeChild(unready_people);
+    app.stage.removeChild(unready_people_text);
     if(my_dir == "dong")
         var x = 0;
     else if(my_dir == "bei")
@@ -319,6 +327,10 @@ unready_people_text.on('pointertap',unreadyclick);
 //出牌按钮
 function outcardclick()
 {
+    app.stage.removeChild(outcard);
+    app.stage.removeChild(outcard_text);
+    app.stage.removeChild(getcard);
+    app.stage.removeChild(getcard_text);
     if(my_dir == "dong")
         var x = 0;
     else if(my_dir == "bei")
@@ -347,6 +359,10 @@ outcard_text.on('pointertap',outcardclick);
 //摸牌按钮
 function getcardclick()
 {
+    app.stage.removeChild(outcard);
+    app.stage.removeChild(outcard_text);
+    app.stage.removeChild(getcard);
+    app.stage.removeChild(getcard_text);
     if(my_dir == "dong")
         var x = 0;
     else if(my_dir == "bei")
@@ -375,6 +391,8 @@ getcard_text.on('pointertap',getcardclick);
 //喊UNO按钮
 function unoclick()
 {
+    app.stage.removeChild(uno);
+    app.stage.removeChild(uno_text);
     if(my_dir == "dong")
         var x = 0;
     else if(my_dir == "bei")
