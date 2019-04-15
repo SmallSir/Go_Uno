@@ -1385,7 +1385,208 @@ socket.onmessage = function(event){
         if(data.incident == 0 || data.incident == 1)
         {
             if(data.incident == 0)
+            {
                 cardsmsg(data.ccolor,data.cstate,data.cnumber,"center");
+                if(data.ccolor == "z" && data.cstate == "wildraw")
+                {
+                    if(my_dir =="dong")
+                    {
+                        if(data.position == 0)
+                            four_cards.x = 600,four_cards.y = 400;
+                        else if(data.position == 1)
+                            four_cards.x = 1000,four_cards.y = 300;
+                        else if(data.position == 2)
+                            four_cards.x = 800,four_cards.y = 200;
+                        else
+                            four_cards.x = 300,four_cards.y = 300;
+                    }
+                    else if(my_dir == "xi")
+                    {   
+                        if(data.position == 0)
+                            four_cards.x = 800,four_cards.y = 200;
+                        else if(data.position == 1)
+                            four_cards.x = 300,four_cards.y = 300;
+                        else if(data.position == 2)
+                            four_cards.x = 600,four_cards.y = 400;
+                        else
+                            four_cards.x = 1000,four_cards.y = 300;
+                    }
+                    else if(my_dir == "nan")
+                    {
+                        if(data.position == 0)
+                            four_cards.x = 1000,four_cards.y = 300;
+                        else if(data.position == 1)
+                            four_cards.x = 800,four_cards.y = 200;
+                        else if(data.position == 2)
+                            four_cards.x = 300,four_cards.y = 300;
+                        else
+                            four_cards.x = 600,four_cards.y = 400;
+                    }
+                    else
+                    {
+                        if(data.position == 0)
+                            four_cards.x = 300,four_cards.y = 300;
+                        else if(data.position == 1)
+                            four_cards.x = 600,four_cards.y = 400;
+                        else if(data.position == 2)
+                            four_cards.x = 1000,four_cards.y = 300;
+                        else
+                            four_cards.x = 800,four_cards.y = 200;
+                    }
+                    app.stage.addChild(four_cards);
+                    xgdjs(22);
+                }
+                else if(data.cnumber == "-1" && data.ccolor != "z")
+                {
+                    if(data.cstate == "skip")
+                    {
+                        if(my_dir =="dong")
+                        {
+                            if(data.position == 0)
+                                skip.x = 600,skip.y = 400;
+                            else if(data.position == 1)
+                                skip.x = 1000,skip.y = 300;
+                            else if(data.position == 2)
+                                skip.x = 800,skip.y = 200;
+                            else
+                                skip.x = 300,skip.y = 300;
+                        }   
+                        else if(my_dir == "xi")
+                        {   
+                            if(data.position == 0)
+                                skip.x = 800,skip.y = 200;
+                            else if(data.position == 1)
+                                skip.x = 300,skip.y = 300;
+                            else if(data.position == 2)
+                                skip.x = 600,skip.y = 400;
+                            else
+                                skip.x = 1000,skip.y = 300;
+                        }
+                        else if(my_dir == "nan")
+                        {
+                            if(data.position == 0)
+                                skip.x = 1000,skip.y = 300;
+                            else if(data.position == 1)
+                                skip.x = 800,skip.y = 200;
+                            else if(data.position == 2)
+                                skip.x = 300,skip.y = 300;
+                            else
+                                skip.x = 600,skip.y = 400;
+                        }
+                        else
+                        {
+                            if(data.position == 0)
+                                skip.x = 300,skip.y = 300;
+                            else if(data.position == 1)
+                                skip.x = 600,skip.y = 400;
+                            else if(data.position == 2)
+                                skip.x = 1000,skip.y = 300;
+                            else
+                                skip.x = 800,skip.y = 200;
+                        }
+                        app.stage.addChild(skip);
+                        xgdjs(4);
+                    }
+                    else if(data.cstate == "reverse")
+                    {
+                        if(my_dir =="dong")
+                        {
+                            if(data.position == 0)
+                                reverse.x = 600,reverse.y = 400;
+                            else if(data.position == 1)
+                                reverse.x = 1000,reverse.y = 300;
+                            else if(data.position == 2)
+                                reverse.x = 800,reverse.y = 200;
+                            else
+                                reverse.x = 300,reverse.y = 300;
+                        }   
+                        else if(my_dir == "xi")
+                        {   
+                            if(data.position == 0)
+                                reverse.x = 800,reverse.y = 200;
+                            else if(data.position == 1)
+                                ready_beie.x = 300,reverse.y = 300;
+                            else if(data.position == 2)
+                                reverse.x = 600,reverse.y = 400;
+                            else
+                                reverse.x = 1000,reverse.y = 300;
+                        }
+                        else if(my_dir == "nan")
+                        {
+                            if(data.position == 0)
+                                reverse.x = 1000,reverse.y = 300;
+                            else if(data.position == 1)
+                                reverse.x = 800,reverse.y = 200;
+                            else if(data.position == 2)
+                                reverse.x = 300,reverse.y = 300;
+                            else
+                                reverse.x = 600,reverse.y = 400;
+                        }
+                        else
+                        {
+                            if(data.position == 0)
+                                reverse.x = 300,reverse.y = 300;
+                            else if(data.position == 1)
+                                reverse.x = 600,reverse.y = 400;
+                            else if(data.position == 2)
+                                reverse.x = 1000,reverse.y = 300;
+                            else
+                                reverse.x = 800,reverse.y = 200;
+                        }
+                        app.stage.addChild(reverse);
+                        xgdjs(3);
+                    }
+                    else
+                    {
+                        if(my_dir =="dong")
+                        {
+                            if(data.position == 0)
+                                two_cards.x = 600,two_cards.y = 400;
+                            else if(data.position == 1)
+                                two_cards.x = 1000,two_cards.y = 300;
+                            else if(data.position == 2)
+                                two_cards.x = 800,two_cards.y = 200;
+                            else
+                                two_cards.x = 300,two_cards.y = 300;
+                        }   
+                        else if(my_dir == "xi")
+                        {   
+                            if(data.position == 0)
+                                two_cards.x = 800,two_cards.y = 200;
+                            else if(data.position == 1)
+                                two_cards.x = 300,two_cards.y = 300;
+                            else if(data.position == 2)
+                                two_cards.x = 600,two_cards.y = 400;
+                            else
+                                two_cards.x = 1000,two_cards.y = 300;
+                        }
+                        else if(my_dir == "nan")
+                        {
+                            if(data.position == 0)
+                                two_cards.x = 1000,two_cards.y = 300;
+                            else if(data.position == 1)
+                                two_cards.x = 800,two_cards.y = 200;
+                            else if(data.position == 2)
+                                two_cards.x = 300,two_cards.y = 300;
+                            else
+                                two_cards.x = 600,two_cards.y = 400;
+                        }
+                        else
+                        {
+                            if(data.position == 0)
+                                two_cards.x = 300,two_cards.y = 300;
+                            else if(data.position == 1)
+                                two_cards.x = 600,two_cards.y = 400;
+                            else if(data.position == 2)
+                                two_cards.x = 1000,two_cards.y = 300;
+                            else
+                                two_cards.x = 800,two_cards.y = 200;
+                        }
+                        app.stage.addChild(two_cards);
+                        xgdjs(21);
+                    }
+                }
+            }
             if(my_dir == ps[data.position])
             {
                 if(my_dir == "dong")
@@ -1514,8 +1715,8 @@ socket.onmessage = function(event){
                     }
                     else
                     {
-                        uno.x = 600,uno.y = 400;
-                        app.stage.addChild(uno);
+                        call_uno.x = 600,call_uno.y = 400;
+                        app.stage.addChild(call_uno);
                         xgdjs(0);
                     }
                 }
@@ -1550,8 +1751,8 @@ socket.onmessage = function(event){
                     }
                     else
                     {
-                        uno.x = 1000,uno.y = 300;
-                        app.stage.addChild(uno);
+                        call_uno.x = 1000,call_uno.y = 300;
+                        app.stage.addChild(call_uno);
                         xgdjs(0);
                     }
                 }
@@ -1586,8 +1787,8 @@ socket.onmessage = function(event){
                     }
                     else
                     {
-                        uno.x = 800,uno.y = 200;
-                        app.stage.addChild(uno);
+                        call_uno.x = 800,call_uno.y = 200;
+                        app.stage.addChild(call_uno);
                         xgdjs(0);
                     }
                 }
@@ -1622,8 +1823,8 @@ socket.onmessage = function(event){
                     }
                     else
                     {
-                        uno.x = 300,uno.y = 300;
-                        app.stage.addChild(uno);
+                        call_uno.x = 300,call_uno.y = 300;
+                        app.stage.addChild(call_uno);
                         xgdjs(0);
                     }
                 }
@@ -1661,8 +1862,8 @@ socket.onmessage = function(event){
                     }
                     else
                     {
-                        uno.x = 1000,uno.y = 300;
-                        app.stage.addChild(uno);
+                        call_uno.x = 1000,call_uno.y = 300;
+                        app.stage.addChild(call_uno);
                         xgdjs(0);
                     }
                 }
@@ -1697,8 +1898,8 @@ socket.onmessage = function(event){
                     }
                     else
                     {
-                        uno.x = 800,uno.y = 200;
-                        app.stage.addChild(uno);
+                        call_uno.x = 800,call_uno.y = 200;
+                        app.stage.addChild(call_uno);
                         xgdjs(0);
                     }
                 }
@@ -1733,8 +1934,8 @@ socket.onmessage = function(event){
                     }
                     else
                     {
-                        uno.x = 300,uno.y = 300;
-                        app.stage.addChild(uno);
+                        call_uno.x = 300,call_uno.y = 300;
+                        app.stage.addChild(call_uno);
                         xgdjs(0);
                     }
                 }
@@ -1769,8 +1970,8 @@ socket.onmessage = function(event){
                     }
                     else
                     {
-                        uno.x = 600,uno.y = 400;
-                        app.stage.addChild(uno);
+                        call_uno.x = 600,call_uno.y = 400;
+                        app.stage.addChild(call_uno);
                         xgdjs(0);
                     }
                 }
@@ -1808,8 +2009,8 @@ socket.onmessage = function(event){
                     }
                     else
                     {
-                        uno.x = 800,uno.y = 200;
-                        app.stage.addChild(uno);
+                        call_uno.x = 800,call_uno.y = 200;
+                        app.stage.addChild(call_uno);
                         xgdjs(0);
                     }
                 }
@@ -1844,8 +2045,8 @@ socket.onmessage = function(event){
                     }
                     else
                     {
-                        uno.x = 300,uno.y = 300;
-                        app.stage.addChild(uno);
+                        call_uno.x = 300,call_uno.y = 300;
+                        app.stage.addChild(call_uno);
                         xgdjs(0);
                     }
                 }
@@ -1880,8 +2081,8 @@ socket.onmessage = function(event){
                     }
                     else
                     {
-                        uno.x = 600,uno.y = 400;
-                        app.stage.addChild(uno);
+                        call_uno.x = 600,call_uno.y = 400;
+                        app.stage.addChild(call_uno);
                         xgdjs(0);
                     }
                 }
@@ -1916,8 +2117,8 @@ socket.onmessage = function(event){
                     }
                     else
                     {
-                        uno.x = 1000,uno.y = 300;
-                        app.stage.addChild(uno);
+                        call_uno.x = 1000,call_uno.y = 300;
+                        app.stage.addChild(call_uno);
                         xgdjs(0);
                     }
                 }
@@ -1955,8 +2156,8 @@ socket.onmessage = function(event){
                     }
                     else
                     {
-                        uno.x = 300,uno.y = 300;
-                        app.stage.addChild(uno);
+                        call_uno.x = 300,call_uno.y = 300;
+                        app.stage.addChild(call_uno);
                         xgdjs(0);
                     }
                 }
@@ -1991,8 +2192,8 @@ socket.onmessage = function(event){
                     }
                     else
                     {
-                        uno.x = 600,uno.y = 400;
-                        app.stage.addChild(uno);
+                        call_uno.x = 600,call_uno.y = 400;
+                        app.stage.addChild(call_uno);
                         xgdjs(0);
                     }
                 }
@@ -2027,8 +2228,8 @@ socket.onmessage = function(event){
                     }
                     else
                     {
-                        uno.x = 1000,uno.y = 300;
-                        app.stage.addChild(uno);
+                        call_uno.x = 1000,call_uno.y = 300;
+                        app.stage.addChild(call_uno);
                         xgdjs(0);
                     }
                 }
@@ -2063,8 +2264,8 @@ socket.onmessage = function(event){
                     }
                     else
                     {
-                        uno.x = 800,uno.y = 200;
-                        app.stage.addChild(uno);
+                        call_uno.x = 800,call_uno.y = 200;
+                        app.stage.addChild(call_uno);
                         xgdjs(0);
                     }
                 }
