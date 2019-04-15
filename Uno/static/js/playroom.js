@@ -674,6 +674,37 @@ function frank(){
     app.stage.addChild(rank)
     rank.x = 400,rank.y = 100;
 }
+//出牌、点击按钮效果倒计时
+function xgdjs(x){
+    var clock = '';
+    var nums = 1;
+    clock = setInterval(doLoop,1000);
+    function doLoop(){
+        nums--;
+        if(nums <= 0){
+            clearInterval(clock);
+            nums = 1;
+            if(x == 11)
+                app.stage.removeChild(select_green);
+            else if(x == 12)
+                app.stage.removeChild(select_blue);
+            else if(x == 13)
+                app.stage.removeChild(select_red);
+            else if(x == 14)
+                app.stage.removeChild(select_yellow);
+            else if(x == 21)
+                app.stage.removeChild(two_cards);
+            else if(x == 22)
+                app.stage.removeChild(four_cards);
+            else if(x == 3)
+                app.stage.removeChild(reverse);
+            else if(x == 4)
+                app.stage.removeChild(skip);
+            else if(x == 0)
+                app.stage.removeChild(uno);
+        }
+    }
+} 
 //榜单倒计时
 function bddjs(){
     var clock = '';
@@ -683,7 +714,7 @@ function bddjs(){
         nums--;
         if(nums <= 0){
             clearInterval(clock);
-            nums = 10;
+            nums = 5;
             app.stage.removeChild(rank)
             app.stage.addChild(ready_people);
             app.stage.addChild(ready_people_text);
@@ -937,15 +968,10 @@ bei.y = 400;
 bei.rotation = 4.71;
 app.stage.addChild(bei);
 
-
 for(var i = 0;i < 3;i++)
 {
     addcard(basepath,bluepath,'0.jpg',"center");
 }
-
-app.stage.addChild(select_red);
-select_red.x = 600;
-select_red.y = 400;
 
 app.stage.addChild(ssz);
 app.stage.addChild(color_container);
@@ -1453,13 +1479,596 @@ socket.onmessage = function(event){
                 }
             }
         }
-        else if(data.incident == 2)
-        {
-
-        }
         else
         {
-
+            if(my_dir == "dong")
+            {
+                if(data.position == 0)
+                {
+                    if(data.incident == 2)
+                    {
+                        if(data.wsc == "yellow")
+                        {
+                            select_yellow.x = 600,select_yellow.y = 400;
+                            app.stage.addChild(select_yellow);
+                            xgdjs(14);
+                        }
+                        else if(data.wsc == "red")
+                        {
+                            select_red.x = 600,select_red.y = 400;
+                            app.stage.addChild(select_red);
+                            xgdjs(13);
+                        }
+                        else if(data.wsc == "blue")
+                        {
+                            select_blue.x = 600,select_blue.y = 400;
+                            app.stage.addChild(select_blue);
+                            xgdjs(12);
+                        }
+                        else
+                        {
+                            select_green.x = 600,select_green.y = 400;
+                            app.stage.addChild(select_green);
+                            xgdjs(11);
+                        }
+                    }
+                    else
+                    {
+                        uno.x = 600,uno.y = 400;
+                        app.stage.addChild(uno);
+                        xgdjs(0);
+                    }
+                }
+                else if(data.position == 1)
+                {
+                    if(data.incident == 2)
+                    {
+                        if(data.wsc == "yellow")
+                        {
+                            select_yellow.x = 1000,select_yellow.y = 300;
+                            app.stage.addChild(select_yellow);
+                            xgdjs(14);
+                        }
+                        else if(data.wsc == "red")
+                        {
+                            select_red.x = 1000,select_red.y = 300;
+                            app.stage.addChild(select_red);
+                            xgdjs(13);
+                        }
+                        else if(data.wsc == "blue")
+                        {
+                            select_blue.x = 1000,select_blue.y = 300;
+                            app.stage.addChild(select_blue);
+                            xgdjs(12);
+                        }
+                        else
+                        {
+                            select_green.x = 1000,select_green.y = 300;
+                            app.stage.addChild(select_green);
+                            xgdjs(11);
+                        }
+                    }
+                    else
+                    {
+                        uno.x = 1000,uno.y = 300;
+                        app.stage.addChild(uno);
+                        xgdjs(0);
+                    }
+                }
+                else if(data.position == 2)
+                {
+                    if(data.incident == 2)
+                    {
+                        if(data.wsc == "yellow")
+                        {
+                            select_yellow.x = 800,select_yellow.y = 200;
+                            app.stage.addChild(select_yellow);
+                            xgdjs(14);
+                        }
+                        else if(data.wsc == "red")
+                        {
+                            select_red.x = 800,select_red.y = 200;
+                            app.stage.addChild(select_red);
+                            xgdjs(13);
+                        }
+                        else if(data.wsc == "blue")
+                        {
+                            select_blue.x = 800,select_blue.y = 200;
+                            app.stage.addChild(select_blue);
+                            xgdjs(12);
+                        }
+                        else
+                        {
+                            select_green.x = 800,select_green.y = 200;
+                            app.stage.addChild(select_green);
+                            xgdjs(11);
+                        }
+                    }
+                    else
+                    {
+                        uno.x = 800,uno.y = 200;
+                        app.stage.addChild(uno);
+                        xgdjs(0);
+                    }
+                }
+                else
+                {
+                    if(data.incident == 2)
+                    {
+                        if(data.wsc == "yellow")
+                        {
+                            select_yellow.x = 300,select_yellow.y = 300;
+                            app.stage.addChild(select_yellow);
+                            xgdjs(14);
+                        }
+                        else if(data.wsc == "red")
+                        {
+                            select_red.x = 300,select_red.y = 300;
+                            app.stage.addChild(select_red);
+                            xgdjs(13);
+                        }
+                        else if(data.wsc == "blue")
+                        {
+                            select_blue.x = 300,select_blue.y = 300;
+                            app.stage.addChild(select_blue);
+                            xgdjs(12);
+                        }
+                        else
+                        {
+                            select_green.x = 300,select_green.y = 300;
+                            app.stage.addChild(select_green);
+                            xgdjs(11);
+                        }
+                    }
+                    else
+                    {
+                        uno.x = 300,uno.y = 300;
+                        app.stage.addChild(uno);
+                        xgdjs(0);
+                    }
+                }
+            }
+            else if(my_dir == "nan")
+            {
+                if(data.position == 0)
+                {
+                    if(data.incident == 2)
+                    {
+                        if(data.wsc == "yellow")
+                        {
+                            select_yellow.x = 1000,select_yellow.y = 300;
+                            app.stage.addChild(select_yellow);
+                            xgdjs(14);
+                        }
+                        else if(data.wsc == "red")
+                        {
+                            select_red.x = 1000,select_red.y = 300;
+                            app.stage.addChild(select_red);
+                            xgdjs(13);
+                        }
+                        else if(data.wsc == "blue")
+                        {
+                            select_blue.x = 1000,select_blue.y = 300;
+                            app.stage.addChild(select_blue);
+                            xgdjs(12);
+                        }
+                        else
+                        {
+                            select_green.x = 1000,select_green.y = 300;
+                            app.stage.addChild(select_green);
+                            xgdjs(11);
+                        }
+                    }
+                    else
+                    {
+                        uno.x = 1000,uno.y = 300;
+                        app.stage.addChild(uno);
+                        xgdjs(0);
+                    }
+                }
+                else if(data.position == 1)
+                {
+                    if(data.incident == 2)
+                    {
+                        if(data.wsc == "yellow")
+                        {
+                            select_yellow.x = 800,select_yellow.y = 200;
+                            app.stage.addChild(select_yellow);
+                            xgdjs(14);
+                        }
+                        else if(data.wsc == "red")
+                        {
+                            select_red.x = 800,select_red.y = 200;
+                            app.stage.addChild(select_red);
+                            xgdjs(13);
+                        }
+                        else if(data.wsc == "blue")
+                        {
+                            select_blue.x = 800,select_blue.y = 200;
+                            app.stage.addChild(select_blue);
+                            xgdjs(12);
+                        }
+                        else
+                        {
+                            select_green.x = 800,select_green.y = 200;
+                            app.stage.addChild(select_green);
+                            xgdjs(11);
+                        }
+                    }
+                    else
+                    {
+                        uno.x = 800,uno.y = 200;
+                        app.stage.addChild(uno);
+                        xgdjs(0);
+                    }
+                }
+                else if(data.position == 2)
+                {
+                    if(data.incident == 2)
+                    {
+                        if(data.wsc == "yellow")
+                        {
+                            select_yellow.x = 300,select_yellow.y = 300;
+                            app.stage.addChild(select_yellow);
+                            xgdjs(14);
+                        }
+                        else if(data.wsc == "red")
+                        {
+                            select_red.x = 300,select_red.y = 300;
+                            app.stage.addChild(select_red);
+                            xgdjs(13);
+                        }
+                        else if(data.wsc == "blue")
+                        {
+                            select_blue.x = 300,select_blue.y = 300;
+                            app.stage.addChild(select_blue);
+                            xgdjs(12);
+                        }
+                        else
+                        {
+                            select_green.x = 300,select_green.y = 300;
+                            app.stage.addChild(select_green);
+                            xgdjs(11);
+                        }
+                    }
+                    else
+                    {
+                        uno.x = 300,uno.y = 300;
+                        app.stage.addChild(uno);
+                        xgdjs(0);
+                    }
+                }
+                else
+                {
+                    if(data.incident == 2)
+                    {
+                        if(data.wsc == "yellow")
+                        {
+                            select_yellow.x = 600,select_yellow.y = 400;
+                            app.stage.addChild(select_yellow);
+                            xgdjs(14);
+                        }
+                        else if(data.wsc == "red")
+                        {
+                            select_red.x = 600,select_red.y = 400;
+                            app.stage.addChild(select_red);
+                            xgdjs(13);
+                        }
+                        else if(data.wsc == "blue")
+                        {
+                            select_blue.x = 600,select_blue.y = 400;
+                            app.stage.addChild(select_blue);
+                            xgdjs(12);
+                        }
+                        else
+                        {
+                            select_green.x = 600,select_green.y = 400;
+                            app.stage.addChild(select_green);
+                            xgdjs(11);
+                        }
+                    }
+                    else
+                    {
+                        uno.x = 600,uno.y = 400;
+                        app.stage.addChild(uno);
+                        xgdjs(0);
+                    }
+                }
+            }
+            else if(my_dir == "xi")
+            {
+                if(data.position == 0)
+                {
+                    if(data.incident == 2)
+                    {
+                        if(data.wsc == "yellow")
+                        {
+                            select_yellow.x = 800,select_yellow.y = 200;
+                            app.stage.addChild(select_yellow);
+                            xgdjs(14);
+                        }
+                        else if(data.wsc == "red")
+                        {
+                            select_red.x = 800,select_red.y = 200;
+                            app.stage.addChild(select_red);
+                            xgdjs(13);
+                        }
+                        else if(data.wsc == "blue")
+                        {
+                            select_blue.x = 800,select_blue.y = 200;
+                            app.stage.addChild(select_blue);
+                            xgdjs(12);
+                        }
+                        else
+                        {
+                            select_green.x = 800,select_green.y = 200;
+                            app.stage.addChild(select_green);
+                            xgdjs(11);
+                        }
+                    }
+                    else
+                    {
+                        uno.x = 800,uno.y = 200;
+                        app.stage.addChild(uno);
+                        xgdjs(0);
+                    }
+                }
+                else if(data.position == 1)
+                {
+                    if(data.incident == 2)
+                    {
+                        if(data.wsc == "yellow")
+                        {
+                            select_yellow.x = 300,select_yellow.y = 300;
+                            app.stage.addChild(select_yellow);
+                            xgdjs(14);
+                        }
+                        else if(data.wsc == "red")
+                        {
+                            select_red.x = 300,select_red.y = 300;
+                            app.stage.addChild(select_red);
+                            xgdjs(13);
+                        }
+                        else if(data.wsc == "blue")
+                        {
+                            select_blue.x = 300,select_blue.y = 300;
+                            app.stage.addChild(select_blue);
+                            xgdjs(12);
+                        }
+                        else
+                        {
+                            select_green.x = 300,select_green.y = 300;
+                            app.stage.addChild(select_green);
+                            xgdjs(11);
+                        }
+                    }
+                    else
+                    {
+                        uno.x = 300,uno.y = 300;
+                        app.stage.addChild(uno);
+                        xgdjs(0);
+                    }
+                }
+                else if(data.position == 2)
+                {
+                    if(data.incident == 2)
+                    {
+                        if(data.wsc == "yellow")
+                        {
+                            select_yellow.x = 600,select_yellow.y = 400;
+                            app.stage.addChild(select_yellow);
+                            xgdjs(14);
+                        }
+                        else if(data.wsc == "red")
+                        {
+                            select_red.x = 600,select_red.y = 400;
+                            app.stage.addChild(select_red);
+                            xgdjs(13);
+                        }
+                        else if(data.wsc == "blue")
+                        {
+                            select_blue.x = 600,select_blue.y = 400;
+                            app.stage.addChild(select_blue);
+                            xgdjs(12);
+                        }
+                        else
+                        {
+                            select_green.x = 600,select_green.y = 400;
+                            app.stage.addChild(select_green);
+                            xgdjs(11);
+                        }
+                    }
+                    else
+                    {
+                        uno.x = 600,uno.y = 400;
+                        app.stage.addChild(uno);
+                        xgdjs(0);
+                    }
+                }
+                else
+                {
+                    if(data.incident == 2)
+                    {
+                        if(data.wsc == "yellow")
+                        {
+                            select_yellow.x = 1000,select_yellow.y = 300;
+                            app.stage.addChild(select_yellow);
+                            xgdjs(14);
+                        }
+                        else if(data.wsc == "red")
+                        {
+                            select_red.x = 1000,select_red.y = 300;
+                            app.stage.addChild(select_red);
+                            xgdjs(13);
+                        }
+                        else if(data.wsc == "blue")
+                        {
+                            select_blue.x = 1000,select_blue.y = 300;
+                            app.stage.addChild(select_blue);
+                            xgdjs(12);
+                        }
+                        else
+                        {
+                            select_green.x = 1000,select_green.y = 300;
+                            app.stage.addChild(select_green);
+                            xgdjs(11);
+                        }
+                    }
+                    else
+                    {
+                        uno.x = 1000,uno.y = 300;
+                        app.stage.addChild(uno);
+                        xgdjs(0);
+                    }
+                }
+            }
+            else
+            {
+                if(data.position == 0)
+                {
+                    if(data.incident == 2)
+                    {
+                        if(data.wsc == "yellow")
+                        {
+                            select_yellow.x = 300,select_yellow.y = 300;
+                            app.stage.addChild(select_yellow);
+                            xgdjs(14);
+                        }
+                        else if(data.wsc == "red")
+                        {
+                            select_red.x = 300,select_red.y = 300;
+                            app.stage.addChild(select_red);
+                            xgdjs(13);
+                        }
+                        else if(data.wsc == "blue")
+                        {
+                            select_blue.x = 300,select_blue.y = 300;
+                            app.stage.addChild(select_blue);
+                            xgdjs(12);
+                        }
+                        else
+                        {
+                            select_green.x = 300,select_green.y = 300;
+                            app.stage.addChild(select_green);
+                            xgdjs(11);
+                        }
+                    }
+                    else
+                    {
+                        uno.x = 300,uno.y = 300;
+                        app.stage.addChild(uno);
+                        xgdjs(0);
+                    }
+                }
+                else if(data.position == 1)
+                {
+                    if(data.incident == 2)
+                    {
+                        if(data.wsc == "yellow")
+                        {
+                            select_yellow.x = 600,select_yellow.y = 400;
+                            app.stage.addChild(select_yellow);
+                            xgdjs(14);
+                        }
+                        else if(data.wsc == "red")
+                        {
+                            select_red.x = 600,select_red.y = 400;
+                            app.stage.addChild(select_red);
+                            xgdjs(13);
+                        }
+                        else if(data.wsc == "blue")
+                        {
+                            select_blue.x = 600,select_blue.y = 400;
+                            app.stage.addChild(select_blue);
+                            xgdjs(12);
+                        }
+                        else
+                        {
+                            select_green.x = 600,select_green.y = 400;
+                            app.stage.addChild(select_green);
+                            xgdjs(11);
+                        }
+                    }
+                    else
+                    {
+                        uno.x = 600,uno.y = 400;
+                        app.stage.addChild(uno);
+                        xgdjs(0);
+                    }
+                }
+                else if(data.position == 2)
+                {
+                    if(data.incident == 2)
+                    {
+                        if(data.wsc == "yellow")
+                        {
+                            select_yellow.x = 1000,select_yellow.y = 300;
+                            app.stage.addChild(select_yellow);
+                            xgdjs(14);
+                        }
+                        else if(data.wsc == "red")
+                        {
+                            select_red.x = 1000,select_red.y = 300;
+                            app.stage.addChild(select_red);
+                            xgdjs(13);
+                        }
+                        else if(data.wsc == "blue")
+                        {
+                            select_blue.x = 1000,select_blue.y = 300;
+                            app.stage.addChild(select_blue);
+                            xgdjs(12);
+                        }
+                        else
+                        {
+                            select_green.x = 1000,select_green.y = 300;
+                            app.stage.addChild(select_green);
+                            xgdjs(11);
+                        }
+                    }
+                    else
+                    {
+                        uno.x = 1000,uno.y = 300;
+                        app.stage.addChild(uno);
+                        xgdjs(0);
+                    }
+                }
+                else
+                {
+                    if(data.incident == 2)
+                    {
+                        if(data.wsc == "yellow")
+                        {
+                            select_yellow.x = 800,select_yellow.y = 200;
+                            app.stage.addChild(select_yellow);
+                            xgdjs(14);
+                        }
+                        else if(data.wsc == "red")
+                        {
+                            select_red.x = 800,select_red.y = 200;
+                            app.stage.addChild(select_red);
+                            xgdjs(13);
+                        }
+                        else if(data.wsc == "blue")
+                        {
+                            select_blue.x = 800,select_blue.y = 200;
+                            app.stage.addChild(select_blue);
+                            xgdjs(12);
+                        }
+                        else
+                        {
+                            select_green.x = 800,select_green.y = 200;
+                            app.stage.addChild(select_green);
+                            xgdjs(11);
+                        }
+                    }
+                    else
+                    {
+                        uno.x = 800,uno.y = 200;
+                        app.stage.addChild(uno);
+                        xgdjs(0);
+                    }
+                }
+            }
         }
         break;
     }
