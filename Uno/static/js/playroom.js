@@ -144,6 +144,7 @@ var yellowbutton,yellowbutton_text,redbutton,redbutton_text,greenbutton,greenbut
 function yellowclick()
 {
     app.stage.removeChild(color_container);
+    bsnums = -10;
     if(my_dir == "dong")
         var x = 0;
     else if(my_dir == "bei")
@@ -169,6 +170,7 @@ yellowbutton_text.on('pointertap',yellowclick);
 
 function redclick(){
     app.stage.removeChild(color_container);
+    bsnums = -10;
     if(my_dir == "dong")
         var x = 0;
     else if(my_dir == "bei")
@@ -195,6 +197,7 @@ redbutton_text.on('pointertap',redclick);
 function greenclick()
 {
     app.stage.removeChild(color_container);
+    bsnums = -10;
     if(my_dir == "dong")
         var x = 0;
     else if(my_dir == "bei")
@@ -221,6 +224,7 @@ greenbutton_text.on('pointertap',greenclick);
 function blueclick()
 {
     app.stage.removeChild(color_container);
+    bsnums = -10;
     if(my_dir == "dong")
         var x = 0;
     else if(my_dir == "bei")
@@ -331,6 +335,7 @@ function outcardclick()
     app.stage.removeChild(outcard_text);
     app.stage.removeChild(getcard);
     app.stage.removeChild(getcard_text);
+    bsnums = -10;
     if(my_dir == "dong")
         var x = 0;
     else if(my_dir == "bei")
@@ -363,6 +368,7 @@ function getcardclick()
     app.stage.removeChild(outcard_text);
     app.stage.removeChild(getcard);
     app.stage.removeChild(getcard_text);
+    bsnums = -10;
     if(my_dir == "dong")
         var x = 0;
     else if(my_dir == "bei")
@@ -393,6 +399,7 @@ function unoclick()
 {
     app.stage.removeChild(uno);
     app.stage.removeChild(uno_text);
+    bsnums = -10;
     if(my_dir == "dong")
         var x = 0;
     else if(my_dir == "bei")
@@ -550,16 +557,17 @@ bei.addChild(bei_exit);
 
 //倒计时效果
 //比赛倒计时
-function bsdjs(){
+var bsnums;
+function bsdjs(k){
     var clock = '';
-    var nums = 10;
+    bsnums = 9;
     var countdown1,countdown2;
     var flag = -1;
     clock = setInterval(doLoop, 1000);
     function doLoop(){
-        nums--;
-        if(nums >  0){
-            var x = nums + ""
+        bsnums--;
+        if(bsnums >  0){
+            var x = bsnums + ""
             if(flag != 0)
             {
                 if(flag == -1)
@@ -584,7 +592,8 @@ function bsdjs(){
                 countdown2.x = 900;
                 countdown2.y = 400;
             }
-        } else{
+        } 
+        else{
             clearInterval(clock)
             if(flag != 0)
             {
@@ -595,14 +604,21 @@ function bsdjs(){
                 app.stage.removeChild(countdown1);
             }
             flag = -1;
-            nums = 10;//重置时间
-            /*
-            默认选择摸牌操作
-            */
+            if(bsnums == 0)
+            {
+                if(k == 0)
+                    blueclick();
+                if(k == 1)
+                    getcardclick();
+                if(k == -1)
+                    unoclick();
+            }
+            bsnums = 9;//重置时间
         }
     }
 }
 
+bsdjs(0);
 //比赛结束后的榜单
 var xs_one,gr_one,xs_two,gr_two,xs_three,gr_three,xs_four,gr_four;
 var rank = new container()
@@ -1668,15 +1684,18 @@ socket.onmessage = function(event){
                     app.stage.addChild(outcard_text);
                     app.stage.addChild(getcard);
                     app.stage.addChild(getcard_text);
+                    bsdjs(-1)
                 }
                 if(data.sc == true)
                 {
                     app.stage.addChild(color_container);
+                    bsdjs(0);
                 }
                 if(data.uno == true)
                 {
                     app.stage.addChild(uno);
                     app.stage.addChild(uno_text);
+                    bsdjs(1);
                 }
             }
         }
