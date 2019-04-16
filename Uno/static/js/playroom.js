@@ -618,7 +618,6 @@ function bsdjs(k){
     }
 }
 
-bsdjs(0);
 //比赛结束后的榜单
 var xs_one,gr_one,xs_two,gr_two,xs_three,gr_three,xs_four,gr_four;
 var rank = new container()
@@ -999,7 +998,7 @@ socket.onmessage = function(event){
     data.Type
     switch(data.Type){
     case 0: //加入
-        if(data.host == true)
+        if(data.host == true) //是玩家自己加入房间，则通过确认玩家的位置将其他几个玩家的位置确定
         {
             if(data.position == 0)//表示东
             {
@@ -1101,8 +1100,13 @@ socket.onmessage = function(event){
                 remaining_dong.x = -100,remaining_dong.y = 150;
                 dong.x = 1050,dong.y = 400;
             }
+            if(data.state == false)
+            {
+                app.stage.addChild(ready_people);
+                app.stage.addChild(ready_people_text);
+            }
         }
-        else
+        else //如果是其他玩家加入房间
         {
             if(data.position == 0)//表示东
             {
@@ -1163,7 +1167,7 @@ socket.onmessage = function(event){
         }
         break;
     case 1: //离开
-        if(data.state == true)
+        if(data.state == true) //如果在游戏状态中出现玩家离开，则在相应的位置显示离开状态
         {
             if(data.position == 0)
                 dong.addChild(dong_exit);
@@ -1174,7 +1178,7 @@ socket.onmessage = function(event){
             else
                 nan.addChild(nan_exit);
         }
-        else
+        else //如果玩家是在非游戏状态离开，则移除玩家名即可
         {
             if(data.position == 0)
                 dong.removeChild(dong_name);
@@ -1383,7 +1387,7 @@ socket.onmessage = function(event){
         bddjs();
         break;
     case 4: //比赛信息
-        if(data.direction != direction)
+        if(data.direction != direction)//修改指针方向，是顺时针还是逆时针
         {
             if(direction == 1)
             {
@@ -1398,12 +1402,13 @@ socket.onmessage = function(event){
                 app.stage.addChild(ssz);
             }
         }
-        if(data.incident == 0 || data.incident == 1)
+        if(data.incident == 0 || data.incident == 1) //0表示出牌1表示摸牌
         {
-            if(data.incident == 0)
+            if(data.incident == 0 && data.state == false
+                ) //出牌事件
             {
-                cardsmsg(data.ccolor,data.cstate,data.cnumber,"center");
-                if(data.ccolor == "z" && data.cstate == "wildraw")
+                cardsmsg(data.ccolor,data.cstate,data.cnumber,"center"); //将出牌信息放到出牌堆中
+                if(data.ccolor == "z" && data.cstate == "wildraw") //出牌为+4状态的展示
                 {
                     if(my_dir =="dong")
                     {
@@ -1452,7 +1457,7 @@ socket.onmessage = function(event){
                     app.stage.addChild(four_cards);
                     xgdjs(22);
                 }
-                else if(data.cnumber == "-1" && data.ccolor != "z")
+                else if(data.cnumber == "-1" && data.ccolor != "z") //出牌为功能牌的展示
                 {
                     if(data.cstate == "skip")
                     {
@@ -1603,11 +1608,11 @@ socket.onmessage = function(event){
                     }
                 }
             }
-            if(my_dir == ps[data.position])
+            if(my_dir == ps[data.position]) //事件为玩家时更新手里的牌和数量的方式
             {
                 if(my_dir == "dong")
                 {
-                    dong_number = data.cardsnumber;
+                    dong_number = new PIXI.Text(data.cardsnumber);
                     dongcards = [];
                     for(var i = 0;i < data.cards.length;i++)
                     {
@@ -1618,7 +1623,7 @@ socket.onmessage = function(event){
                 }
                 else if(my_dir == "nan")
                 {
-                    nan_number = data.cardsnumber;
+                    nan_number = new PIXI.Text(data.cardsnumber);
                     nancards = [];
                     for(var i = 0;i < data.cards.length;i++)
                     {
@@ -1629,7 +1634,7 @@ socket.onmessage = function(event){
                 }
                 else if(my_dir == "bei")
                 {
-                    bei_number = data.cardsnumber;
+                    bei_number = new PIXI.Text(data.cardsnumber);
                     beicards = [];
                     for(var i = 0;i < data.cards.length;i++)
                     {
@@ -1640,7 +1645,7 @@ socket.onmessage = function(event){
                 }
                 else 
                 {
-                    xi_number = data.cardsnumber;
+                    xi_number = new PIXI.Text(data.cardsnumber);
                     xicards = [];
                     for(var i = 0;i < data.cards.length;i++)
                     {
@@ -1650,16 +1655,16 @@ socket.onmessage = function(event){
                     }
                 }
             }
-            else
+            else//事件为其他玩家时更新手里的牌和数量的方式
             {
                 if(data.position == 0)
-                    dong_number = data.cardsnumber;
+                    dong_number = new PIXI.Text(data.cardsnumber);
                 else if(data.position == 1)
-                    bei_number = data.cardsnumber;
+                    bei_number = new PIXI.Text(data.cardsnumber);
                 else if(data.position == 2)
-                    xi_number = data.cardsnumber;
+                    xi_number = new PIXI.Text(data.cardsnumber);
                 else
-                    nan_number = data.cardsnumber;
+                    nan_number = new PIXI.Text(data.cardsnumber);
                 for(var i = 0;i < data.cardsnumber;i++)
                 {
                     var one = new Sprite.fromImage('../static/img/outras/uno_back.jpg')
@@ -1676,7 +1681,7 @@ socket.onmessage = function(event){
                         nan_container.addChild(one);
                 }
             }
-            if(data.outpeople == true)
+            if(data.outpeople == true) //接下来操作的用户为自己时
             {
                 if(data.sc == false && data.uno == false)
                 {
