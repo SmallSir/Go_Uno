@@ -42,35 +42,6 @@ type JoinRoom struct {
 	PlayerName string `json:"playername"` //加入玩家的名字
 	Host       bool   `json:"host"`       //是否为当事人
 	State      bool   `json:"state"`      //是否在游戏中重新加入,true表示在游戏中重新进入，false表示没有在游戏中进入
-	Direction  int    `json:"direction"`  //方向
-	OutPeople  bool   `json:"outpeople"`  //是否轮到操作
-	Ccolor     string `json:"ccolor"`     //事件为出牌时牌的颜色
-	Cstate     string `json:"cstate"`     //事件为出牌时牌的状态
-	Cnumber    string `json:"cnumber"`    //事件为出牌时牌的号码
-
-	Join0        bool   `json:"join0"`         //东玩家是否离开
-	PlayerId0    string `json:"playerid0"`     //东玩家的id
-	PlayerName0  string `json:"playername0"`   //东玩家名
-	PlayerNumer0 int    `json:"playernumber0"` //东玩家拥有的牌数量
-	Card0        []Card `json:"card0"`         //东玩家的手牌
-
-	Join1        bool   `json:"join1"`         //北玩家是否离开
-	PlayerId1    string `json:"playerid1"`     //北玩家的id
-	PlayerName1  string `json:"playername1"`   //北玩家名
-	PlayerNumer1 int    `json:"playernumber1"` //北玩家拥有的牌数量
-	Card1        []Card `json:"card1"`         //北玩家的手牌
-
-	Join2        bool   `json:"join2"`         //西玩家是否离开
-	PlayerId2    string `json:"playerid2"`     //西玩家的id
-	PlayerName2  string `json:"playername2"`   //西玩家名
-	PlayerNumer2 int    `json:"playernumber2"` //西玩家拥有的牌数量
-	Card2        []Card `json:"card2"`         //西玩家的手牌
-
-	Join3        bool   `json:"join3"`         //南玩家是否离开
-	PlayerId3    string `json:"playerid3"`     //南玩家的id
-	PlayerName3  string `json:"playername3"`   //南玩家名
-	PlayerNumer3 int    `json:"playernumber3"` //南玩家拥有的牌数量
-	Card3        []Card `json:"card3"`         //南玩家的手牌
 }
 
 //离开房间返回的数据格式
@@ -188,4 +159,5 @@ type Reincident struct {
 	Uno         bool   `json:"uno"`         //是否需要UNO
 	Wsc         string `json:"wsc"`         //事件为选色时选择的颜色
 	Wuno        bool   `json:wuno`          //事件为喊UNO时喊出UNO
+	State       bool   `json:state`         //是否是玩家重连
 }
