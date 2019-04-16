@@ -30,13 +30,13 @@ function check()
 
 
 //鼠标与纸牌的交互
-function cardout(){
+function cardout(){ //鼠标移除
     this.y = this.y + 20;
 }
-function cardover(){
+function cardover(){ //鼠标经过
     this.y = this.y - 20;
 }
-function cardclick(){
+function cardclick(){ //鼠标点击
     if(my_dir == "nan")
         inde = nan_container.getChildIndex(this);
     else if(my_dir == "dong")
@@ -498,62 +498,60 @@ var exit_nan = new PIXI.Text("离开");
 var exit_xi = new PIXI.Text("离开");
 var exit_bei = new PIXI.Text("离开");
 
+//默认初始状态即生成一个画布，和一个出牌的牌堆
 var app = new PIXI.Application(document.documentElement.clientWidth,document.documentElement.clientHeight, {backgroundColor : 0x1099bb});
 document.body.appendChild(app.view);
 
 app.stage.addChild(center_cards);
-//玩家这个位置牌堆x500,y530,牌的大小0.4,y相等,x为18相距
-//其他人的牌比例均是0.3,左手边x150，y200,x相等,y间距18,rotation1.57
-//对面x800,y100,x相距18，y相等,比例0.3,rotation3.14
-//右手边x1050,y300,rotation4.71，比例0.3,x相等，y相距18
-//随机方向(Math.random()*(6-0) + 0).toFixed(3)
-//东南西北标记 玩家x400,y500 左手边rotation1.57,x150,y100 对面rotation3.14,x900,y100
-//右手边x1050 y300,rotation4.71
-
-//效果展示位置在x600,y350
-
-//牌数展示 自己x500,y580 对面x900y50rotation3.14 左手x100y200rotation1.57 右手x1150y400rotation4.71
 
 //东南西北四个对象
 var dong = new container();
 dong.addChild(dong_container);
 dong.addChild(dongmark);
 dong.addChild(remaining_dong);
+dong.addChild(dong_exit);
+/*测试样例
 dong_number = new PIXI.Text("8");
 dong_name = new PIXI.Text("测试1");
 dong.addChild(dong_number);
 dong.addChild(dong_name);
-dong.addChild(dong_exit);
+*/
 
 var xi = new container();
 xi.addChild(xi_container);
 xi.addChild(ximark);
 xi.addChild(remaining_xi);
+xi.addChild(xi_exit);
+/*测试样例
 xi_name = new PIXI.Text("测试2");
 xi_number = new PIXI.Text("10");
 xi.addChild(xi_number);
 xi.addChild(xi_name);
-xi.addChild(xi_exit);
+*/
 
 var nan = new container();
 nan.addChild(nan_container);
 nan.addChild(nanmark);
 nan.addChild(remaining_nan);
+nan.addChild(nan_exit);
+/*测试样例
 nan_number = new PIXI.Text("20");
 nan_name = new PIXI.Text("WhaleFall");
 nan.addChild(nan_number);
 nan.addChild(nan_name);
-nan.addChild(nan_exit);
+*/
 
 var bei = new container();
 bei.addChild(bei_container);
 bei.addChild(beimark);
 bei.addChild(remaining_bei);
+bei.addChild(bei_exit);
+/*测试样例
 bei_number = new PIXI.Text("15");
 bei_name = new PIXI.Text("吃葡萄不吐葡萄皮");
 bei.addChild(bei_number);
 bei.addChild(bei_name);
-bei.addChild(bei_exit);
+*/
 
 //倒计时效果
 //比赛倒计时
@@ -689,6 +687,7 @@ function frank(){
     app.stage.addChild(rank)
     rank.x = 400,rank.y = 100;
 }
+
 //出牌、点击按钮效果倒计时
 function xgdjs(x){
     var clock = '';
@@ -720,6 +719,7 @@ function xgdjs(x){
         }
     }
 } 
+
 //榜单倒计时
 function bddjs(){
     var clock = '';
@@ -746,7 +746,9 @@ var greenpath = 'GreenCard/';
 var yellowpath = 'YellowCard/';
 var specialpath = 'EspecialCard/';
 var unobackpath = '../static/img/outras/uno_back.jpg';
-my_dir = "dong";
+var my_dir;
+
+//添加牌进入牌堆
 function addcard(base,color,s,flag,x)
 {
     var one = new Sprite.fromImage(base+color+s);
@@ -779,6 +781,8 @@ function addcard(base,color,s,flag,x)
             xi_container.addChild(one);
     }
 }
+
+//实现确定牌的内容
 function cardsmsg(color,state,number,flag,i){
     if(color == "blue")//是蓝牌
     {
@@ -904,6 +908,8 @@ function cardsmsg(color,state,number,flag,i){
             addcard(basepath,specialpath,'j.jpg',flag,i);
     }
 }
+
+/*测试样例
 for(var i = 0;i < 15;i++)
 {
     addcard(basepath,bluepath,'0.jpg',"dong",i);
@@ -924,7 +930,9 @@ dong_name.y = 150;
 dong.x = 400
 dong.y = 500;
 app.stage.addChild(dong);
+*/
 
+/*测试样例
 for(var i = 0;i < 8;i++)
 {
     var one = new Sprite.fromImage('../static/img/outras/uno_back.jpg')
@@ -943,7 +951,9 @@ xi.x = 150;
 xi.y = 150;
 xi.rotation = 1.57;
 app.stage.addChild(xi);
+*/
 
+/*测试样例
 for(var i = 0;i < 50;i++)
 {
     var one = new Sprite.fromImage('../static/img/outras/uno_back.jpg')
@@ -962,8 +972,9 @@ nan.x = 900;
 nan.y = 100;
 nan.rotation = 3.14;
 app.stage.addChild(nan);
+*/
 
-
+/*测试样例
 for(var i = 0;i < 20;i++)
 {
     var one = new Sprite.fromImage('../static/img/outras/uno_back.jpg')
@@ -982,14 +993,19 @@ bei.x = 1050;
 bei.y = 400;
 bei.rotation = 4.71;
 app.stage.addChild(bei);
+*/
 
+/*测试样例
 for(var i = 0;i < 3;i++)
 {
     addcard(basepath,bluepath,'0.jpg',"center");
 }
+*/
 
+/*
 app.stage.addChild(ssz);
 app.stage.addChild(color_container);
+*/
 
 //创建webscoket
 socket = new WebSocket('ws://' + window.location.host + '/ws/join?uname=' + $('#uname').text());//websocket的内容需要修改
