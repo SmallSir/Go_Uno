@@ -269,6 +269,8 @@ yellowbutton_text.x = 260,yellowbutton_text.y = 5;
 bluebutton.drawRoundedRect(360,0,80,35,15);
 bluebutton_text.x = 380,bluebutton_text.y = 5;
 
+//准备人数
+var ready_number = 0;
 //准备按钮
 function readyclick()
 {
@@ -670,18 +672,12 @@ function frank(){
     bei_container.removeChildren();
     center_cards.removeChildren();
     if(direction == 0)
-    {
         app.stage.removeChild(ssz);
-    } else{
+    else
         app.stage.removeChild(nsz);
-    }
-    dong.removeChild(dong_container);
     dong.removeChild(dong_number);
-    nan.removeChild(nan_container);
     nan.removeChild(nan_number);
-    xi.removeChild(xi_container);
     xi.removeChild(xi_number);
-    bei.removeChild(bei_container);
     bei.removeChild(bei_number);
 
     app.stage.addChild(rank)
@@ -733,8 +729,7 @@ function bddjs(){
             app.stage.removeChild(rank)
             app.stage.addChild(ready_people);
             app.stage.addChild(ready_people_text);
-            ready_people.drawRoundedRect(600,400,80,35,15);
-            ready_people_text.x = 620,ready_people_text.y = 405;
+            ready_number = 0;
         }
     }
 } 
@@ -1007,6 +1002,20 @@ app.stage.addChild(ssz);
 app.stage.addChild(color_container);
 */
 
+function checkready()//检查是否所有用户均准备
+{
+    if(ready_number == 4)
+    {
+        app.stage.removeChild(ready_bei);
+        app.stage.removeChild(ready_nan);
+        app.stage.removeChild(ready_dong);
+        app.stage.removeChild(ready_xi);
+
+        app.stage.removeChild(ready_people);
+        app.stage.removeChild(ready_people_text);
+    }
+}
+
 //创建webscoket
 socket = new WebSocket('ws://' + window.location.host + '/ws/join?uname=' + $('#uname').text());//websocket的内容需要修改
 socket.onmessage = function(event){
@@ -1128,7 +1137,7 @@ socket.onmessage = function(event){
                 remaining_dong.x = -100,remaining_dong.y = 150;
                 dong.x = 1050,dong.y = 400;
             }
-            if(data.state == false)
+            if(data.state == false) //非游戏中加入房间需要出现准备按钮
             {
                 app.stage.addChild(ready_people);
                 app.stage.addChild(ready_people_text);
@@ -1223,6 +1232,10 @@ socket.onmessage = function(event){
         }
         break;
     case 2: //准备与取消准备
+        if(data.ready == false)
+            ready_number--;
+        else
+            ready_number++;
         if(data.playerid == nan_id)
         {
             if(data.ready == false)
@@ -1406,6 +1419,7 @@ socket.onmessage = function(event){
                 }
             }
         }
+        checkready();
         break;
     case 3: //榜单信息
         xs_one = new PIXI.Text(data.xs_one);
