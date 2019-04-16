@@ -1020,6 +1020,9 @@ socket.onmessage = function(event){
             {
                 my_dir = "dong";
                 dong_id = data.playerid;
+                dong_name = new PIXI.Text(data.playername);
+                dong.addChild(dong_name);
+                dong_name.x = 180,dong_name.y = 150;
 
                 dong.x = 400,dong.y = 500;
                 remaining_dong.x = 0,remaining_dong.y = 150;
@@ -1045,6 +1048,9 @@ socket.onmessage = function(event){
             {
                 my_dir = "bei";
                 bei_id = data.playerid;
+                bei_name = new PIXI.Text(data.playername);
+                bei.addChild(bei_name);
+                bei_name.x = 180,bei_name.y = 150;
 
                 beimark.x = 0,beimark.y = 80;
                 bei_container.x = 100,bei_container.y = 80;
@@ -1070,6 +1076,9 @@ socket.onmessage = function(event){
             {
                 my_dir = "xi";
                 xi_id = data.playerid;
+                xi_name = new PIXI.Text(data.playername);
+                xi.addChild(xi_name);
+                xi_name.x = 180,xi_name.y = 150;
 
                 ximark.x = 0,ximark.y = 80;
                 xi_container.x = 100,xi_container.y = 80;
@@ -1095,6 +1104,9 @@ socket.onmessage = function(event){
             {
                 my_dir = "nan";
                 nan_id = data.playerid;
+                nan_name = new PIXI.Text(data.playername);
+                nan.addChild(nan_name);
+                nan_name.x = 180,nan_name.y = 150;
 
                 nanmark.x = 0,nanmark.y = 80;
                 nan_container.x = 100,nan_container.y = 80;
@@ -1121,6 +1133,10 @@ socket.onmessage = function(event){
                 app.stage.addChild(ready_people);
                 app.stage.addChild(ready_people_text);
             }
+            app.stage.addChild(dong);
+            app.stage.addChild(xi);
+            app.stage.addChild(nan);
+            app.stage.addChild(bei);
         }
         else //如果是其他玩家加入房间
         {
@@ -1629,6 +1645,7 @@ socket.onmessage = function(event){
                 if(my_dir == "dong")
                 {
                     dong_number = new PIXI.Text(data.cardsnumber);
+                    dong_number.x = 120,dong_number.y = 150;
                     dongcards = [];
                     for(var i = 0;i < data.cards.length;i++)
                     {
@@ -1640,6 +1657,7 @@ socket.onmessage = function(event){
                 else if(my_dir == "nan")
                 {
                     nan_number = new PIXI.Text(data.cardsnumber);
+                    nan_number.x = 120,nan_number.y = 150;
                     nancards = [];
                     for(var i = 0;i < data.cards.length;i++)
                     {
@@ -1651,6 +1669,7 @@ socket.onmessage = function(event){
                 else if(my_dir == "bei")
                 {
                     bei_number = new PIXI.Text(data.cardsnumber);
+                    bei_number.x = 120,bei_number.y = 150;
                     beicards = [];
                     for(var i = 0;i < data.cards.length;i++)
                     {
@@ -1662,6 +1681,7 @@ socket.onmessage = function(event){
                 else 
                 {
                     xi_number = new PIXI.Text(data.cardsnumber);
+                    xi_number.x = 120,xi_number.y = 150;
                     xicards = [];
                     for(var i = 0;i < data.cards.length;i++)
                     {
@@ -1681,6 +1701,51 @@ socket.onmessage = function(event){
                     xi_number = new PIXI.Text(data.cardsnumber);
                 else
                     nan_number = new PIXI.Text(data.cardsnumber);
+                //确定摆放位置
+                if(my_dir == "dong")
+                {
+                    if(data.position == 0)
+                        dong_number.x = 120,dong_number.y = 150;
+                    else if(data.position == 1)
+                        bei_number.x = 20,bei_number.y = 150;
+                    else if(data.position == 2)
+                        xi_number.x = 70,xi_number.y = 50;
+                    else
+                        nan_number.x = 120,nan_number.y = 50;
+                }
+                else if(my_dir == "xi")
+                {
+                    if(data.position == 0)
+                        dong_number.x = 70,dong_number.y = 50;
+                    else if(data.position == 1)
+                        bei_number.x = 120,bei_number.y = 50;
+                    else if(data.position == 2)
+                        xi_number.x = 120,xi_number.y = 150;
+                    else
+                        nan_number.x = 20,nan_number.y = 150;
+                }
+                else if(my_dir == "bei")
+                {
+                    if(data.position == 0)
+                        dong_number.x = 120,dong_number.y = 50;
+                    else if(data.position == 1)
+                        bei_number.x = 120,bei_number.y = 150;
+                    else if(data.position == 2)
+                        xi_number.x = 20,xi_number.y = 150;
+                    else
+                        nan_number.x = 70,nan_number.y = 50;
+                }
+                else
+                {
+                    if(data.position == 0)
+                        dong_number.x = 20,dong_number.y = 150;
+                    else if(data.position == 1)
+                        bei_number.x = 70,bei_number.y = 50;
+                    else if(data.position == 2)
+                        xi_number.x = 120,xi_number.y = 50;
+                    else
+                        nan_number.x = 120,nan_number.y = 150;
+                }
                 for(var i = 0;i < data.cardsnumber;i++)
                 {
                     var one = new Sprite.fromImage('../static/img/outras/uno_back.jpg')
@@ -1720,7 +1785,7 @@ socket.onmessage = function(event){
                 }
             }
         }
-        else
+        else //事件为喊UNO和选色
         {
             if(my_dir == "dong")
             {
