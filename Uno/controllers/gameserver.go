@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"regexp"
 
@@ -102,9 +103,10 @@ func (game *GameController) Register() {
 
 	//设置seesion中的房间名称
 	game.SetSession("roomname", roomname)
+	playerid := string(game.GetSession("id").(int))
 	ok = true
 	msg = "房间创建成功"
-	url = "/uno/" + roomname
+	url = "/uno/" + playerid + "/" + roomname
 	return
 }
 
@@ -150,8 +152,6 @@ func (game *GameController) Join() {
 		msg = "房间密码错误，请确认后再输入"
 	}
 
-	//把信息发送给里面的其他人
-
 	//设置seesion中的房间名称
 	game.SetSession("roomname", roomname)
 	ok = true
@@ -166,6 +166,11 @@ func (game *GameController) ConnectionWebSocket() {
 	playerid := game.GetSession("id").(int)
 	playername := game.GetSession("name").(string)
 
+	//检查与url中所记录的信息是否相同
+	if string(playerid) != game.Ctx.Input.Param(":id") || roomname != game.Ctx.Input.Param(":username") {
+		game.Redirect("/dating", 200)
+	}
+
 	//建立websocket
 	ws, err := websocket.Upgrade(game.Ctx.ResponseWriter, game.Ctx.Request, nil, 1024, 1024)
 
@@ -174,7 +179,7 @@ func (game *GameController) ConnectionWebSocket() {
 		http.Error(game.Ctx.ResponseWriter, "Not a websocket handshake", 400)
 		return
 	} else if err != nil {
-		beego.Error("Cannot setup WebSocket connection:", err)
+		log.Println("无法连接,错误为", err)
 		return
 	}
 	p := NewPlayer(ws, playerid, playername, roomname)
@@ -184,28 +189,6 @@ func (game *GameController) ConnectionWebSocket() {
 	defer r.ReadyPlayer(playerid)
 	for {
 		_, p, err := ws.ReadMessage()
-		if err != nil {
-			//断开连接解决办法
-		}
-		//判断发来的数据是否是选颜色
-		sc := SelectColor{}
-		err = json.Unmarshal(p, sc)
-		if err == nil {
-			r.selectcolor <- sc
-			continue
-		}
-		//判断发来的数据是否是准备or取消准备
-		re := PlayerReady{}
-		err = json.Unmarshal(p, re)
-		if err == nil {
-			r.ready <- re
-			continue
-		}
-		pc := CardStateMsg{}
-		err = json.Unmarshal(p, re)
-		if err == nil {
-			r.publish <- pc
-			continue
-		}
+
 	}
 }
