@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"log"
-
-	"github.com/astaxie/beego"
 )
 
 type PlayerRoom struct {
@@ -41,6 +39,8 @@ type PlayerRoom struct {
 	unsubscribe chan int
 	//累计的需要的摸牌数量
 	getcardsnumber int
+	//已经累加的排队
+	addcardsnums int
 }
 
 //创建房间
@@ -48,43 +48,17 @@ func NewRoom(room Room, number int) *PlayerRoom {
 	newroom := PlayerRoom{players_number: number, players: make([]*Player, number),
 		player_room: room, ready_number: 0, dirction: 0,
 		stay_number: 1, playerno: make([]int, 4, 4), nextplayer: 0,
-		subscribe:   make(chan *Player, 4),
-		publish:     make(chan Incident),
-		unsubscribe: make(chan int, 4)}
-	//_, err := newroom.AddPlayer(p)
-	//if err != nil {
-	//	log.Println(err)
-	//}
+		subscribe:    make(chan *Player, 4),
+		publish:      make(chan Incident),
+		unsubscribe:  make(chan int, 4),
+		addcardsnums: 0}
 	return &newroom
 }
 
 //游戏房间
 func (rm *PlayerRoom) playRoom() {
 	for {
-		select {
-		case sub := <-rm.subscribe:
-			rm.AddPlayer(sub)
-		case event := <-rm.publish:
-			if event.Behavior == 1 { //表示为出牌事件
-				nowplayer, check := rm.RemoveCard(event.PlayerId, Card{number: event.Number, color: event.Color, state: event.State})
-				rm.cbroadcastWebSocket(event, nowplayer, check)
-			} else { //表示为摸牌事件
-				check := 0
-				nowplayer := rm.GetCard(event.PlayerId, event.CN)
-				rm.cbroadcastWebSocket(event, nowplayer, check)
-			}
-		//case unsub := <-rm.unsubscribe:
-		case re := <-rm.ready:
-			if re.ready == true {
-				rm.UnreadyPlayer(re.Playerid)
-			} else {
-				rm.ReadyPlayer(re.Playerid)
-			}
-			rm.broadcastWebSocket(re)
-		case sc := <-rm.selectcolor:
-			rm.latest_color = sc.color
-			rm.broadcastWebSocket(sc)
-		}
+		select {}
 	}
 }
 func (rm *PlayerRoom) cbroadcastWebSocket(msg CardStateMsg, nowplayer int, check int) {
@@ -103,7 +77,7 @@ func (rm *PlayerRoom) cbroadcastWebSocket(msg CardStateMsg, nowplayer int, check
 			remsg.Ok = false
 			data, err := json.Marshal(remsg)
 			if err != nil {
-				beego.Error("无法将数据转为json")
+				log.Println("无法将数据转为json")
 				return
 			}
 			for _, p := range rm.players {
@@ -126,18 +100,18 @@ func (rm *PlayerRoom) cbroadcastWebSocket(msg CardStateMsg, nowplayer int, check
 
 //准备、取消准备、选色广播
 func (rm *PlayerRoom) broadcastWebSocket(msg interface{}) {
-	switch data := msg.(type) {
+	switch msg.(type) {
 	case SelectColor, PlayerReady:
 		d, err := json.Marshal(msg)
 		if err != nil {
-			beego.Error("无法将数据转为json")
+			log.Println("无法将数据转为json")
 			return
 		}
 		for _, p := range rm.players {
 			ws := p.rwc
 			if ws != nil {
 				if ws.WriteJSON(d) != nil {
-					beego.Error("玩家 %d 掉线", p.player_id)
+					log.Println("玩家 %d 已经掉线", p.player_id)
 				}
 			}
 		}
@@ -242,11 +216,12 @@ func (rm *PlayerRoom) RemoveCard(p_id int, rc Card) (int, int) {
 	-1表示出牌不符合规则
 	0表示正常出牌
 	1表示这个人要喊UNO
-	2表示玩家打了+2下一个人必须摸牌跳过
-	3表示玩家打了+4下一个人必须摸牌跳过
+	2表示玩家打了+2下一个人摸牌或者继续+2或者+4
+	3表示玩家打了+4下一个人摸牌或者继续+4
 	4表示玩家打了wild选择颜色
+	5表示玩家获胜
 	*/
-	flag := 0
+	flag := -1
 	nowplayer := -1
 	for i, p := range rm.playerno {
 		if p == p_id {
@@ -254,7 +229,25 @@ func (rm *PlayerRoom) RemoveCard(p_id int, rc Card) (int, int) {
 			break
 		}
 	}
-	if rm.latest_state != rc.state && rm.latest_state != "-1" && rm.latest_color != "null" && rm.latest_color != rc.color && rm.latest_number != rc.number && rc.state != "wildraw" && rc.state != "wild" {
+	if rc.color == "red" || rc.color == "yellow" || rc.color == "green" || rc.color == "green" {
+		if rc.color == rm.latest_number || rm.latest_color == "null" { //颜色相同符合条件
+			if rm.latest_state != "raw" {
+				flag = 0
+			}
+		}
+		if rc.number == rm.latest_number && rc.number <= "9" && rc.number >= "0" { //号码相同符合条件
+			flag = 0
+		}
+		if rc.state == rm.latest_state && (rc.state == "wild" || rc.state == "wildraw") { //功能相同符合条件
+			flag = 0
+		}
+	}
+	if rc.color == "z" { //万能牌
+		if rc.state == rm.latest_state || (rm.latest_state == "raw" && rc.state == "wildraw") { //万能牌符合条件或者上一个出牌的是+2，这一次可以允许+4
+			flag = 0
+		}
+	}
+	if flag == -1 { //不符合出牌规矩
 		return -1, nowplayer
 	}
 	for i, p := range rm.players {
@@ -297,16 +290,24 @@ func (rm *PlayerRoom) RemoveCard(p_id int, rc Card) (int, int) {
 		flag = 4
 	}
 	if rm.latest_state == "wildraw" {
+		rm.getcardsnumber += 4
 		//表示是+4
 		flag = 3
 	}
 	if rm.latest_state == "draw" {
+		rm.getcardsnumber += 2
 		//表示是+2
 		flag = 2
 	}
+	//检查是否需要喊UNO
 	check := rm.CheckUno(p_id)
 	if check == true {
 		flag = 1
+	}
+	//检查用户是否已经可以获胜
+	check = rm.CheckWin(p_id)
+	if check == true {
+		flag = 5
 	}
 	return flag, nowplayer
 }
@@ -339,6 +340,20 @@ func (rm *PlayerRoom) CheckUno(p_id int) bool {
 	for _, p := range rm.players {
 		if p_id == p.player_id {
 			if p.player_cards.number == 1 {
+				return true
+			} else {
+				return false
+			}
+		}
+	}
+	return false
+}
+
+//检查获胜状态
+func (rm *PlayerRoom) CheckWin(p_id int) bool {
+	for _, p := range rm.players {
+		if p_id == p.player_id {
+			if p.player_cards.number == 0 {
 				return true
 			} else {
 				return false
