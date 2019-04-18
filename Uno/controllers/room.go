@@ -13,6 +13,8 @@ type PlayerRoom struct {
 	ready_number int
 	//玩家信息
 	players []*Player
+	//准备状态
+	ready_player []bool
 	//房间信息
 	player_room Room
 	//目前已有的人数
@@ -41,16 +43,20 @@ type PlayerRoom struct {
 	getcardsnumber int
 	//已经累加的排队
 	addcardsnums int
+	//是否在比赛状态
+	game bool
 }
 
 //创建房间
 func NewRoom(room Room, number int) *PlayerRoom {
 	newroom := PlayerRoom{players_number: number, players: make([]*Player, number),
 		player_room: room, ready_number: 0, dirction: 0,
-		stay_number: 1, playerno: make([]int, 4, 4), nextplayer: 0,
+		stay_number: 0, playerno: make([]int, 4, 4), nextplayer: 0,
 		subscribe:    make(chan *Player, 4),
 		publish:      make(chan Incident),
 		unsubscribe:  make(chan int, 4),
+		game:         false,
+		ready_player: make([]bool, number),
 		addcardsnums: 0}
 	return &newroom
 }
@@ -58,9 +64,56 @@ func NewRoom(room Room, number int) *PlayerRoom {
 //游戏房间
 func (rm *PlayerRoom) playRoom() {
 	for {
-		select {}
+		select {
+		case sub := <-rm.subscribe: //加入
+			flag, index := rm.AddPlayer(sub)
+			if flag == false { //表示为用户是新加入的
+				jr := &JoinRoom{}
+				jr.Type = 0
+				jr.Position = index
+				jr.State = false
+				jr.PlayerId = sub.player_id
+				jr.PlayerName = sub.player_name
+				jr.Pready = false
+				//把新用户加入房间的信息发送给所有人
+				for i, p := range rm.players {
+					ws := p.rwc
+					if i != index {
+						jr.Host = false
+					} else {
+						jr.Host = true
+					}
+					ws.WriteJSON(jr)
+				}
+				//将房间内的情况发送给其他人
+				ws := sub.rwc
+				for i, p := range rm.players {
+					if p.player_id == sub.player_id {
+						continue
+					}
+					jr.Host = false
+					jr.PlayerId = p.player_id
+					jr.PlayerName = p.player_name
+					jr.Position = i
+					if rm.ready_player[i] == true {
+						jr.Pready = true
+					} else {
+						jr.Pready = false
+					}
+					ws.WriteJSON(jr)
+				}
+			} else { //表示为用户之前不在即用户是在游戏中退出重连
+
+			}
+		case event := <-rm.publish: //事件
+
+		case unsub := <-rm.unsubscribe: //离开
+
+		}
 	}
 }
+
+/*
 func (rm *PlayerRoom) cbroadcastWebSocket(msg CardStateMsg, nowplayer int, check int) {
 	switch {
 	case msg.Behavior == 1: //摸牌
@@ -96,7 +149,7 @@ func (rm *PlayerRoom) cbroadcastWebSocket(msg CardStateMsg, nowplayer int, check
 			}
 		}
 	}
-}
+}*/
 
 //准备、取消准备、选色广播
 func (rm *PlayerRoom) broadcastWebSocket(msg interface{}) {
@@ -119,22 +172,32 @@ func (rm *PlayerRoom) broadcastWebSocket(msg interface{}) {
 }
 
 //添加玩家
-func (rm *PlayerRoom) AddPlayer(pl *Player) (bool, error) {
-	if rm.stay_number == rm.players_number {
-		return false, errors.New("人数已满不能，请稍后再试")
-	}
+func (rm *PlayerRoom) AddPlayer(pl *Player) (bool, int) {
 	rm.stay_number++
-	//给玩家安排位置
+	index := -1
+	flag := false
+	//检查该玩家是否存在房间内
 	for i, p := range rm.playerno {
-		if p == 0 {
-			rm.playerno[i] = pl.player_id
+		if p == pl.player_id {
+			index = i
+			flag = true
 			break
 		}
 	}
+	//给玩家安排位置
+	if flag == false {
+		for i, p := range rm.playerno {
+			if p == 0 {
+				rm.playerno[i] = pl.player_id
+				index = i
+				break
+			}
+		}
+	}
 	//添加玩家信息
-	rm.players = append(rm.players, pl)
+	rm.players[index] = pl
 	log.Printf("已经将 %s 玩家 加入到 %s 房间", pl.player_name, rm.player_room.room_name)
-	return true, nil
+	return flag, index
 }
 
 //移除玩家
@@ -142,16 +205,8 @@ func (rm *PlayerRoom) RemovePlayer(playerid int) (bool, error) {
 	for j, p := range rm.players {
 		if p.player_id == playerid {
 			rm.players[j].deregister()
-			new_player := make([]*Player, rm.players_number)
-			new_player = append(rm.players[:j], rm.players[j+1:]...)
-			rm.players = new_player
 			rm.stay_number--
-			for i, p := range rm.playerno {
-				if p == playerid {
-					rm.playerno[i] = 0
-					break
-				}
-			}
+			rm.playerno[j] = 0
 			log.Printf("已经将 %d 玩家从 %s 房间移除", playerid, rm.player_room.room_name)
 			//注销房间
 			if rm.stay_number == 0 {
