@@ -25,7 +25,7 @@ type Cards struct {
 func (c *Cards) Start() {
 	c.ready_number = 108
 	c.out_number = 0
-	c.card_colors = []string{"red", "green", "blue", "yello"}
+	c.card_colors = []string{"red", "green", "blue", "yellow"}
 	c.card_function = []string{"skip", "reverse", "raw"}
 	c.wild = []string{"wild", "wildraw"}
 	c.ready_card = make([]Card, 0, 108)
