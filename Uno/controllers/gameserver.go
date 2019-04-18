@@ -106,13 +106,13 @@ func (game *GameController) Register() {
 	playerid := string(game.GetSession("id").(int))
 	ok = true
 	msg = "房间创建成功"
-	url = "/uno/" + playerid + "/" + roomname
+	url = "/uno/play?userid=" + string(playerid) + "?roomid=" + roomname
 	return
 }
 
 //加入房间
 func (game *GameController) Join() {
-	//roomname := game.Ctx.Input.Param(":roomname")
+	playerid := game.GetSession("id").(int)
 
 	//获取账号密码
 	roommsg := RoomMsg{}
@@ -156,7 +156,7 @@ func (game *GameController) Join() {
 	game.SetSession("roomname", roomname)
 	ok = true
 	msg = "房间创建成功"
-	url = "/uno/" + roomname
+	url = "/uno/play?userid=" + string(playerid) + "?roomid=" + roomname
 }
 
 //建立WebSocket
