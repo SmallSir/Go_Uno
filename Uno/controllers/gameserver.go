@@ -184,11 +184,16 @@ func (game *GameController) ConnectionWebSocket() {
 	}
 	p := NewPlayer(ws, playerid, playername, roomname)
 
+	//加入房间
 	r := roomlist.rooms[roomname]
 	r.subscribe <- p
-	defer r.ReadyPlayer(playerid)
+	//监听从而获得由前端发来的信息
 	for {
-		_, p, err := ws.ReadMessage()
-
+		var cident Incident
+		err := ws.ReadJSON(&cident)
+		if err != nil {
+			r.unsubscribe <- playerid
+		}
+		r.publish <- cident
 	}
 }
