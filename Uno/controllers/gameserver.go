@@ -150,6 +150,14 @@ func (game *GameController) Join() {
 	}
 	if c == false {
 		msg = "房间密码错误，请确认后再输入"
+		return
+	}
+
+	//检查房间人数是否允许在进入
+	r := roomlist.rooms[roomname]
+	if r.stay_number == 4 {
+		msg = "房间人数已经满了，无法在进入"
+		return
 	}
 
 	//设置seesion中的房间名称
@@ -187,6 +195,7 @@ func (game *GameController) ConnectionWebSocket() {
 	//加入房间
 	r := roomlist.rooms[roomname]
 	r.subscribe <- p
+
 	//监听从而获得由前端发来的信息
 	for {
 		var cident Incident
