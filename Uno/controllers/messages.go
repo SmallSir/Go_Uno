@@ -38,10 +38,14 @@ type ReCardMsg struct {
 type JoinRoom struct {
 	Type       int    `json:"Type"`       //返回的状态
 	Position   int    `json:"position"`   //加入玩家所处的位置
-	PlayerId   string `json:"playerid"`   //加入玩家的id
+	PlayerId   int    `json:"playerid"`   //加入玩家的id
 	PlayerName string `json:"playername"` //加入玩家的名字
 	Host       bool   `json:"host"`       //是否为当事人
 	State      bool   `json:"state"`      //是否在游戏中重新加入,true表示在游戏中重新进入，false表示没有在游戏中进入
+	DongReady  bool   `json:"dongready"`  //东玩家是否准备
+	XiReady    bool   `json:"xiready"`    //西玩家是否准备
+	NanReady   bool   `json:"nanready"`   //南玩家是否准备
+	BeiReady   bool   `json:"beiready"`   //北玩家是否准备
 }
 
 //离开房间返回的数据格式
