@@ -159,6 +159,6 @@ type Reincident struct {
 	Sc          bool   `json:"sc"`          //是否需要选色
 	Uno         bool   `json:"uno"`         //是否需要UNO
 	Wsc         string `json:"wsc"`         //事件为选色时选择的颜色
-	Wuno        bool   `json:wuno`          //事件为喊UNO时喊出UNO
-	State       bool   `json:state`         //是否是玩家重连
+	Wuno        bool   `json:"wuno"`        //事件为喊UNO时喊出UNO
+	State       bool   `json:"state"`       //是否是玩家重连
 }
