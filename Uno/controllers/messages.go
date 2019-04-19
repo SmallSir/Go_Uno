@@ -63,17 +63,6 @@ type GameOverRank struct {
 	gr_four  string `json:"gr_four"`  //第四名分数
 }
 
-//出牌返回数据给其他玩家
-type ReOtherCardMsg struct {
-	Color       string `json:"color"`       //出牌的颜色
-	Number      string `json:"number"`      //出牌的号码
-	State       string `json:"state"`       //出牌状态
-	CardsNumber int    `json:"cardsnumber"` //出牌玩家剩余牌数
-	Check       bool   `json:"check"`       //是否轮到该玩家
-	Direction   int    `json:"direction"`   //方向
-	Uno         bool   `json:"uno"`         //上一个玩家是否喊了UNO
-	Behavior    int    `json:"behavior"`    //轮到该玩家后允许的行为
-}
 type Card struct {
 	color  string `json:"color"`  //卡牌颜色
 	number string `json:"number"` //卡牌号码
@@ -147,7 +136,7 @@ type Incident struct {
 //用户事件返回数据格式
 type Reincident struct {
 	Type        int    `json:"Type"`        //类型
-	Incident    int    `json:"incident"`    //事件类型0出牌1摸牌2选色3UNO
+	Incident    int    `json:"incident"`    //事件类型0出牌1摸牌2选色3UNO-1为出牌异常
 	Ccolor      string `json:"ccolor"`      //事件为出牌时牌的颜色
 	Cstate      string `json:"cstate"`      //事件为出牌时牌的状态
 	Cnumber     string `json:"cnumber"`     //事件为出牌时牌的号码
@@ -161,4 +150,5 @@ type Reincident struct {
 	Wsc         string `json:"wsc"`         //事件为选色时选择的颜色
 	Wuno        bool   `json:"wuno"`        //事件为喊UNO时喊出UNO
 	State       bool   `json:"state"`       //是否是玩家重连
+	Ready       bool   `json:"ready"`       //事件为准备，是准备还是取消准备
 }
