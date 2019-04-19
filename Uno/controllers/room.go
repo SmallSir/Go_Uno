@@ -104,14 +104,14 @@ func (rm *PlayerRoom) playRoom() {
 					}
 					ws.WriteJSON(jr)
 				}
-			} else { //表示为用户之前不在即用户是在游戏中退出重连
+			} else { //用户是在游戏中退出重连
 				msg := &Reincident{}
 				msg.Type = 4
 				msg.State = true
 				msg.Incident = 0
 				msg.Direction = rm.dirction
 				msg.Sc = false
-				msg.Sc = true
+				msg.State = true
 				ws := sub.rwc
 
 				for i, p := range rm.players {
@@ -132,49 +132,35 @@ func (rm *PlayerRoom) playRoom() {
 			}
 		case event := <-rm.publish: //事件
 
-		case unsub := <-rm.unsubscribe: //离开
-
+		case unsub := <-rm.unsubscribe: //离开,传进来的是玩家的id
+			msg := &LeaveRoom{}
+			msg.Type = 1
+			if rm.game == true {
+				msg.State = true
+			} else {
+				msg.State = false
+			}
+			flag, index, err := rm.RemovePlayer(unsub)
+			if flag == false {
+				continue
+			}
+			if err != nil {
+				//将房间信息从redis中删除
+				rm.players_number = -1
+			}
+			msg.Position = index
+			for i, p := range rm.players {
+				if rm.playerno[i] != -1 && p.player_id == unsub {
+					ws := rm.players[i].rwc
+					ws.WriteJSON(msg)
+				}
+			}
+		}
+		if rm.players_number == -1 {
+			break
 		}
 	}
 }
-
-/*
-func (rm *PlayerRoom) cbroadcastWebSocket(msg CardStateMsg, nowplayer int, check int) {
-	switch {
-	case msg.Behavior == 1: //摸牌
-		for _, p := range rm.players {
-			if p.player_id == rm.playerno[nowplayer] {
-
-			} else {
-
-			}
-		}
-	case msg.Behavior == 0: //出牌
-		if check == -1 {
-			remsg := &ReCardMsg{}
-			remsg.Ok = false
-			data, err := json.Marshal(remsg)
-			if err != nil {
-				log.Println("无法将数据转为json")
-				return
-			}
-			for _, p := range rm.players {
-				if p.player_id == rm.playerno[nowplayer] {
-					p.rwc.WriteJSON(data)
-					break
-				}
-			}
-			return
-		}
-		for _, p := range rm.players {
-			if p.player_id == rm.playerno[nowplayer] {
-
-			} else {
-
-			}
-		}
-	}
-}*/
 
 //准备、取消准备、选色广播
 func (rm *PlayerRoom) broadcastWebSocket(msg interface{}) {
@@ -226,7 +212,7 @@ func (rm *PlayerRoom) AddPlayer(pl *Player) (bool, int) {
 }
 
 //移除玩家
-func (rm *PlayerRoom) RemovePlayer(playerid int) (bool, error) {
+func (rm *PlayerRoom) RemovePlayer(playerid int) (bool, int, error) {
 	for j, p := range rm.players {
 		if p.player_id == playerid {
 			rm.players[j].deregister()
@@ -235,12 +221,12 @@ func (rm *PlayerRoom) RemovePlayer(playerid int) (bool, error) {
 			log.Printf("已经将 %d 玩家从 %s 房间移除", playerid, rm.player_room.room_name)
 			//注销房间
 			if rm.stay_number == 0 {
-				return true, errors.New("房间已经没有人了，可以删除")
+				return true, j, errors.New("房间已经没有人了，可以删除")
 			}
-			return true, nil
+			return true, j, nil
 		}
 	}
-	return false, errors.New("玩家不存在，无法删除，删除失败")
+	return false, -1, errors.New("玩家不存在，无法删除，删除失败")
 }
 
 //玩家准备
