@@ -1020,7 +1020,6 @@ function checkready()//检查是否所有用户均准备
 socket = new WebSocket('ws://' + window.location.host + '/ws/join?uname=' + $('#uname').text());//websocket的内容需要修改
 socket.onmessage = function(event){
     var data = JSON.parse(event.data);
-    data.Type
     switch(data.Type){
     case 0: //加入
         if(data.host == true) //是玩家自己加入房间，则通过确认玩家的位置将其他几个玩家的位置确定
