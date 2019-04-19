@@ -1450,8 +1450,7 @@ socket.onmessage = function(event){
         }
         if(data.incident == 0 || data.incident == 1) //0表示出牌1表示摸牌
         {
-            if(data.incident == 0 && data.state == false
-                ) //出牌事件
+            if(data.incident == 0 && data.state == false) //出牌事件
             {
                 cardsmsg(data.ccolor,data.cstate,data.cnumber,"center"); //将出牌信息放到出牌堆中
                 if(data.ccolor == "z" && data.cstate == "wildraw") //出牌为+4状态的展示
