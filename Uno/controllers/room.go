@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"encoding/json"
 	"errors"
 	"log"
 )
@@ -31,6 +30,8 @@ type PlayerRoom struct {
 	latest_state string
 	//玩家编号(东北西南)
 	playerno []int
+	//上一个玩家编号
+	lastplayer int
 	//下一个玩家编号
 	nextplayer int
 	//玩家进入管道
@@ -57,6 +58,7 @@ func NewRoom(room Room, number int) *PlayerRoom {
 		unsubscribe:  make(chan int, 4),
 		game:         false,
 		ready_player: make([]bool, number),
+		lastplayer:   0,
 		addcardsnums: 0}
 	return &newroom
 }
@@ -77,13 +79,13 @@ func (rm *PlayerRoom) playRoom() {
 				jr.Pready = false
 				//把新用户加入房间的信息发送给所有人
 				for i, p := range rm.players {
-					ws := p.rwc
 					if i != index {
 						jr.Host = false
 					} else {
 						jr.Host = true
 					}
 					if rm.playerno[i] != -1 {
+						ws := p.rwc
 						ws.WriteJSON(jr)
 					}
 				}
@@ -117,21 +119,17 @@ func (rm *PlayerRoom) playRoom() {
 				for i, p := range rm.players {
 					msg.Position = i
 					msg.CardsNumber = p.player_cards.number
+					if rm.nextplayer == i {
+						msg.OutPeople = true
+					} else {
+						msg.OutPeople = false
+					}
 					if p.player_id == sub.player_id {
 						msg.Cardss = p.player_cards.cards
-						if rm.nextplayer == i {
-							msg.OutPeople = true
-						} else {
-							msg.OutPeople = false
-						}
-						ws.WriteJSON(msg)
-						continue
 					}
 					ws.WriteJSON(msg)
 				}
 			}
-		case event := <-rm.publish: //事件
-
 		case unsub := <-rm.unsubscribe: //离开,传进来的是玩家的id
 			msg := &LeaveRoom{}
 			msg.Type = 1
@@ -149,34 +147,170 @@ func (rm *PlayerRoom) playRoom() {
 				rm.players_number = -1
 			}
 			msg.Position = index
-			for i, p := range rm.players {
-				if rm.playerno[i] != -1 && p.player_id == unsub {
+			for i, _ := range rm.players {
+				if rm.playerno[i] != -1 {
 					ws := rm.players[i].rwc
 					ws.WriteJSON(msg)
 				}
 			}
-		}
-		if rm.players_number == -1 {
-			break
-		}
-	}
-}
+		case event := <-rm.publish: //事件
+			if event.Type == 0 { //事件为出牌
+				rc := Card{color: event.Ccolor, state: event.Cstate, number: string(event.Cnumber)}
+				flag := rm.RemoveCard(event.Position, rc)
+				msg := &Reincident{}
+				msg.State = false
+				if flag == -1 {
+					msg.Type = 0
+					msg.Incident = -1
+					ws := rm.players[event.Position].rwc
+					ws.WriteJSON(msg)
+				} else if flag != 5 { //表示出牌信息正常
+					rm.lastplayer = event.Position
+					msg.Type = 4
+					msg.Incident = 0
+					msg.Ccolor = event.Ccolor
+					msg.Cstate = event.Cstate
+					msg.Cnumber = string(event.Cnumber)
+					msg.Position = event.Position
+					msg.CardsNumber = rm.players[event.Position].player_cards.number
+					msg.Cardss = rm.players[event.Position].player_cards.cards
+					msg.Direction = rm.dirction
+					if flag == 1 {
+						msg.Uno = true
+					} else if flag == 3 || flag == 4 {
+						msg.Sc = true
+					}
+					for i, _ := range rm.players {
+						if flag == 1 || flag == 3 || flag == 4 { //表示玩家出的是wild牌或者喊UNO
+							if rm.lastplayer == i {
+								msg.OutPeople = true
+							} else {
+								msg.OutPeople = false
+							}
+						} else {
+							if rm.nextplayer == i {
+								msg.OutPeople = true
+							} else {
+								msg.OutPeople = true
+							}
+						}
+						if rm.playerno[i] != -1 {
+							ws := rm.players[i].rwc
+							ws.WriteJSON(msg)
+						}
+					}
+				} else { //游戏获胜
 
-//准备、取消准备、选色广播
-func (rm *PlayerRoom) broadcastWebSocket(msg interface{}) {
-	switch msg.(type) {
-	case SelectColor, PlayerReady:
-		d, err := json.Marshal(msg)
-		if err != nil {
-			log.Println("无法将数据转为json")
-			return
-		}
-		for _, p := range rm.players {
-			ws := p.rwc
-			if ws != nil {
-				if ws.WriteJSON(d) != nil {
-					log.Println("玩家 %d 已经掉线", p.player_id)
 				}
+			} else if event.Type == 1 { //事件为准备事件
+				msg := &Reincident{}
+				msg.Type = 2
+				msg.Position = event.Position
+				msg.Ready = event.Ready
+				if event.Ready == true { //事件为准备
+					rm.ReadyPlayer(event.Position)
+				} else { //事件为取消准备
+					rm.UnreadyPlayer(event.Position)
+				}
+				for i, _ := range rm.players {
+					if rm.playerno[i] != -1 {
+						ws := rm.players[i].rwc
+						ws.ReadJSON(msg)
+					}
+				}
+				if rm.ready_number == rm.players_number { //检查是否都准备好了，立即开始游戏
+					rm.PlayGame()
+					msg.Type = 4
+					msg.Incident = 1
+					msg.State = false
+					msg.Direction = rm.dirction
+					for i, _ := range rm.players {
+						msg.CardsNumber = rm.players[i].player_cards.number
+						msg.Cardss = rm.players[i].player_cards.cards
+						msg.Position = i
+						for j, _ := range rm.players {
+							if rm.nextplayer == j {
+								msg.OutPeople = true
+							} else {
+								msg.OutPeople = false
+							}
+							if rm.playerno[j] != -1 {
+								ws := rm.players[j].rwc
+								ws.ReadJSON(msg)
+							}
+
+						}
+					}
+				}
+			} else if event.Type == 2 { //事件为选色
+				rm.SelectColor(event.Sccolor)
+				msg := &Reincident{}
+				msg.Type = 4
+				msg.Incident = 2
+				msg.Position = event.Position
+				msg.Direction = rm.dirction
+				msg.State = false
+				msg.Wsc = event.Ccolor
+				for i, _ := range rm.players {
+					if rm.nextplayer == i {
+						msg.OutPeople = true
+					} else {
+						msg.OutPeople = false
+					}
+					if rm.playerno[i] != -1 {
+						ws := rm.players[i].rwc
+						ws.ReadJSON(msg)
+					}
+				}
+			} else if event.Type == 3 { //事件为喊UNO
+				msg := &Reincident{}
+				msg.Type = 4
+				msg.Wuno = true
+				msg.Incident = 3
+				msg.Position = event.Position
+				msg.Direction = rm.dirction
+				for i, _ := range rm.players {
+					if rm.nextplayer == i {
+						msg.OutPeople = true
+					} else {
+						msg.OutPeople = false
+					}
+					if rm.playerno[i] != -1 {
+						ws := rm.players[i].rwc
+						ws.WriteJSON(msg)
+					}
+				}
+			} else { //事件为摸牌
+				msg := &Reincident{}
+				msg.Type = 4
+				msg.Incident = 1
+				msg.Position = event.Position
+				if rm.getcardsnumber == 0 {
+					rm.GetCard(event.Position, 1)
+				} else {
+					rm.GetCard(event.Position, rm.getcardsnumber)
+					rm.getcardsnumber = 0
+				}
+				msg.CardsNumber = rm.players[event.Position].player_cards.number
+				msg.Direction = rm.dirction
+				msg.State = false
+				for i, _ := range rm.players {
+					if i == event.Position {
+						msg.Cardss = rm.players[event.Position].player_cards.cards
+					}
+					if rm.nextplayer == i {
+						msg.OutPeople = true
+					} else {
+						msg.OutPeople = false
+					}
+					if rm.playerno[i] != -1 {
+						ws := rm.players[i].rwc
+						ws.ReadJSON(msg)
+					}
+				}
+			}
+			if rm.players_number == -1 {
+				break
 			}
 		}
 	}
@@ -198,7 +332,7 @@ func (rm *PlayerRoom) AddPlayer(pl *Player) (bool, int) {
 	//给玩家安排位置
 	if flag == false {
 		for i, p := range rm.playerno {
-			if p == 0 {
+			if p == -1 || p == 0 {
 				rm.playerno[i] = pl.player_id
 				index = i
 				break
@@ -230,36 +364,19 @@ func (rm *PlayerRoom) RemovePlayer(playerid int) (bool, int, error) {
 }
 
 //玩家准备
-func (rm *PlayerRoom) ReadyPlayer(player_id int) error {
-	if rm.ready_number == rm.players_number {
-		return errors.New("人数已经满了不得再准备")
+func (rm *PlayerRoom) ReadyPlayer(index int) {
+	if rm.players[index].state == false {
+		rm.ready_number++
 	}
-	for i, p := range rm.players {
-		if p.player_id == player_id {
-			rm.players[i].state = true
-			break
-		}
-	}
-	rm.ready_number++
-	if rm.ready_number == rm.players_number {
-		rm.PlayGame()
-	}
-	return nil
+	rm.players[index].state = true
 }
 
 //玩家取消准备
-func (rm *PlayerRoom) UnreadyPlayer(player_id int) error {
-	if rm.ready_number == 0 {
-		return errors.New("没有任何人准备，不存在准备状态")
+func (rm *PlayerRoom) UnreadyPlayer(index int) {
+	if rm.players[index].state == true {
+		rm.ready_number--
 	}
-	for i, p := range rm.players {
-		if p.player_id == player_id {
-			rm.players[i].state = false
-			break
-		}
-	}
-	rm.ready_number--
-	return nil
+	rm.players[index].state = false
 }
 
 //开始游戏
@@ -277,7 +394,7 @@ func (rm *PlayerRoom) PlayGame() {
 }
 
 //获得出牌信息
-func (rm *PlayerRoom) RemoveCard(p_id int, rc Card) (int, int) {
+func (rm *PlayerRoom) RemoveCard(index int, rc Card) int {
 	/*不同返回值的效果不同
 	-1表示出牌不符合规则
 	0表示正常出牌
@@ -288,13 +405,7 @@ func (rm *PlayerRoom) RemoveCard(p_id int, rc Card) (int, int) {
 	5表示玩家获胜
 	*/
 	flag := -1
-	nowplayer := -1
-	for i, p := range rm.playerno {
-		if p == p_id {
-			nowplayer = i
-			break
-		}
-	}
+	p_id := rm.playerno[index]
 	if rc.color == "red" || rc.color == "yellow" || rc.color == "green" || rc.color == "green" {
 		if rc.color == rm.latest_number || rm.latest_color == "null" { //颜色相同符合条件
 			if rm.latest_state != "raw" {
@@ -314,26 +425,19 @@ func (rm *PlayerRoom) RemoveCard(p_id int, rc Card) (int, int) {
 		}
 	}
 	if flag == -1 { //不符合出牌规矩
-		return -1, nowplayer
+		return -1
 	}
-	for i, p := range rm.players {
-		if p.player_id == p_id {
-			nowplayer = i
-			//改变玩家手牌信息
-			rm.players[i].player_cards.Remove_Card(rc)
-			//改变这把的牌堆信息
-			rm.room_cards.OutCards(rc)
-			//修改目前信息
-			rm.latest_color = rc.color
-			//rm.latest_id = p_id
-			rm.latest_state = rc.state
-			rm.latest_number = rc.number
-			//检查出了最后一张牌且是状态牌的情况
-			if rm.players[i].player_cards.number == 0 && rm.latest_number == "-1" {
-				rm.GetCard(p_id, 1)
-			}
-			break
-		}
+	//改变玩家手牌信息
+	rm.players[index].player_cards.Remove_Card(rc)
+	//修改这把的牌堆信息
+	rm.room_cards.OutCards(rc)
+	//修改目前信息
+	rm.latest_color = rc.color
+	rm.latest_state = rc.state
+	rm.latest_number = rc.number
+	//检查用户出的最后一张牌是不是功能牌，是的话要加一张
+	if rm.players[index].player_cards.number == 0 && rm.latest_number == "-1" {
+		rm.GetCard(p_id, 1)
 	}
 	if rm.latest_state == "reverse" {
 		rm.dirction = 1 - rm.dirction
@@ -375,7 +479,7 @@ func (rm *PlayerRoom) RemoveCard(p_id int, rc Card) (int, int) {
 	if check == true {
 		flag = 5
 	}
-	return flag, nowplayer
+	return flag
 }
 
 //选择花色
@@ -384,21 +488,13 @@ func (rm *PlayerRoom) SelectColor(color string) {
 }
 
 //获得摸牌信息
-func (rm *PlayerRoom) GetCard(p_id int, rn int) int {
-	index := -1
-	for i, p := range rm.players {
-		if p.player_id == p_id {
-			rm.players[i].player_cards.Insert_Card(rm.room_cards.AddCards(rn))
-			index = i
-			break
-		}
-	}
+func (rm *PlayerRoom) GetCard(index int, rn int) {
+	rm.players[index].player_cards.Insert_Card(rm.room_cards.AddCards(rn))
 	if rm.dirction == 0 {
 		rm.nextplayer = (rm.nextplayer + 1) % 4
 	} else {
 		rm.nextplayer = (rm.nextplayer + 3) % 4
 	}
-	return index
 }
 
 //判断UNO
