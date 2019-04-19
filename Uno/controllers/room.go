@@ -83,9 +83,11 @@ func (rm *PlayerRoom) playRoom() {
 					} else {
 						jr.Host = true
 					}
-					ws.WriteJSON(jr)
+					if rm.playerno[i] != -1 {
+						ws.WriteJSON(jr)
+					}
 				}
-				//将房间内的情况发送给其他人
+				//将房间内的情况发送给新用户
 				ws := sub.rwc
 				for i, p := range rm.players {
 					if p.player_id == sub.player_id {
@@ -103,7 +105,30 @@ func (rm *PlayerRoom) playRoom() {
 					ws.WriteJSON(jr)
 				}
 			} else { //表示为用户之前不在即用户是在游戏中退出重连
+				msg := &Reincident{}
+				msg.Type = 4
+				msg.State = true
+				msg.Incident = 0
+				msg.Direction = rm.dirction
+				msg.Sc = false
+				msg.Sc = true
+				ws := sub.rwc
 
+				for i, p := range rm.players {
+					msg.Position = i
+					msg.CardsNumber = p.player_cards.number
+					if p.player_id == sub.player_id {
+						msg.Cardss = p.player_cards.cards
+						if rm.nextplayer == i {
+							msg.OutPeople = true
+						} else {
+							msg.OutPeople = false
+						}
+						ws.WriteJSON(msg)
+						continue
+					}
+					ws.WriteJSON(msg)
+				}
 			}
 		case event := <-rm.publish: //事件
 
@@ -206,7 +231,7 @@ func (rm *PlayerRoom) RemovePlayer(playerid int) (bool, error) {
 		if p.player_id == playerid {
 			rm.players[j].deregister()
 			rm.stay_number--
-			rm.playerno[j] = 0
+			rm.playerno[j] = -1
 			log.Printf("已经将 %d 玩家从 %s 房间移除", playerid, rm.player_room.room_name)
 			//注销房间
 			if rm.stay_number == 0 {
