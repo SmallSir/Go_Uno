@@ -3,6 +3,7 @@ package controllers
 import (
 	"errors"
 	"log"
+	"strconv"
 )
 
 type PlayerRoom struct {
@@ -46,6 +47,8 @@ type PlayerRoom struct {
 	addcardsnums int
 	//是否在比赛状态
 	game bool
+	//榜单信息
+	rankmsg []RankSort
 }
 
 //创建房间
@@ -56,6 +59,7 @@ func NewRoom(room Room, number int) *PlayerRoom {
 		subscribe:    make(chan *Player, 4),
 		publish:      make(chan Incident, 10),
 		unsubscribe:  make(chan int, 4),
+		rankmsg:      make([]RankSort, 4),
 		game:         false,
 		ready_player: make([]bool, number),
 		lastplayer:   0,
@@ -201,7 +205,32 @@ func (rm *PlayerRoom) playRoom() {
 					}
 				} else { //游戏获胜
 					rm.game = false
-
+					rm.rankmsg = make([]RankSort, 4)
+					for i, _ := range rm.players {
+						rm.rankmsg[i].name = rm.players[i].player_name
+						rm.rankmsg[i].id = rm.players[i].player_id
+						rm.rankmsg[i].score = rm.SumScore(i)
+					}
+					rm.ScoreSort()
+					msg := &GameOverRank{}
+					msg.Type = 3
+					msg.xs_one = rm.rankmsg[0].name
+					msg.gr_one = string(rm.rankmsg[0].score)
+					msg.xs_two = rm.rankmsg[1].name
+					msg.gr_two = string(rm.rankmsg[1].score)
+					msg.xs_three = rm.rankmsg[2].name
+					msg.gr_three = string(rm.rankmsg[2].score)
+					msg.xs_four = rm.rankmsg[3].name
+					msg.gr_four = string(rm.rankmsg[3].score)
+					for i, _ := range rm.players {
+						if rm.playerno[i] != -1 {
+							ws := rm.players[i].rwc
+							ws.WriteJSON(msg)
+						}
+					}
+					/*
+						redis修改积分
+					*/
 					//将游戏中已经离开的玩家清除房间
 					for i, p := range rm.playerno {
 						if p == -1 {
@@ -531,4 +560,39 @@ func (rm *PlayerRoom) CheckWin(p_id int) bool {
 		}
 	}
 	return false
+}
+
+//统计比赛结束后的分数
+func (rm *PlayerRoom) SumScore(index int) int {
+	pcards := rm.players[index].player_cards.cards
+	sum := 0
+	for _, c := range pcards {
+		if c.number == "-1" {
+			if c.color == "z" {
+				sum += 50
+			} else {
+				sum += 20
+			}
+		} else {
+			x, _ := strconv.Atoi(c.number)
+			sum += x
+		}
+	}
+	return sum
+}
+
+//将玩家获得的分数按照升序排序
+func (rm *PlayerRoom) ScoreSort() {
+	for i, _ := range rm.rankmsg {
+		for j, _ := range rm.rankmsg {
+			if j <= i {
+				continue
+			}
+			if rm.rankmsg[j].score < rm.rankmsg[i].score {
+				x := rm.rankmsg[j]
+				rm.rankmsg[j] = rm.rankmsg[i]
+				rm.rankmsg[i] = x
+			}
+		}
+	}
 }
