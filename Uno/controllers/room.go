@@ -54,7 +54,7 @@ func NewRoom(room Room, number int) *PlayerRoom {
 		player_room: room, ready_number: 0, dirction: 0,
 		stay_number: 0, playerno: make([]int, 4, 4), nextplayer: 0,
 		subscribe:    make(chan *Player, 4),
-		publish:      make(chan Incident),
+		publish:      make(chan Incident, 10),
 		unsubscribe:  make(chan int, 4),
 		game:         false,
 		ready_player: make([]bool, number),
@@ -200,7 +200,14 @@ func (rm *PlayerRoom) playRoom() {
 						}
 					}
 				} else { //游戏获胜
+					rm.game = false
 
+					//将游戏中已经离开的玩家清除房间
+					for i, p := range rm.playerno {
+						if p == -1 {
+							rm.unsubscribe <- rm.players[i].player_id
+						}
+					}
 				}
 			} else if event.Type == 1 { //事件为准备事件
 				msg := &Reincident{}
@@ -219,6 +226,7 @@ func (rm *PlayerRoom) playRoom() {
 					}
 				}
 				if rm.ready_number == rm.players_number { //检查是否都准备好了，立即开始游戏
+					rm.game = true
 					rm.PlayGame()
 					msg.Type = 4
 					msg.Incident = 1
