@@ -1153,6 +1153,18 @@ socket.onmessage = function(event){
                 dong_id = data.playerid;
                 dong_name = new PIXI.Text(data.playername);
                 dong.addChild(dong_name);
+                if(data.ready == true)
+                {
+                    app.stage.addChild(ready_dong)
+                    if(my_dir == "dong")
+                        ready_dong.x = 600,ready_dong.y = 350
+                    if(my_dir == "xi")
+                        ready_dong.x = 600,ready_dong.y = 150
+                    if(my_dir == "nan")
+                        ready_dong.x = 900,ready_dong.y = 300
+                    if(my_dir == "bei")
+                        ready_dong.x = 300,ready_dong.y = 300
+                }
                 if(my_dir == "dong")
                     dong_name.x = 180,dong_name.y = 150;
                 else if(my_dir == "xi")
@@ -1167,6 +1179,18 @@ socket.onmessage = function(event){
                 bei_id = data.playerid;
                 bei_name = new PIXI.Text(data.playername);
                 bei.addChild(bei_name);
+                if(data.ready == true)
+                {
+                    app.stage.addChild(ready_bei)
+                    if(my_dir == "bei")
+                        ready_dong.x = 600,ready_dong.y = 350
+                    if(my_dir == "nan")
+                        ready_dong.x = 600,ready_dong.y = 150
+                    if(my_dir == "dong")
+                        ready_dong.x = 900,ready_dong.y = 300
+                    if(my_dir == "xi")
+                        ready_dong.x = 300,ready_dong.y = 300
+                }
                 if(my_dir == "dong")
                     bei_name.x = 80,bei_name.y = 150;
                 else if(my_dir == "xi")
@@ -1181,6 +1205,18 @@ socket.onmessage = function(event){
                 xi_id = data.playerid;
                 xi_name = new PIXI.Text(data.playername);
                 xi.addChild(xi_name);
+                if(data.ready == true)
+                {
+                    app.stage.addChild(ready_dong)
+                    if(my_dir == "xi")
+                        ready_dong.x = 600,ready_dong.y = 350
+                    if(my_dir == "dong")
+                        ready_dong.x = 600,ready_dong.y = 150
+                    if(my_dir == "bei")
+                        ready_dong.x = 900,ready_dong.y = 300
+                    if(my_dir == "nan")
+                        ready_dong.x = 300,ready_dong.y = 300
+                }
                 if(my_dir == "dong")
                     xi_name.x = 130,xi_name.y = 50;
                 else if(my_dir == "xi")
@@ -1195,6 +1231,18 @@ socket.onmessage = function(event){
                 nan_id = nan.playerid;
                 nan_name = new PIXI.Text(data.playername);
                 nan.addChild(nan_name);
+                if(data.ready == true)
+                {
+                    app.stage.addChild(ready_nan)
+                    if(my_dir == "nan")
+                        ready_dong.x = 600,ready_dong.y = 350
+                    if(my_dir == "bei")
+                        ready_dong.x = 600,ready_dong.y = 150
+                    if(my_dir == "xi")
+                        ready_dong.x = 900,ready_dong.y = 300
+                    if(my_dir == "dong")
+                        ready_dong.x = 300,ready_dong.y = 300
+                }
                 if(my_dir == "dong")
                     nan_name.x = 180,nan_name.y = 50;
                 else if(my_dir == "xi")
@@ -1260,11 +1308,11 @@ socket.onmessage = function(event){
                     }
                     else if(my_dir == "xi")
                     {
-                        ready_nan.x = 300,ready_nan.y = 300;
+                        ready_nan.x = 900,ready_nan.y = 300;
                     }
                     else
                     {
-                        ready_nan.x = 900,ready_nan.y = 300;
+                        ready_nan.x = 300,ready_nan.y = 300;
                     }
                 }
                 else
@@ -1306,11 +1354,11 @@ socket.onmessage = function(event){
                     }
                     else if(my_dir == "dong")
                     {
-                        ready_bei.x = 300,ready_bei.y = 300;
+                        ready_bei.x = 900,ready_bei.y = 300;
                     }
                     else
                     {
-                        ready_bei.x = 900,ready_bei.y = 300;
+                        ready_bei.x = 300,ready_bei.y = 300;
                     }
                 }
                 else
@@ -1352,11 +1400,11 @@ socket.onmessage = function(event){
                     }
                     else if(my_dir == "bei")
                     {
-                        ready_xi.x = 300,ready_xi.y = 300;
+                        ready_xi.x = 900,ready_xi.y = 300;
                     }
                     else
                     {
-                        ready_xi.x = 900,ready_xi.y = 300;
+                        ready_xi.x = 300,ready_xi.y = 300;
                     }
                 }
                 else
@@ -1397,11 +1445,11 @@ socket.onmessage = function(event){
                     }
                     else if(my_dir == "nan")
                     {
-                        ready_dong.x = 300,ready_dong.y = 300;
+                        ready_dong.x = 900,ready_dong.y = 300;
                     }
                     else
                     {
-                        ready_dong.x = 900,ready_dong.y = 300;
+                        ready_dong.x = 300,ready_dong.y = 300;
                     }
                 }
                 else
