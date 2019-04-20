@@ -54,6 +54,7 @@ type LeaveRoom struct {
 
 //比赛结束后的返回的榜单数据格式
 type GameOverRank struct {
+	Type     int    `json:"Type"`     //类型
 	xs_one   string `json:"xs_one"`   //第一名名字
 	gr_one   string `json:"gr_one"`   //第一名分数
 	xs_two   string `json:"xs_two"`   //第二个名字
@@ -67,6 +68,7 @@ type GameOverRank struct {
 //榜单格式
 type RankSort struct {
 	name  string //名字
+	id    int    //id
 	score int    //分数
 }
 type Card struct {
