@@ -13,8 +13,6 @@ type PlayerRoom struct {
 	ready_number int
 	//玩家信息
 	players []*Player
-	//准备状态
-	ready_player []bool
 	//房间信息
 	player_room Room
 	//目前已有的人数
@@ -61,7 +59,6 @@ func NewRoom(room Room, number int) *PlayerRoom {
 		unsubscribe:  make(chan int, 4),
 		rankmsg:      make([]RankSort, 4),
 		game:         false,
-		ready_player: make([]bool, number),
 		lastplayer:   0,
 		addcardsnums: 0}
 	return &newroom
@@ -103,7 +100,7 @@ func (rm *PlayerRoom) playRoom() {
 					jr.PlayerId = p.player_id
 					jr.PlayerName = p.player_name
 					jr.Position = i
-					if rm.ready_player[i] == true {
+					if rm.players[i].state == true {
 						jr.Pready = true
 					} else {
 						jr.Pready = false
@@ -237,6 +234,10 @@ func (rm *PlayerRoom) playRoom() {
 							rm.unsubscribe <- rm.players[i].player_id
 						}
 					}
+					//数据清零等待重新再开
+					rm.ready_number = 0
+					rm.addcardsnums = 0
+					rm.game = false
 				}
 			} else if event.Type == 1 { //事件为准备事件
 				msg := &Reincident{}
@@ -248,6 +249,7 @@ func (rm *PlayerRoom) playRoom() {
 				} else { //事件为取消准备
 					rm.UnreadyPlayer(event.Position)
 				}
+				msg.ReadyNumber = rm.ready_number
 				for i, _ := range rm.players {
 					if rm.playerno[i] != -1 {
 						ws := rm.players[i].rwc
