@@ -159,4 +159,5 @@ type Reincident struct {
 	Wuno        bool   `json:"wuno"`        //事件为喊UNO时喊出UNO
 	State       bool   `json:"state"`       //是否是玩家重连
 	Ready       bool   `json:"ready"`       //事件为准备，是准备还是取消准备
+	ReadyNumber int    `json:"readynumber"` //计算准备人数
 }
