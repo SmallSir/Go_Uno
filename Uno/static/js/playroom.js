@@ -1231,10 +1231,7 @@ socket.onmessage = function(event){
         }
         break;
     case 2: //准备与取消准备
-        if(data.ready == false)
-            ready_number--;
-        else
-            ready_number++;
+        ready_number = data.readynumber
         if(data.playerid == nan_id)
         {
             if(data.ready == false)
