@@ -1422,6 +1422,7 @@ socket.onmessage = function(event){
         break;
     case 3: //榜单信息
         xs_one = new PIXI.Text(data.xs_one);
+        gr_one = new PIXI.Text(data.gr_one)
         xs_two = new PIXI.Text(data.xs_two);
         gr_two = new PIXI.Text(data.gr_two);
         xs_three = new PIXI.Text(data.xs_three);
