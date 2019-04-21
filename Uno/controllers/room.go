@@ -445,7 +445,7 @@ func (rm *PlayerRoom) RemoveCard(index int, rc Card) int {
 	*/
 	flag := -1
 	p_id := rm.playerno[index]
-	if rc.color == "red" || rc.color == "yellow" || rc.color == "green" || rc.color == "green" {
+	if rc.color == "red" || rc.color == "yellow" || rc.color == "green" || rc.color == "blue" {
 		if rc.color == rm.latest_number || rm.latest_color == "null" { //颜色相同符合条件
 			if rm.latest_state != "raw" {
 				flag = 0
