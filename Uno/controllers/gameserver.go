@@ -16,24 +16,62 @@ type GameController struct {
 
 var roomlist *roomtable
 
+/*
+以下为测试样例
+*/
+var ranklist []Rankname
+
 //初始化房间表
 func init() {
 	roomlist = newRoomTable()
-}
-
-//测试
-func (game *GameController) Get() {
-	game.TplName = "index.html"
+	/*
+		以下为测试样例
+	*/
+	ranklist = make([]Rankname, 10)
 }
 
 //获取rank榜单信息
 func (game *GameController) GetRank() {
 	//redis访问获取排行榜的信息
-
+	game.TplName = "dating.html"
 	remsg := &Rank{}
 	/*
 		把从redis获取的内容全部传递到remsg中即可
 	*/
+	/*
+		以下为测试样例
+	*/
+	ranklist[0].Usergrades = 1500
+	ranklist[0].Username = "大佬大佬"
+	remsg.One = ranklist[0]
+	ranklist[1].Usergrades = 1499
+	ranklist[1].Username = "bilibili比利"
+	remsg.Two = ranklist[1]
+	ranklist[2].Usergrades = 1200
+	ranklist[2].Username = "!!哈哈"
+	remsg.Three = ranklist[2]
+	ranklist[3].Usergrades = 1150
+	ranklist[3].Username = "嘟嘟嘟嘟"
+	remsg.Four = ranklist[3]
+	ranklist[4].Usergrades = 1000
+	ranklist[4].Username = "smallsir"
+	remsg.Five = ranklist[4]
+	ranklist[5].Usergrades = 900
+	ranklist[5].Username = "哈哈"
+	remsg.Six = ranklist[5]
+	ranklist[6].Usergrades = 800
+	ranklist[6].Username = "4545"
+	remsg.Seven = ranklist[6]
+	ranklist[7].Usergrades = 700
+	ranklist[7].Username = "daskd"
+	remsg.Eight = ranklist[7]
+	ranklist[8].Usergrades = 500
+	ranklist[8].Username = "最后的测试"
+	remsg.Nine = ranklist[8]
+	ranklist[9].Usergrades = 100
+	ranklist[9].Username = "吃葡萄不吐葡萄皮"
+	remsg.Ten = ranklist[9]
+
 	ret, _ := json.Marshal(remsg)
 	game.Data["json"] = string(ret)
 	game.EnableRender = false
@@ -169,10 +207,13 @@ func (game *GameController) Join() {
 
 //建立WebSocket
 func (game *GameController) ConnectionWebSocket() {
+	game.TplName = "playroom.html"
 	//获取玩家的昵称和id，以及所在房间
 	roomname := game.GetSession("roomname").(string)
 	playerid := game.GetSession("id").(int)
 	playername := game.GetSession("name").(string)
+	game.Data["id"] = string(playerid)
+	game.Data["name"] = roomname
 
 	//检查与url中所记录的信息是否相同
 	if string(playerid) != game.Ctx.Input.Param(":id") || roomname != game.Ctx.Input.Param(":username") {
