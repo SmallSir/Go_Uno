@@ -35,7 +35,10 @@ function check(thisBtn) {
             dataType: "json",
             success:function(ret){
                 ret = JSON.parse(ret)
-                alert("验证码已发送，请前往邮箱")
+                if(ret.state == false)
+                    alert(ret.message)
+                else
+                    alert("已发送，请前往邮箱查看")
             },
             error:function(ret){
                 alert("请重新输入");
