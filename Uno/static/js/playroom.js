@@ -1016,8 +1016,10 @@ function checkready()//检查是否所有用户均准备
     }
 }
 
+//var userid = {{.id}}
+//var roomname = {{.roomname}}
 //创建webscoket
-socket = new WebSocket('ws://' + window.location.host + '/ws/join?uname=' + $('#uname').text());//websocket的内容需要修改
+socket = new WebSocket('ws://' + window.location.host + "/uno/play?userid=" + userid + "?roomid=" +roomname);//websocket的内容需要修改
 socket.onmessage = function(event){
     var data = JSON.parse(event.data);
     switch(data.Type){
