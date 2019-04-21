@@ -100,6 +100,7 @@ type PlayerReady struct {
 type Rankname struct {
 	Username   string `json:"username"` //获取的玩家姓名
 	Usergrades int    `json:"grades"`   //玩家得分
+	User       bool   `json:"user"`     //判断是否有
 }
 
 //返回到大厅的rank排行榜信息
@@ -127,7 +128,7 @@ type useregister struct {
 	email    string `json:"email"`    //登录邮箱
 	password string `json:"password"` //密码
 	username string `json:"username"` //用户名
-	code     string `json:"yzm"`      //邮箱验证码
+	code     int    `json:"yzm"`      //邮箱验证码
 }
 
 //用户事件接收数据格式
