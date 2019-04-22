@@ -124,7 +124,7 @@ var tenth = new PIXI.Text('第十名',style);
 //接收服务器发来的json
 $.ajax({
     type: 'get',
-    url: '/dating',
+    url: '/rank',
     data: {
         rank:"rank"
     },

@@ -1,15 +1,15 @@
 function login(){
     var email = document.getElementById("email").value
     var password = document.getElementById("password").value
-    console.log(email)
-    console.log(password)
+
+    var data = {}
+    data["email"] = email
+    data["password"] = password
     $.ajax({
         type:'post',
         url: '/login',
-        data: {
-            email : email,
-            password : password
-        },
+        data: JSON.stringify(data),
+        contentType: "application/json",
         dataType: "json",
         success:function(ret){
             ret = JSON.parse(ret)
