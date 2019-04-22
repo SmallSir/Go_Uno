@@ -18,7 +18,9 @@ func init() {
 	//发送邮箱验证码
 	beego.Router("/emailyzm", &controllers.UserController{}, "post:EmailCheck")
 	//主页面
-	beego.Router("/dating", &controllers.GameController{}, "get:GetRank")
+	beego.Router("/dating", &controllers.GameController{}, "get:Dating")
+	//显示榜单
+	beego.Router("/rank", &controllers.GameController{}, "get:GetRank")
 	//创建房间
 	beego.Router("/create", &controllers.GameController{}, "post:Register")
 	//进入房间
