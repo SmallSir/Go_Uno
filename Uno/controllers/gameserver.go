@@ -30,10 +30,13 @@ func init() {
 	ranklist = make([]Rankname, 10)
 }
 
+//大厅页面
+func (game *GameController) Dating() {
+	game.TplName = "dating.html"
+}
+
 //获取rank榜单信息
 func (game *GameController) GetRank() {
-	//redis访问获取排行榜的信息
-	game.TplName = "dating.html"
 	remsg := &Rank{}
 	/*
 		把从redis获取的内容全部传递到remsg中即可
