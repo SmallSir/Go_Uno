@@ -131,102 +131,99 @@ $.ajax({
     dataType: "json",
     success: function (ret) {
         data = JSON.parse(ret)
-        if(data[one][user] != false)
+        if(data.one["user"] != false)
         {
-            var onen = new PIXI.Text(data[one][username],style_name)
-            rank.add(onen);
+            var onen = new PIXI.Text(data.one["username"],style_name)
+            rank.addChild(onen);
             onen.x = 120,onen.y = 90;
-            var oneg = new PIXI.Text(data[one][grades],style_name)
-            rank.add(oneg);
+            var oneg = new PIXI.Text(data.one["grades"],style_name)
+            rank.addChild(oneg);
             oneg.x = 120,oneg.y = 60;
         }
-
-        if(data[two][user] != false)
+        if(data.two["user"] != false)
         {
-            var twon = new PIXI.Text(data[two][username],style_name)
+            var twon = new PIXI.Text(data.two["username"],style_name)
             rank.addChild(twon);
             twon.x = 0,twon.y = 120;
-            var twog = new PIXI.Text(data[two][grades],style_name)
+            var twog = new PIXI.Text(data.two["grades"],style_name)
             rank.addChild(twog);
             twog.x = 0,twog.y = 90;
         }
-
-        if(data[three][user] != false)
+        if(data.three["user"] != false)
         {
-            var threen = new PIXI.Text(data[three][username],style_name)
+            var threen = new PIXI.Text(data.three["username"],style_name)
             rank.addChild(threen);
             threen.x = 240,threen.y = 120;
-            var threeg = new PIXI.Text(data[three][grades],style_name)
+            var threeg = new PIXI.Text(data.three["grades"],style_name)
             rank.addChild(threeg);
             threeg.x = 240,threeg.y = 90;
         }
-
-        if(data[four][user] != false)
+        if(data.four["user"] != false)
         {
-            var fourn = new PIXI.Text(data[four][username],style_name)
+            var fourn = new PIXI.Text(data.four["username"],style_name)
             rank.addChild(fourn);
             fourn.x = 240,fourn.y = 180;
-            var fourg = new PIXI.Text(data[four][grades],style_name)
+            var fourg = new PIXI.Text(data.four["grades"],style_name)
             rank.addChild(fourg);
             fourg.x = 120,fourg.y = 180;
         }
 
-        if(data[five][user] != false)
+        if(data.five["user"] != false)
         {
-            var fiven = new PIXI.Text(data[five][username],style_name)
+            var fiven = new PIXI.Text(data.five["username"],style_name)
             rank.addChild(fiven);
             fiven.x = 240,fiven.y = 230;
-            var fiveg = new PIXI.Text(data[five][grades],style_name)
+            var fiveg = new PIXI.Text(data.five["grades"],style_name)
             rank.addChild(fiveg);
             fiveg.x = 120,fiveg.y = 230;
         }
 
-        if(data[six][user] != false)
+        if(data.six["user"] != false)
         {
-            var sixn = new PIXI.Text(data[six][username],style_name)
+            var sixn = new PIXI.Text(data.six["username"],style_name)
             rank.addChild(sixn);
             sixn.x = 240,sixn.y = 280;
-            var sixg = new PIXI.Text(data[six][grades],style_name)
+            var sixg = new PIXI.Text(data.six["grades"],style_name)
             rank.addChild(sixg);
             sixg.x= 120,sixg.y = 280;
         }
 
-        if(data[seven][user] != false)
+        if(data.seven["user"] != false)
         {
-            var sevenn = new PIXI.Text(data[seven][username],style_name) 
+            var sevenn = new PIXI.Text(data.seven["username"],style_name) 
             rank.addChild(sevenn);
             sevenn.x = 240,sevenn.y = 330;
-            var seveng = new PIXI.Text(data[seven][grades],style_name)
+            var seveng = new PIXI.Text(data.seven["grades"],style_name)
             rank.addChild(seveng);
-            seveng.x = 120,sevenn.y = 330;
+            seveng.x = 120,seveng.y = 330;
         }
 
-        if(data[eight][user] != false)
+        if(data.eight["user"] != false)
         {
-            var eighth = new PIXI.Text(data[eight][username],style_name)
+            var eighth = new PIXI.Text(data.eight["username"],style_name)
             rank.addChild(eighth);
             eighth.x = 240,eighth.y = 380;
-            var eightg = new PIXI.Text(data[eight][grades],style_name)
+            var eightg = new PIXI.Text(data.eight["grades"],style_name)
             rank.addChild(eightg);
             eightg.x = 120,eightg.y = 380;
         }
 
-        if(data[nine][user] != false)
+        if(data.nine["user"] != false)
         {
-            var ninen = new PIXI.Text(data[nine][username],style_name)
+            var ninen = new PIXI.Text(data.nine["username"],style_name)
             rank.addChild(ninen);
             ninen.x = 240,ninen.y = 430;
-            var nineg = new PIXI.Text(data[nine][grades],style_name)
+            var nineg = new PIXI.Text(data.nine["grades"],style_name)
             rank.addChild(nineg);
             nineg.x = 120,nineg.y = 430;
         }
 
-        if(data[ten][user] != false)
+        if(data.ten["user"] != false)
         {
-            var tenn = new PIXI.Text(data[ten][username],style_name)
+            var tenn = new PIXI.Text(data.ten["username"],style_name)
             rank.addChild(tenn);
             tenn.x = 240,tenn.y = 480;
-            var teng = new PIXI.Text(data[ten][grades],style_name)
+            var teng = new PIXI.Text(data.ten["grades"],style_name)
             rank.addChild(teng);
             teng.x = 120,teng.y = 480;
         }
