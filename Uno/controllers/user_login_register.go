@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"log"
 	"math/rand"
+	"strconv"
 	"time"
 
 	"github.com/go-gomail/gomail"
@@ -58,7 +59,6 @@ func (User *UserController) GetRegister() {
 
 //Login 是实现用户登录功能
 func (User *UserController) Login() {
-	User.TplName = "login.html"
 	//返回信息
 	ok := false
 	msg := ""
@@ -66,12 +66,12 @@ func (User *UserController) Login() {
 
 	//获取登录玩家的信息
 	user := Userlogin{}
-	err := json.Unmarshal([]byte(User.Ctx.Input.RequestBody), user)
+	err := json.Unmarshal(User.Ctx.Input.RequestBody, &user)
 	if err != nil {
 		msg = "信息错误，请重新输入"
 		return
 	}
-
+	log.Println(user)
 	email := user.Email
 	password := user.Password
 
@@ -116,7 +116,7 @@ func (User *UserController) Register() {
 
 	//获取玩家注册信息
 	user := useregister{}
-	err := json.Unmarshal([]byte(User.Ctx.Input.RequestBody), user)
+	err := json.Unmarshal(User.Ctx.Input.RequestBody, &user)
 	if err != nil {
 		msg = "信息出错，重新填写"
 		return
@@ -161,13 +161,12 @@ func (User *UserController) Register() {
 
 //向邮箱传递验证码
 func (User *UserController) EmailCheck() {
-	User.TplName = "register.html"
 	//获取邮箱信息
 	user := Userlogin{}
-	err := json.Unmarshal([]byte(User.Ctx.Input.RequestBody), user)
+	err := json.Unmarshal(User.Ctx.Input.RequestBody, &user)
 	email := user.Email
-	log.Println([]byte(User.Ctx.Input.RequestBody))
-	log.Println(user.Email)
+	log.Println(User.Ctx.Input.RequestBody)
+	log.Println(user)
 	//返回信息
 	ok := false
 	msg := ""
@@ -182,7 +181,6 @@ func (User *UserController) EmailCheck() {
 		ret, _ := json.Marshal(remsg)
 		User.Data["json"] = string(ret)
 		User.EnableRender = false
-		log.Println("这还是测试")
 		User.ServeJSON()
 	}()
 
@@ -191,9 +189,9 @@ func (User *UserController) EmailCheck() {
 	*/
 
 	//生成一个六位验证码
-	yzm := rand.New(rand.NewSource(time.Now().UnixNano())).Int31n(1000000)
-
-	sendemail := "<h1>验证码" + string(yzm) + "</h1>"
+	yzm := int(rand.New(rand.NewSource(time.Now().UnixNano())).Int31n(1000000))
+	x := strconv.Itoa(yzm)
+	sendemail := "验证码:" + x
 	m := gomail.NewMessage()
 	m.SetAddressHeader("From", "280690956@qq.com", "UNO官方")
 	m.SetAddressHeader("To", email, email)
@@ -205,8 +203,11 @@ func (User *UserController) EmailCheck() {
 		msg = err.Error()
 		return
 	}
+
 	/*
 		把验证码和邮箱同时发送到redis数据库保留，并限时2分钟
 	*/
-
+	ok = true
+	msg = "成功发送验证码，请前往邮箱查看"
+	return
 }
