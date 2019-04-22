@@ -131,7 +131,7 @@ $.ajax({
     dataType: "json",
     success: function (ret) {
         data = JSON.parse(ret)
-        if(data[one][username] != "NULL")
+        if(data[one][user] != false)
         {
             var onen = new PIXI.Text(data[one][username],style_name)
             rank.add(onen);
@@ -141,7 +141,7 @@ $.ajax({
             oneg.x = 120,oneg.y = 60;
         }
 
-        if(data[two][username] != "NULL")
+        if(data[two][user] != false)
         {
             var twon = new PIXI.Text(data[two][username],style_name)
             rank.addChild(twon);
@@ -151,7 +151,7 @@ $.ajax({
             twog.x = 0,twog.y = 90;
         }
 
-        if(data[three][username] != "NULL")
+        if(data[three][user] != false)
         {
             var threen = new PIXI.Text(data[three][username],style_name)
             rank.addChild(threen);
@@ -161,7 +161,7 @@ $.ajax({
             threeg.x = 240,threeg.y = 90;
         }
 
-        if(data[four][username] != "NULL")
+        if(data[four][user] != false)
         {
             var fourn = new PIXI.Text(data[four][username],style_name)
             rank.addChild(fourn);
@@ -171,7 +171,7 @@ $.ajax({
             fourg.x = 120,fourg.y = 180;
         }
 
-        if(data[five][username] != "NULL")
+        if(data[five][user] != false)
         {
             var fiven = new PIXI.Text(data[five][username],style_name)
             rank.addChild(fiven);
@@ -181,7 +181,7 @@ $.ajax({
             fiveg.x = 120,fiveg.y = 230;
         }
 
-        if(data[six][username] != "NULL")
+        if(data[six][user] != false)
         {
             var sixn = new PIXI.Text(data[six][username],style_name)
             rank.addChild(sixn);
@@ -191,7 +191,7 @@ $.ajax({
             sixg.x= 120,sixg.y = 280;
         }
 
-        if(data[seven][username] != "NULL")
+        if(data[seven][user] != false)
         {
             var sevenn = new PIXI.Text(data[seven][username],style_name) 
             rank.addChild(sevenn);
@@ -201,7 +201,7 @@ $.ajax({
             seveng.x = 120,sevenn.y = 330;
         }
 
-        if(data[eight][username] != "NULL")
+        if(data[eight][user] != false)
         {
             var eighth = new PIXI.Text(data[eight][username],style_name)
             rank.addChild(eighth);
@@ -211,7 +211,7 @@ $.ajax({
             eightg.x = 120,eightg.y = 380;
         }
 
-        if(data[nine][username] != "NULL")
+        if(data[nine][user] != false)
         {
             var ninen = new PIXI.Text(data[nine][username],style_name)
             rank.addChild(ninen);
@@ -221,7 +221,7 @@ $.ajax({
             nineg.x = 120,nineg.y = 430;
         }
 
-        if(data[ten][username] != "NULL")
+        if(data[ten][user] != false)
         {
             var tenn = new PIXI.Text(data[ten][username],style_name)
             rank.addChild(tenn);
