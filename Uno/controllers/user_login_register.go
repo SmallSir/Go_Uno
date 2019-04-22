@@ -41,6 +41,16 @@ type UserController struct {
 	beego.Controller
 }
 
+//登陆界面
+func (User *UserController) Get() {
+	User.TplName = "login.html"
+}
+
+//注册界面
+func (User *UserController) GetRegister() {
+	User.TplName = "register.html"
+}
+
 //Login 是实现用户登录功能
 func (User *UserController) Login() {
 	User.TplName = "login.html"
@@ -93,7 +103,6 @@ func (User *UserController) Login() {
 
 //Register 是实现用户注册功能
 func (User *UserController) Register() {
-	User.TplName = "register.html"
 	//返回信息
 	ok := false
 	msg := ""
@@ -155,7 +164,6 @@ func (User *UserController) EmailCheck() {
 	ok := false
 	msg := ""
 	//url := ""
-
 	defer func() {
 		remsg := &ReRoomMsg{}
 		remsg.Msg = msg

@@ -8,11 +8,11 @@ import (
 
 func init() {
 	//首页
-	beego.Router("/", &controllers.UserController{}, "get:Login")
+	beego.Router("/", &controllers.UserController{})
 	//登录
 	beego.Router("/login", &controllers.UserController{}, "post:Login")
 	//注册页面
-	beego.Router("/register", &controllers.UserController{}, "get:Register")
+	beego.Router("/register", &controllers.UserController{}, "get:GetRegister")
 	//注册
 	beego.Router("/register", &controllers.UserController{}, "post:Register")
 	//发送邮箱验证码
