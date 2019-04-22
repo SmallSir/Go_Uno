@@ -34,11 +34,11 @@ body{
     font-size: 100%;
     background: linear-gradient(to bottom right, #000000, #656565);
     background-size: 100%;
+
 }
 .login-form{
 	
 	padding:100px 0px 50px 0px;
-
 }
 .login-form h1{
 	font-size:2em;
@@ -213,7 +213,7 @@ p.copy {
     font-size: 0.8em;
 }
 body {
-    min-height: 672px;
+    min-height: 1000px;
 }
 }
 @media (max-width:384px){
@@ -238,7 +238,7 @@ body {
     padding: 50px 0px 45px 0px;
 }
 body {
-    min-height: 540px;
+    min-height: 1000px;
 }
 }
 
