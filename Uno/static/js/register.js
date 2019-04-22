@@ -6,7 +6,6 @@ function check(thisBtn) {
         alert("用户名太长")
         return false
     }
-    
     if (obj.value === "") { //输入不能为空
         alert("输入不能为空!");
         return false;
@@ -26,12 +25,13 @@ function check(thisBtn) {
         }
         emailCheck(thisBtn)
         //发送信息给后端生成验证码
+        var data = {};
+        data["email"] = obj.value;
         $.ajax({
-            type:'post',
-            url: '/emailyzm',
-            data: {
-                email : obj.value,
-            },
+            type:"POST",
+            url: "/emailyzm",
+            data:JSON.stringify(data),
+            contentType: "application/json",
             dataType: "json",
             success:function(ret){
                 ret = JSON.parse(ret)
@@ -79,7 +79,8 @@ function registeruser(){
     
     //信息验证
     var reg = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$"); //正则表达式
-    if (username > 15){
+    if (username.length > 15){
+        alert(username)
         alert("用户名太长")
         return false
     }
@@ -100,16 +101,17 @@ function registeruser(){
             return false;
         }
     }
-
+    
+    var data = {};
+    data["password"] = password;
+    data["username"] = username;
+    data["yzm"] = veri;
+    data["email"] = mail;
     $.ajax({
         type:'post',
         url: '/register',
-        data: {
-            username : username,
-            password : password,
-            yzm : veri,
-            email: mail,
-        },
+        data:JSON.stringify(data),
+        contentType: "application/json",
         dataType: "json",
         success:function(ret){
             ret = JSON.parse(ret)
