@@ -122,12 +122,13 @@ var tenth = new PIXI.Text('第十名',style);
 
 
 //接收服务器发来的json
+var data = {}
+data["rank"] = "rank"
 $.ajax({
     type: 'get',
     url: '/rank',
-    data: {
-        rank:"rank"
-    },
+    data: JSON.stringify(data),
+    contentType: "application/json",
     dataType: "json",
     success: function (ret) {
         data = JSON.parse(ret)
@@ -303,10 +304,11 @@ function oncreate(){
     $.ajax({
         type:'post',
         url: '/create',
-        data: {
-        name: roomname.text,
-        password: roompassword.text
-        },
+        data: JSON.stringify({
+            name: roomname.text,
+            password: roompassword.text
+        }),
+        contentType: "application/json",
         dataType: "json",
         success:function(ret){
             ret = JSON.parse(ret)
@@ -323,14 +325,18 @@ function oncreate(){
 }
 
 
+var jdata = {}
+jdata["name"] = roomname.text
+jdata["password"] = roompassword.text
 function onjoin(){
     $.ajax({
         type:'post',
         url: '/join',
-        data: {
-        name: roomname.text,
-        password: roompassword.text
-        },
+        data: JSON.stringify({
+            name: roomname.text,
+            password: roompassword.text
+            }),
+        contentType: "application/json",
         success:function(ret){
             ret = JSON.parse(ret)
             if(ret.state == true){

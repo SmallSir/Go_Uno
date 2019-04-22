@@ -95,10 +95,10 @@ func (game *GameController) GetRank() {
 func (game *GameController) Register() {
 	//获取账号密码
 	roommsg := RoomMsg{}
-	err := json.Unmarshal([]byte(game.Ctx.Input.RequestBody), roommsg)
+	err := json.Unmarshal(game.Ctx.Input.RequestBody, &roommsg)
 	roomname := roommsg.RoomName
 	roompassword := roommsg.RoomPassWord
-
+	log.Println("创建房间内容实现", roommsg)
 	//返回信息
 	ok := false
 	msg := ""
@@ -163,14 +163,14 @@ func (game *GameController) Register() {
 
 //加入房间
 func (game *GameController) Join() {
-	playerid := game.GetSession("id").(int)
+	//playerid := game.GetSession("id").(int)
 
 	//获取账号密码
 	roommsg := RoomMsg{}
-	err := json.Unmarshal([]byte(game.Ctx.Input.RequestBody), roommsg)
+	err := json.Unmarshal(game.Ctx.Input.RequestBody, &roommsg)
 	roomname := roommsg.RoomName
 	roompassword := roommsg.RoomPassWord
-
+	log.Println("加入房间内容实现", roommsg)
 	//返回信息
 	ok := false
 	msg := ""
@@ -215,7 +215,7 @@ func (game *GameController) Join() {
 	game.SetSession("roomname", roomname)
 	ok = true
 	msg = "房间创建成功"
-	url = "/uno/play?userid=" + string(playerid) + "?roomid=" + roomname
+	//url = "/uno/play?userid=" + string(playerid) + "?roomid=" + roomname
 }
 
 //建立WebSocket
