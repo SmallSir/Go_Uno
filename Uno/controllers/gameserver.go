@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"regexp"
+	"strconv"
 
 	"github.com/astaxie/beego"
 	"github.com/gorilla/websocket"
@@ -37,7 +38,20 @@ func (game *GameController) Dating() {
 
 //获取rank榜单信息
 func (game *GameController) GetRank() {
+	geturl := GetUrl{}
+	//log.Println(strconv.Itoa(game.GetSession("id").(int)))
+	_ = json.Unmarshal(game.Ctx.Input.RequestBody, &geturl)
+	xx := geturl.Url
+	log.Println(xx)
+	url := xx[29:]
+	log.Print(url)
+	//检测是否偷偷进入，如果是的话就跳转到登陆界面
 	remsg := &Rank{}
+	remsg.State = true
+	if game.GetSession("id") == nil || url != strconv.Itoa(game.GetSession("id").(int)) {
+		log.Println("....")
+		remsg.State = false
+	}
 	/*
 		把从redis获取的内容全部传递到remsg中即可
 	*/
@@ -85,10 +99,12 @@ func (game *GameController) GetRank() {
 	ranklist[9].User = true
 	remsg.Ten = ranklist[9]
 
-	ret, _ := json.Marshal(remsg)
-	game.Data["json"] = string(ret)
-	game.EnableRender = false
-	game.ServeJSON()
+	defer func() {
+		ret, _ := json.Marshal(remsg)
+		game.Data["json"] = string(ret)
+		game.EnableRender = false
+		game.ServeJSON()
+	}()
 }
 
 //创建房间
@@ -98,7 +114,6 @@ func (game *GameController) Register() {
 	err := json.Unmarshal(game.Ctx.Input.RequestBody, &roommsg)
 	roomname := roommsg.RoomName
 	roompassword := roommsg.RoomPassWord
-	log.Println("创建房间内容实现", roommsg)
 	//返回信息
 	ok := false
 	msg := ""
@@ -170,7 +185,6 @@ func (game *GameController) Join() {
 	err := json.Unmarshal(game.Ctx.Input.RequestBody, &roommsg)
 	roomname := roommsg.RoomName
 	roompassword := roommsg.RoomPassWord
-	log.Println("加入房间内容实现", roommsg)
 	//返回信息
 	ok := false
 	msg := ""

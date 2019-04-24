@@ -123,15 +123,19 @@ var tenth = new PIXI.Text('第十名',style);
 
 //接收服务器发来的json
 var data = {}
-data["rank"] = "rank"
+data["url"] = window.location.href
 $.ajax({
-    type: 'get',
+    type: 'post',
     url: '/rank',
     data: JSON.stringify(data),
     contentType: "application/json",
     dataType: "json",
     success: function (ret) {
         data = JSON.parse(ret)
+        if(data.state == false)
+        {
+            window.location = "/";
+        }
         if(data.one["user"] != false)
         {
             var onen = new PIXI.Text(data.one["username"],style_name)
