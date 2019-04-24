@@ -106,7 +106,6 @@ type Rankname struct {
 //返回到大厅的rank排行榜信息
 type Rank struct {
 	State bool     `json:"state"` //检测是否存在问题
-	Url   string   `json:"url"`   //网址
 	One   Rankname `json:"one"`   //第一名
 	Two   Rankname `json:"two"`   //第二名
 	Three Rankname `json:"three"` //第三名
