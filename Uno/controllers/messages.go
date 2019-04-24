@@ -105,6 +105,8 @@ type Rankname struct {
 
 //返回到大厅的rank排行榜信息
 type Rank struct {
+	State bool     `json:"state"` //检测是否存在问题
+	Url   string   `json:"url"`   //网址
 	One   Rankname `json:"one"`   //第一名
 	Two   Rankname `json:"two"`   //第二名
 	Three Rankname `json:"three"` //第三名
@@ -161,4 +163,9 @@ type Reincident struct {
 	State       bool   `json:"state"`       //是否是玩家重连
 	Ready       bool   `json:"ready"`       //事件为准备，是准备还是取消准备
 	ReadyNumber int    `json:"readynumber"` //计算准备人数
+}
+
+//获取页面url
+type GetUrl struct {
+	Url string `json:"url"`
 }
