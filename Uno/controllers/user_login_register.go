@@ -98,12 +98,14 @@ func (User *UserController) Login() {
 			id = testid[i]
 		}
 	}
-	ok = true
-	url = "/dating"
 
 	//正确的话设置玩家的id和name到session
 	User.SetSession("id", id)
 	User.SetSession("name", username)
+
+	ok = true
+	url = "/dating/" + strconv.Itoa(id)
+
 }
 
 //Register 是实现用户注册功能
@@ -149,7 +151,7 @@ func (User *UserController) Register() {
 		return
 	}
 	url = "/"
-
+	ok = true
 	/*
 		检测用户名的唯一性
 	*/
