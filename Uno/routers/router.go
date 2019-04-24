@@ -18,14 +18,14 @@ func init() {
 	//发送邮箱验证码
 	beego.Router("/emailyzm", &controllers.UserController{}, "post:EmailCheck")
 	//主页面
-	beego.Router("/dating", &controllers.GameController{}, "get:Dating")
+	beego.Router("/dating/?:id", &controllers.GameController{}, "get:Dating")
 	//显示榜单
-	beego.Router("/rank", &controllers.GameController{}, "get:GetRank")
+	beego.Router("/rank", &controllers.GameController{}, "post:GetRank")
 	//创建房间
 	beego.Router("/create", &controllers.GameController{}, "post:Register")
 	//进入房间
 	beego.Router("/join", &controllers.GameController{}, "post:Join")
 	//房间
-	beego.Router("/uno/play?userid=:id?roomid=:roomname", &controllers.GameController{}, "get:ConnectionWebSocket")
+	beego.Router("/uno/?id/?roomid", &controllers.GameController{}, "get:ConnectionWebSocket")
 
 }
