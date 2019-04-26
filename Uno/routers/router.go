@@ -26,6 +26,6 @@ func init() {
 	//进入房间
 	beego.Router("/join", &controllers.GameController{}, "post:Join")
 	//房间
-	beego.Router("/uno/?id/?roomid", &controllers.GameController{}, "get:ConnectionWebSocket")
-
+	beego.Router("/uno", &controllers.GameController{}, "get:ConnectionWebSockets")
+	beego.Router("/uno/?:roomid", &controllers.GameController{}, "get:ConnectionWebSocket")
 }
