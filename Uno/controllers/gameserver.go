@@ -47,9 +47,9 @@ func (game *GameController) GetRank() {
 	remsg := &Rank{}
 	remsg.State = true
 	if game.GetSession("id") == nil || url != strconv.Itoa(game.GetSession("id").(int)) {
-		log.Println("....")
 		remsg.State = false
 	}
+	game.Data["id"] = game.GetSession("id").(int)
 	/*
 		把从redis获取的内容全部传递到remsg中即可
 	*/
@@ -167,16 +167,14 @@ func (game *GameController) Register() {
 
 	//设置seesion中的房间名称
 	game.SetSession("roomname", roomname)
-	playerid := game.GetSession("id").(int)
 	ok = true
 	msg = "房间创建成功"
-	url = "/uno/" + strconv.Itoa(playerid) + "/" + roomname
+	url = "/uno/" + roomname
 	return
 }
 
 //加入房间
 func (game *GameController) Join() {
-	playerid := game.GetSession("id").(int)
 	//获取账号密码
 	roommsg := RoomMsg{}
 	err := json.Unmarshal(game.Ctx.Input.RequestBody, &roommsg)
@@ -226,23 +224,42 @@ func (game *GameController) Join() {
 	game.SetSession("roomname", roomname)
 	ok = true
 	msg = "房间创建成功"
-	url = "/uno/" + strconv.Itoa(playerid) + "/" + roomname
+	url = "/uno/" + roomname
+}
+
+func (game *GameController) ConnectionWebSocket() {
+	//检查Session
+	if game.GetSession("roomname") == nil || game.GetSession("id") == nil || game.GetSession("name") == nil {
+		game.Redirect("/", 302)
+	}
+	//获取玩家的昵称和id，以及所在房间
+	roomname := game.GetSession("roomname").(string)
+	playername := game.GetSession("name").(string)
+	//检查与url中所记录的信息是否相同
+	if roomname != game.Ctx.Input.Param(":roomid") {
+		game.Redirect("/", 302)
+	}
+
+	game.Data["roomname"] = roomname
+	game.Data["name"] = playername
+
+	game.TplName = "playroom.html"
 }
 
 //建立WebSocket
-func (game *GameController) ConnectionWebSocket() {
-	game.TplName = "playroom.html"
-	//获取玩家的昵称和id，以及所在房间
-	roomname := game.GetSession("roomname").(string)
-	playerid := game.GetSession("id").(int)
-	playername := game.GetSession("name").(string)
-	game.Data["id"] = string(playerid)
-	game.Data["name"] = roomname
+func (game *GameController) ConnectionWebSockets() {
 
-	//检查与url中所记录的信息是否相同
-	if string(playerid) != game.Ctx.Input.Param(":id") || roomname != game.Ctx.Input.Param(":username") {
-		game.Redirect("/dating", 200)
+	if game.GetSession("roomname") == nil || game.GetSession("id") == nil || game.GetSession("name") == nil {
+		game.Redirect("/", 302)
 	}
+
+	if game.Data["id"].(int) != game.GetSession("id").(int) || game.Data["roomname"].(string) != game.GetSession("roomname").(string) {
+		game.Redirect("/dating/"+strconv.Itoa(game.Data["id"].(int)), 302)
+	}
+
+	playerid := game.Data["id"].(int)
+	playername := game.Data["name"].(string)
+	roomname := game.Data["roomname"].(string)
 
 	//建立websocket
 	ws, err := websocket.Upgrade(game.Ctx.ResponseWriter, game.Ctx.Request, nil, 1024, 1024)
