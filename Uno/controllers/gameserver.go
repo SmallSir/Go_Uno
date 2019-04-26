@@ -42,9 +42,7 @@ func (game *GameController) GetRank() {
 	//log.Println(strconv.Itoa(game.GetSession("id").(int)))
 	_ = json.Unmarshal(game.Ctx.Input.RequestBody, &geturl)
 	xx := geturl.Url
-	log.Println(xx)
 	url := xx[29:]
-	log.Print(url)
 	//检测是否偷偷进入，如果是的话就跳转到登陆界面
 	remsg := &Rank{}
 	remsg.State = true
@@ -169,17 +167,16 @@ func (game *GameController) Register() {
 
 	//设置seesion中的房间名称
 	game.SetSession("roomname", roomname)
-	playerid := string(game.GetSession("id").(int))
+	playerid := game.GetSession("id").(int)
 	ok = true
 	msg = "房间创建成功"
-	url = "/uno/play?userid=" + string(playerid) + "?roomid=" + roomname
+	url = "/uno/" + strconv.Itoa(playerid) + "/" + roomname
 	return
 }
 
 //加入房间
 func (game *GameController) Join() {
-	//playerid := game.GetSession("id").(int)
-
+	playerid := game.GetSession("id").(int)
 	//获取账号密码
 	roommsg := RoomMsg{}
 	err := json.Unmarshal(game.Ctx.Input.RequestBody, &roommsg)
@@ -229,7 +226,7 @@ func (game *GameController) Join() {
 	game.SetSession("roomname", roomname)
 	ok = true
 	msg = "房间创建成功"
-	//url = "/uno/play?userid=" + string(playerid) + "?roomid=" + roomname
+	url = "/uno/" + strconv.Itoa(playerid) + "/" + roomname
 }
 
 //建立WebSocket
