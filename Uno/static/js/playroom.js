@@ -129,10 +129,10 @@ function cardclick(){ //鼠标点击
 }
 
 //功能牌
-var wild = Sprite.fromImage('../static/img/Cartas/EspecialCard/x.png')
-var wildraw = Sprite.fromImage('../static/img/Cartas/EspecialCard/j.jpg')
+var wild = Sprite.fromImage('/static/img/Cartas/EspecialCard/x.png')
+var wildraw = Sprite.fromImage('/static/img/Cartas/EspecialCard/j.jpg')
 //背面
-var back_card = Sprite.fromImage('../static/img/outras/uno_back.jpg')
+var back_card = Sprite.fromImage('/static/img/outras/uno_back.jpg')
 
 //按钮中文字style
 var buttonstyle = {
@@ -466,7 +466,7 @@ var bei_exit = new PIXI.Text("已离开");
 
 //顺时针逆时针方向
 var direction = 0;
-var ssz = new Sprite.fromImage("../static/img/shunshizhen.png")
+var ssz = new Sprite.fromImage("/static/img/shunshizhen.png")
 ssz.anchor.set(0.5);
 ssz.anchor.set(0.5);
 ssz.x = 650;
@@ -474,7 +474,7 @@ ssz.y = 300;
 ssz.scale.x = 2.3;
 ssz.scale.y = 2.3;
 
-var nsz = new Sprite.fromImage("../static/img/nishizhen.png")
+var nsz = new Sprite.fromImage("/static/img/nishizhen.png")
 nsz.anchor.set(0.5);
 nsz.x = 650;
 nsz.y = 300;
@@ -734,13 +734,13 @@ function bddjs(){
     }
 } 
 
-var basepath = '../static/img/Cartas/';
+var basepath = '/static/img/Cartas/';
 var bluepath = 'BlueCard/';
 var redpath = 'RedCard/';
 var greenpath = 'GreenCard/';
 var yellowpath = 'YellowCard/';
 var specialpath = 'EspecialCard/';
-var unobackpath = '../static/img/outras/uno_back.jpg';
+var unobackpath = '/static/img/outras/uno_back.jpg';
 var my_dir;
 
 //添加牌进入牌堆
@@ -1808,7 +1808,7 @@ socket.onmessage = function(event){
                 }
                 for(var i = 0;i < data.cardsnumber;i++)
                 {
-                    var one = new Sprite.fromImage('../static/img/outras/uno_back.jpg')
+                    var one = new Sprite.fromImage('/static/img/outras/uno_back.jpg')
                     one.x = i*35;
                     one.y = 0;
                     one.anchor.set(0.5);

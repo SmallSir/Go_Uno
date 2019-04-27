@@ -8,5 +8,6 @@ import (
 
 func main() {
 	beego.BConfig.WebConfig.Session.SessionOn = true
+	beego.SetStaticPath("/static", "static")
 	beego.Run()
 }

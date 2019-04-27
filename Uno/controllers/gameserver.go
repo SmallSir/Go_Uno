@@ -169,7 +169,7 @@ func (game *GameController) Register() {
 	game.SetSession("roomname", roomname)
 	ok = true
 	msg = "房间创建成功"
-	url = "/uno/" + strconv.Itoa(playerid) + "/" + roomname
+	url = "/game/" + strconv.Itoa(playerid) + "/" + roomname
 	return
 }
 
@@ -225,7 +225,7 @@ func (game *GameController) Join() {
 	game.SetSession("roomname", roomname)
 	ok = true
 	msg = "房间创建成功"
-	url = "/uno/" + strconv.Itoa(playerid) + "/" + roomname
+	url = "/game/" + strconv.Itoa(playerid) + "/" + roomname
 }
 
 func (game *GameController) ConnectionWebSocket() {
@@ -249,6 +249,7 @@ func (game *GameController) ConnectionWebSocket() {
 	game.Data["id"] = playerid
 	log.Println("第四")
 	game.TplName = "playroom.html"
+	log.Println("第五")
 }
 
 //建立WebSocket
