@@ -229,12 +229,10 @@ func (game *GameController) Join() {
 }
 
 func (game *GameController) ConnectionWebSocket() {
-	log.Println("第一")
 	//检查Session
 	if game.GetSession("roomname") == nil || game.GetSession("id") == nil || game.GetSession("name") == nil {
 		game.Redirect("/", 302)
 	}
-	log.Println("第二")
 	//获取玩家的昵称和id，以及所在房间
 	roomname := game.GetSession("roomname").(string)
 	playername := game.GetSession("name").(string)
@@ -243,40 +241,24 @@ func (game *GameController) ConnectionWebSocket() {
 	if roomname != game.Ctx.Input.Param(":roomid") || strconv.Itoa(playerid) != game.Ctx.Input.Param(":userid") {
 		game.Redirect("/", 302)
 	}
-	log.Println("第三")
 	game.Data["roomname"] = roomname
 	game.Data["name"] = playername
 	game.Data["id"] = playerid
-	log.Println("第四")
 	game.TplName = "playroom.html"
-	log.Println("第五")
 }
 
 //建立WebSocket
 func (game *GameController) ConnectionWebSockets() {
-
-	log.Println("第一步")
 	if game.GetSession("roomname") == nil || game.GetSession("id") == nil || game.GetSession("name") == nil {
 		game.Redirect("/", 302)
 	}
 
-	log.Println("第二步")
-	if game.Data["id"].(int) != game.GetSession("id").(int) || game.Data["roomname"].(string) != game.GetSession("roomname").(string) {
-		game.Redirect("/dating/"+strconv.Itoa(game.Data["id"].(int)), 302)
-	}
-
-	log.Println("第三步")
-	playerid := game.Data["id"].(int)
-	log.Println("第五步")
-	playername := game.Data["name"].(string)
-	log.Println("第六步")
-	roomname := game.Data["roomname"].(string)
-
-	log.Println("第七步")
+	playerid := game.GetSession("id").(int)
+	playername := game.GetSession("name").(string)
+	roomname := game.GetSession("roomname").(string)
 	//建立websocket
 	ws, err := websocket.Upgrade(game.Ctx.ResponseWriter, game.Ctx.Request, nil, 1024, 1024)
 
-	log.Println("第八步")
 	//检查websocket是否建立成功
 	if _, ok := err.(websocket.HandshakeError); ok {
 		http.Error(game.Ctx.ResponseWriter, "Not a websocket handshake", 400)
@@ -287,11 +269,10 @@ func (game *GameController) ConnectionWebSockets() {
 	}
 	p := NewPlayer(ws, playerid, playername, roomname)
 
-	log.Println("第六步")
 	//加入房间
 	r := roomlist.rooms[roomname]
 	r.subscribe <- p
-
+	log.Println(strconv.Itoa(playerid) + "已经进入了" + roomname)
 	//监听从而获得由前端发来的信息
 	for {
 		var cident Incident
