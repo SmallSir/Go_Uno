@@ -61,6 +61,9 @@ func NewRoom(room Room, number int) *PlayerRoom {
 		game:         false,
 		lastplayer:   0,
 		addcardsnums: 0}
+	for i, _ := range newroom.playerno {
+		newroom.playerno[i] = -1
+	}
 	return &newroom
 }
 
@@ -93,6 +96,9 @@ func (rm *PlayerRoom) playRoom() {
 				//将房间内的情况发送给新用户
 				ws := sub.rwc
 				for i, p := range rm.players {
+					if rm.playerno[i] == -1 {
+						continue
+					}
 					if p.player_id == sub.player_id {
 						continue
 					}

@@ -162,7 +162,8 @@ func (game *GameController) Register() {
 
 	//创建房间
 	roomlist.CreateRoom(roomname, roompassword)
-
+	r := roomlist.rooms[roomname]
+	go r.playRoom()
 	//房间信息发送给redis
 
 	//设置seesion中的房间名称
