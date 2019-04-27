@@ -21,19 +21,19 @@ func init() {
 	test := make([]useregister, 4)
 	testid = make([]int, 4)
 	test[0].email = "280690951@qq.com"
-	test[0].password = "123456789"
+	test[0].password = "1234567"
 	test[0].username = "test1"
 
 	test[1].email = "921951510@qq.com"
-	test[1].password = "123456789"
+	test[1].password = "1234567"
 	test[1].username = "吃葡萄不吐葡萄皮"
 
 	test[2].email = "280690954@qq.com"
-	test[2].password = "123456789"
+	test[2].password = "1234567"
 	test[2].username = "hh哈哈"
 
 	test[3].email = "280690952@qq.com"
-	test[3].password = "123456789"
+	test[3].password = "1234567"
 	test[3].username = "##哈哈ss"
 
 	testid[0] = 5
