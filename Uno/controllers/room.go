@@ -82,14 +82,14 @@ func (rm *PlayerRoom) playRoom() {
 				jr.PlayerName = sub.player_name
 				jr.Pready = false
 				//把新用户加入房间的信息发送给所有人
-				for i, p := range rm.players {
+				for i, _ := range rm.players {
 					if i != index {
 						jr.Host = false
 					} else {
 						jr.Host = true
 					}
 					if rm.playerno[i] != -1 {
-						ws := p.rwc
+						ws := rm.players[i].rwc
 						ws.WriteJSON(jr)
 					}
 				}
@@ -162,6 +162,7 @@ func (rm *PlayerRoom) playRoom() {
 			}
 		case event := <-rm.publish: //事件
 			if event.Type == 0 { //事件为出牌
+				log.Println("该事件为出牌")
 				rc := Card{color: event.Ccolor, state: event.Cstate, number: string(event.Cnumber)}
 				flag := rm.RemoveCard(event.Position, rc)
 				msg := &Reincident{}
@@ -246,6 +247,7 @@ func (rm *PlayerRoom) playRoom() {
 					rm.game = false
 				}
 			} else if event.Type == 1 { //事件为准备事件
+				log.Println("该事件为准备")
 				msg := &Reincident{}
 				msg.Type = 2
 				msg.Position = event.Position
@@ -258,8 +260,9 @@ func (rm *PlayerRoom) playRoom() {
 				msg.ReadyNumber = rm.ready_number
 				for i, _ := range rm.players {
 					if rm.playerno[i] != -1 {
+						log.Println("已经给位置为" + strconv.Itoa(i) + "的玩家发送消息")
 						ws := rm.players[i].rwc
-						ws.ReadJSON(msg)
+						ws.WriteJSON(msg)
 					}
 				}
 				if rm.ready_number == rm.players_number { //检查是否都准备好了，立即开始游戏
@@ -281,13 +284,14 @@ func (rm *PlayerRoom) playRoom() {
 							}
 							if rm.playerno[j] != -1 {
 								ws := rm.players[j].rwc
-								ws.ReadJSON(msg)
+								ws.WriteJSON(msg)
 							}
 
 						}
 					}
 				}
 			} else if event.Type == 2 { //事件为选色
+				log.Println("该事件为选色")
 				rm.SelectColor(event.Sccolor)
 				msg := &Reincident{}
 				msg.Type = 4
@@ -304,10 +308,11 @@ func (rm *PlayerRoom) playRoom() {
 					}
 					if rm.playerno[i] != -1 {
 						ws := rm.players[i].rwc
-						ws.ReadJSON(msg)
+						ws.WriteJSON(msg)
 					}
 				}
 			} else if event.Type == 3 { //事件为喊UNO
+				log.Println("该事件为喊uno")
 				msg := &Reincident{}
 				msg.Type = 4
 				msg.Wuno = true
@@ -326,6 +331,7 @@ func (rm *PlayerRoom) playRoom() {
 					}
 				}
 			} else { //事件为摸牌
+				log.Println("该事件为摸牌")
 				msg := &Reincident{}
 				msg.Type = 4
 				msg.Incident = 1
@@ -350,7 +356,7 @@ func (rm *PlayerRoom) playRoom() {
 					}
 					if rm.playerno[i] != -1 {
 						ws := rm.players[i].rwc
-						ws.ReadJSON(msg)
+						ws.WriteJSON(msg)
 					}
 				}
 			}
