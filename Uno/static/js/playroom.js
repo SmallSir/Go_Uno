@@ -18,14 +18,25 @@ function check()
 {
     card_num = false;
     if(my_dir == "dong")
+    {
         var one = dong_container.getChildAt(inde);
+        one.y = one.y + 20;
+    }
     else if(my_dir == "xi")
-        var one = xi_container.getChildAt(inde)
+    {
+        var one = xi_container.getChildAt(inde);
+        one.y = one.y + 20;
+    }
     else if(my_dir == "nan")
+    {
         var one = nan_container.getChildAt(inde);
+        one.y = one.y + 20;
+    }
     else
+    {
         var one = bei_container.getChildAt(inde);
-    one.y = one.y + 20;
+        one.y = one.y + 20;
+    }
 }
 
 
@@ -511,7 +522,7 @@ var dong = new container();
 dong.addChild(dong_container);
 dong.addChild(dongmark);
 dong.addChild(remaining_dong);
-dong.addChild(dong_exit);
+
 /*测试样例
 dong_number = new PIXI.Text("8");
 dong_name = new PIXI.Text("测试1");
@@ -523,7 +534,7 @@ var xi = new container();
 xi.addChild(xi_container);
 xi.addChild(ximark);
 xi.addChild(remaining_xi);
-xi.addChild(xi_exit);
+
 /*测试样例
 xi_name = new PIXI.Text("测试2");
 xi_number = new PIXI.Text("10");
@@ -535,7 +546,7 @@ var nan = new container();
 nan.addChild(nan_container);
 nan.addChild(nanmark);
 nan.addChild(remaining_nan);
-nan.addChild(nan_exit);
+
 /*测试样例
 nan_number = new PIXI.Text("20");
 nan_name = new PIXI.Text("WhaleFall");
@@ -547,7 +558,7 @@ var bei = new container();
 bei.addChild(bei_container);
 bei.addChild(beimark);
 bei.addChild(remaining_bei);
-bei.addChild(bei_exit);
+
 /*测试样例
 bei_number = new PIXI.Text("15");
 bei_name = new PIXI.Text("吃葡萄不吐葡萄皮");
