@@ -298,7 +298,6 @@ function readyclick()
     var msg = {type:1,ready:true,position:x};
     var msgjson = JSON.stringify(msg);
     socket.send(msgjson);
-    check();
 }
 var ready_people = new graphics();
 ready_people.beginFill(0xc0c0c0,1);
@@ -466,6 +465,7 @@ var remaining_bei = new PIXI.Text('剩余牌数');
 
 //玩家名称和id
 var dong_id,xi_id,nan_id,bei_id;
+dong_id = -1,xi_id = -1,nan_id = -1,bei_id = -1
 var dong_name,xi_name,nan_name,bei_name;
 var my_dir;//玩家所处的位置
 
