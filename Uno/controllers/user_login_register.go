@@ -18,7 +18,7 @@ var test []useregister
 var testid []int
 
 func init() {
-	test := make([]useregister, 4)
+	test = make([]useregister, 4)
 	testid = make([]int, 4)
 	test[0].email = "280690951@qq.com"
 	test[0].password = "1234567"
@@ -71,7 +71,6 @@ func (User *UserController) Login() {
 		msg = "信息错误，请重新输入"
 		return
 	}
-	log.Println(user)
 	email := user.Email
 	password := user.Password
 
