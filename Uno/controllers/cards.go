@@ -59,11 +59,15 @@ func (c *Cards) Start() {
 //洗牌
 func (c *Cards) Shuffle() {
 	rand.Seed(time.Now().UnixNano())
-	for i := c.ready_number; i > 0; i-- {
-		j := rand.Intn(i + 1)
+	for i := c.ready_number - 1; i > 0; i-- {
+		j := rand.Intn(i)
 		tmp := c.ready_card[j]
-		c.ready_card[j] = c.ready_card[i]
-		c.ready_card[i] = tmp
+		c.ready_card[j].number = c.ready_card[i].number
+		c.ready_card[j].color = c.ready_card[i].color
+		c.ready_card[j].state = c.ready_card[i].state
+		c.ready_card[i].number = tmp.color
+		c.ready_card[i].state = tmp.state
+		c.ready_card[i].color = tmp.color
 	}
 }
 
