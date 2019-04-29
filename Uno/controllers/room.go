@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"errors"
-	"log"
 	"strconv"
 )
 
@@ -162,7 +161,6 @@ func (rm *PlayerRoom) playRoom() {
 			}
 		case event := <-rm.publish: //事件
 			if event.Type == 0 { //事件为出牌
-				log.Println("该事件为出牌")
 				rc := Card{color: event.Ccolor, state: event.Cstate, number: string(event.Cnumber)}
 				flag := rm.RemoveCard(event.Position, rc)
 				msg := &Reincident{}
@@ -247,10 +245,9 @@ func (rm *PlayerRoom) playRoom() {
 					rm.game = false
 				}
 			} else if event.Type == 1 { //事件为准备事件
-				log.Println("该事件为准备")
-				msg := &Reincident{}
+				msg := &PlayerReady{}
 				msg.Type = 2
-				msg.Position = event.Position
+				msg.Playerid = rm.players[event.Position].player_id
 				msg.Ready = event.Ready
 				if event.Ready == true { //事件为准备
 					rm.ReadyPlayer(event.Position)
@@ -260,7 +257,6 @@ func (rm *PlayerRoom) playRoom() {
 				msg.ReadyNumber = rm.ready_number
 				for i, _ := range rm.players {
 					if rm.playerno[i] != -1 {
-						log.Println("已经给位置为" + strconv.Itoa(i) + "的玩家发送消息")
 						ws := rm.players[i].rwc
 						ws.WriteJSON(msg)
 					}
@@ -268,6 +264,7 @@ func (rm *PlayerRoom) playRoom() {
 				if rm.ready_number == rm.players_number { //检查是否都准备好了，立即开始游戏
 					rm.game = true
 					rm.PlayGame()
+					msg := &Reincident{}
 					msg.Type = 4
 					msg.Incident = 1
 					msg.State = false
@@ -291,7 +288,6 @@ func (rm *PlayerRoom) playRoom() {
 					}
 				}
 			} else if event.Type == 2 { //事件为选色
-				log.Println("该事件为选色")
 				rm.SelectColor(event.Sccolor)
 				msg := &Reincident{}
 				msg.Type = 4
@@ -312,7 +308,6 @@ func (rm *PlayerRoom) playRoom() {
 					}
 				}
 			} else if event.Type == 3 { //事件为喊UNO
-				log.Println("该事件为喊uno")
 				msg := &Reincident{}
 				msg.Type = 4
 				msg.Wuno = true
@@ -331,7 +326,6 @@ func (rm *PlayerRoom) playRoom() {
 					}
 				}
 			} else { //事件为摸牌
-				log.Println("该事件为摸牌")
 				msg := &Reincident{}
 				msg.Type = 4
 				msg.Incident = 1
@@ -392,7 +386,6 @@ func (rm *PlayerRoom) AddPlayer(pl *Player) (bool, int) {
 	}
 	//添加玩家信息
 	rm.players[index] = pl
-	log.Printf("已经将 %s 玩家 加入到 %s 房间", pl.player_name, rm.player_room.room_name)
 	return flag, index
 }
 
@@ -403,7 +396,6 @@ func (rm *PlayerRoom) RemovePlayer(playerid int) (bool, int, error) {
 			rm.players[j].deregister()
 			rm.stay_number--
 			rm.playerno[j] = -1
-			log.Printf("已经将 %d 玩家从 %s 房间移除", playerid, rm.player_room.room_name)
 			//注销房间
 			if rm.stay_number == 0 {
 				return true, j, errors.New("房间已经没有人了，可以删除")

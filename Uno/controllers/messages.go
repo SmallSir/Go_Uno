@@ -91,9 +91,10 @@ type SelectColor struct {
 
 //玩家选择准备or取消准备
 type PlayerReady struct {
-	Type     int  `json:"Type"`     //类型
-	Ready    bool `json:"ready"`    //选择的准备状态
-	Playerid int  `json:"playerid"` //准备状态更改的玩家id
+	Type        int  `json:"Type"`        //类型
+	Ready       bool `json:"ready"`       //选择的准备状态
+	Playerid    int  `json:"playerid"`    //准备状态更改的玩家id
+	ReadyNumber int  `json:"readynumber"` //计算准备人数
 }
 
 //获取的rank信息包含的内容
@@ -161,7 +162,7 @@ type Reincident struct {
 	Wuno        bool   `json:"wuno"`        //事件为喊UNO时喊出UNO
 	State       bool   `json:"state"`       //是否是玩家重连
 	Ready       bool   `json:"ready"`       //事件为准备，是准备还是取消准备
-	ReadyNumber int    `json:"readynumber"` //计算准备人数
+
 }
 
 //获取页面url
