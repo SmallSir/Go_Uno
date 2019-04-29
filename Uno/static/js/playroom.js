@@ -17,6 +17,7 @@ var ps = ["dong","bei","xi","nan"];
 function check()
 {
     card_num = false;
+    console.log(inde);
     if(my_dir == "dong")
     {
         var one = dong_container.getChildAt(inde);
@@ -790,6 +791,7 @@ function addcard(base,color,s,flag,x)
 
 //实现确定牌的内容
 function cardsmsg(color,state,number,flag,i){
+    console.log(color,state,number)
     if(color == "blue")//是蓝牌
     {
         if(number == "0")
@@ -808,18 +810,18 @@ function cardsmsg(color,state,number,flag,i){
             addcard(basepath,bluepath,'6.jpg',flag,i);
         else if(number == "7")
             addcard(basepath,bluepath,'7.jpg',flag,i);
-        else if(data.cnumber == "8")
+        else if(number == "8")
             addcard(basepath,bluepath,'8.jpg',flag,i);
-        else if(data.cnumber == "9")
+        else if(number == "9")
             addcard(basepath,bluepath,'9.jpg',flag,i);
-        else if(data.cstate == "skip")
+        else if(state == "skip")
             addcard(basepath,bluepath,'t.jpg',flag,i);
-        else if(data.cstate == "reverse")
+        else if(state == "reverse")
             addcard(basepath,bluepath,'z.jpg',flag,i);
-        else if(data.cstate == "raw")
+        else if(state == "raw")
             addcard(basepath,bluepath,'j.jpg',flag,i);
     }
-    else if(data.ccolor == "red")//是红牌
+    else if(color == "red")//是红牌
     {
         if(number == "0")
             addcard(basepath,redpath,'0.png',flag,i);
@@ -837,18 +839,18 @@ function cardsmsg(color,state,number,flag,i){
             addcard(basepath,redpath,'6.png',flag,i);
         else if(number == "7")
             addcard(basepath,redpath,'7.png',flag,i);
-        else if(data.cnumber == "8")
+        else if(number == "8")
             addcard(basepath,redpath,'8.png',flag,i);
-        else if(data.cnumber == "9")
+        else if(number == "9")
             addcard(basepath,redpath,'9.png',flag,i);
-        else if(data.cstate == "skip")
+        else if(state == "skip")
             addcard(basepath,redpath,'t.png',flag,i);
-        else if(data.cstate == "reverse")
+        else if(state == "reverse")
             addcard(basepath,redpath,'z.png',flag,i);
-        else if(data.cstate == "raw")
+        else if(state == "raw")
             addcard(basepath,redpath,'j.png',flag,i);
     }
-    else if(data.ccolor == "green")//是绿牌
+    else if(color == "green")//是绿牌
     {
         if(number == "0")
             addcard(basepath,greenpath,'0.jpg',flag,i);
@@ -866,18 +868,18 @@ function cardsmsg(color,state,number,flag,i){
             addcard(basepath,greenpath,'6.jpg',flag,i);
         else if(number == "7")
             addcard(basepath,greenpath,'7.jpg',flag,i);
-        else if(data.cnumber == "8")
+        else if(number == "8")
             addcard(basepath,greenpath,'8.jpg',flag,i);
-        else if(data.cnumber == "9")
+        else if(number == "9")
             addcard(basepath,greenpath,'9.jpg',flag,i);
-        else if(data.cstate == "skip")
+        else if(state == "skip")
             addcard(basepath,greenpath,'t.jpg',flag,i);
-        else if(data.cstate == "reverse")
+        else if(state == "reverse")
             addcard(basepath,greenpath,'z.jpg',flag,i);
-        else if(data.cstate == "raw")
+        else if(state == "raw")
             addcard(basepath,greenpath,'j.jpg',flag,i);
     }
-    else if(data.ccolor == "yellow")//是黄牌
+    else if(color == "yellow")//是黄牌
     {
         if(number == "0")
             addcard(basepath,yellowpath,'0.jpg',flag,i);
@@ -895,15 +897,15 @@ function cardsmsg(color,state,number,flag,i){
             addcard(basepath,yellowpath,'6.jpg',flag,i);
         else if(number == "7")
             addcard(basepath,yellowpath,'7.jpg',flag,i);
-        else if(data.cnumber == "8")
+        else if(number == "8")
             addcard(basepath,yellowpath,'8.jpg',flag,i);
-        else if(data.cnumber == "9")
+        else if(number == "9")
             addcard(basepath,yellowpath,'9.jpg',flag,i);
-        else if(data.cstate == "skip")
+        else if(state == "skip")
             addcard(basepath,yellowpath,'t.jpg',flag,i);
-        else if(data.cstate == "reverse")
+        else if(state == "reverse")
             addcard(basepath,yellowpath,'z.jpg',flag,i);
-        else if(data.cstate == "raw")
+        else if(state == "raw")
             addcard(basepath,yellowpath,'j.jpg',flag,i);
     }
     else//是功能牌
@@ -1024,6 +1026,9 @@ function checkready()//检查是否所有用户均准备
 
         app.stage.removeChild(ready_people);
         app.stage.removeChild(ready_people_text);
+
+        app.stage.removeChild(unready_people);
+        app.stage.removeChild(unready_people_text);
     }
 }
 
@@ -1049,21 +1054,28 @@ socket.onmessage = function(event){
                 remaining_dong.x = 0,remaining_dong.y = 150;
                 dongmark.x = 0,dongmark.y = 80;
                 dong_container.x = 100,dong_container.y = 80;
+                dong_container.scale.x = 0.4,dong_container.scale.y = 0.4;
 
                 ximark.x = -50,ximark.y = -50;
                 xi_container.x = 50,xi_container.y = -50;
                 remaining_xi.x = -50,remaining_xi.y = 50;
                 xi.x = 900,xi.y = 100;
+                xi_container.scale.x = 0.3,xi_container.scale.y = 0.3;
+                xi.rotation = 3.14;
 
                 nan.x = 150,nan.y = 150;
                 nanmark.x = 0,nanmark.y = -100;
                 nan_container.x = 100,nan_container.y = -50;
                 remaining_nan.x = 0,remaining_nan.y = 50;
+                nan_container.scale.x = 0.3,nan_container.scale.y = 0.3;
+                nan.rotation = 1.57
 
                 beimark.x = -100,beimark.y = 50;
                 bei_container.x = 0,bei_container.y = 100;
                 remaining_bei.x = -100,remaining_bei.y = 150;
                 bei.x = 1050,bei.y = 400;
+                bei_container.scale.x = 0.3,bei_container.scale.y = 0.3;
+                bei.rotation = 4.71;
             }
             else if(data.position == 1)//表示北
             {
@@ -1077,21 +1089,28 @@ socket.onmessage = function(event){
                 bei_container.x = 100,bei_container.y = 80;
                 remaining_bei.x = 0,remaining_bei.y = 150;
                 bei.x = 400,bei.y = 500;
+                bei_container.scale.x = 0.4,bei_container.scale.y = 0.4;
 
                 nanmark.x = -50,nanmark.y = -50;
                 nan_container.x = 50,nan_container.y = -50;
                 remaining_nan.x = -50,remaining_nan.y = 50;
                 nan.x = 900,nan.y = 100;
+                nan_container.scale.x = 0.3,nan_container.scale.y = 0.3;
+                nan.rotation = 3.14;
 
                 dongmark.x = 0,dongmark.y = -100;
                 dong_container.x = 100,dong_container.y = -50;
                 remaining_dong.x = 0,remaining_dong.y = 50;
                 dong.x = 150,dong.y = 150;
+                dong_container.scale.x = 0.3,dong_container.scale.y = 0.3;
+                dong.rotation = 1.57
 
                 ximark.x = -100,ximark.y = 50;
                 xi_container.x = 0,xi_container.y = 100;
                 remaining_xi.x = -100,remaining_xi.y = 150;
                 xi.x = 1050,xi.y = 400;
+                xi_container.scale.x = 0.3,xi_container.scale.y = 0.3;
+                xi.rotation = 4.71;
             }
             else if(data.position == 2)//表示西
             {
@@ -1105,21 +1124,28 @@ socket.onmessage = function(event){
                 xi_container.x = 100,xi_container.y = 80;
                 remaining_xi.x = 0,remaining_xi.y = 150;
                 xi.x = 400,xi.y = 500;
+                xi_container.scale.x = 0.4,xi_container.scale.y = 0.4;
 
                 dongmark.x = -50,dongmark.y = -50;
                 dong_container.x = 50,dong_container.y = -50;
                 remaining_dong.x = -50,remaining_dong.y = 50;
                 dong.x = 900,dong.y = 100;
+                dong_container.scale.x = 0.3,dong_container.scale.y = 0.3;
+                dong.rotation = 3.14;
 
                 nanmark.x = 0,nanmark.y = -100;
                 nan_container.x = 100,nan_container.y = -50;
                 remaining_nan.x = 0,remaining_nan.y = 50;
                 nan.x = 150,nan.y = 150;
+                nan_container.scale.x = 0.3,nan_container.scale.y = 0.3;
+                nan.rotation = 1.57;
 
                 beimark.x = -100,beimark.y = 50;
                 bei_container.x = 0,bei_container.y = 100;
                 remaining_bei.x = -100,remaining_bei.y = 150;
                 bei.x = 1050,bei.y = 400;
+                bei_container.scale.x = 0.3,bei_container.scale.y = 0.3;
+                bei.rotation = 4.71;
             }
             else//表示南
             {
@@ -1133,21 +1159,28 @@ socket.onmessage = function(event){
                 nan_container.x = 100,nan_container.y = 80;
                 remaining_nan.x = 0,remaining_nan.y = 150;
                 nan.x = 400,nan.y = 500;
+                nan_container.scale.x = 0.4,nan_container.scale.y = 0.4;
 
                 beimark.x = -50,beimark.y = -50;
                 bei_container.x = 50,bei_container.y = -50;
                 remaining_bei.x = -50,remaining_bei.y = 50;
                 bei.x = 900,bei.y = 100;
+                bei_container.scale.x = 0.3,bei_container.scale.y = 0.3;
+                bei.rotation = 3.14;
 
                 ximark.x = 0,ximark.y = -100;
                 xi_container.x = 100,xi_container.y = -50;
                 remaining_xi.x = 0,remaining_xi.y = 50;
                 xi.x = 150,xi.y = 150;
+                xi_container.scale.x = 0.3,xi_container.scale.y = 0.3;
+                xi.rotation = 1.57;
 
                 dongmark.x = -100,dongmark.y = 50;
                 dong_container.x = 0,dong_container.y = 100;
                 remaining_dong.x = -100,remaining_dong.y = 150;
                 dong.x = 1050,dong.y = 400;
+                dong_container.scale.x = 0.3,dong_container.scale.y = 0.3;
+                dong.rotation = 4.71;
             }
             if(data.state == false) //非游戏中加入房间需要出现准备按钮
             {
@@ -1196,13 +1229,13 @@ socket.onmessage = function(event){
                 {
                     app.stage.addChild(ready_bei)
                     if(my_dir == "bei")
-                        ready_dong.x = 600,ready_dong.y = 350
+                        ready_bei.x = 600,ready_bei.y = 350
                     if(my_dir == "nan")
-                        ready_dong.x = 600,ready_dong.y = 150
+                        ready_bei.x = 600,ready_bei.y = 150
                     if(my_dir == "dong")
-                        ready_dong.x = 900,ready_dong.y = 300
+                        ready_bei.x = 900,ready_bei.y = 300
                     if(my_dir == "xi")
-                        ready_dong.x = 300,ready_dong.y = 300
+                        ready_bei.x = 300,ready_bei.y = 300
                 }
                 if(my_dir == "dong")
                     bei_name.x = 80,bei_name.y = 150;
@@ -1220,15 +1253,15 @@ socket.onmessage = function(event){
                 xi.addChild(xi_name);
                 if(data.ready == true)
                 {
-                    app.stage.addChild(ready_dong)
+                    app.stage.addChild(ready_xi)
                     if(my_dir == "xi")
-                        ready_dong.x = 600,ready_dong.y = 350
+                        ready_xi.x = 600,ready_xi.y = 350
                     if(my_dir == "dong")
-                        ready_dong.x = 600,ready_dong.y = 150
+                        ready_xi.x = 600,ready_xi.y = 150
                     if(my_dir == "bei")
-                        ready_dong.x = 900,ready_dong.y = 300
+                        ready_xi.x = 900,ready_xi.y = 300
                     if(my_dir == "nan")
-                        ready_dong.x = 300,ready_dong.y = 300
+                        ready_xi.x = 300,ready_xi.y = 300
                 }
                 if(my_dir == "dong")
                     xi_name.x = 130,xi_name.y = 50;
@@ -1248,13 +1281,13 @@ socket.onmessage = function(event){
                 {
                     app.stage.addChild(ready_nan)
                     if(my_dir == "nan")
-                        ready_dong.x = 600,ready_dong.y = 350
+                        ready_nan.x = 600,ready_nan.y = 350
                     if(my_dir == "bei")
-                        ready_dong.x = 600,ready_dong.y = 150
+                        ready_nan.x = 600,ready_nan.y = 150
                     if(my_dir == "xi")
-                        ready_dong.x = 900,ready_dong.y = 300
+                        ready_nan.x = 900,ready_nan.y = 300
                     if(my_dir == "dong")
-                        ready_dong.x = 300,ready_dong.y = 300
+                        ready_nan.x = 300,ready_nan.y = 300
                 }
                 if(my_dir == "dong")
                     nan_name.x = 180,nan_name.y = 50;
@@ -1722,6 +1755,7 @@ socket.onmessage = function(event){
                     {
                         card = {color:data.cards[i].color,number:data.cards[i].number,sc:false,state:data.cards[i].state};
                         dongcards.push(card);
+                        console.log("????",data.cards[i].color,data.cards[i].state,data.cards[i].number)
                         cardsmsg(data.cards[i].color,data.cards[i].state,data.cards[i].number,"dong",i);
                     }
                 }
