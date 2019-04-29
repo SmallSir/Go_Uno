@@ -55,14 +55,14 @@ type LeaveRoom struct {
 //比赛结束后的返回的榜单数据格式
 type GameOverRank struct {
 	Type     int    `json:"Type"`     //类型
-	xs_one   string `json:"xs_one"`   //第一名名字
-	gr_one   string `json:"gr_one"`   //第一名分数
-	xs_two   string `json:"xs_two"`   //第二个名字
-	gr_two   string `json:"gr_two"`   //第二名分数
-	xs_three string `json:"xs_three"` //第三名名字
-	gr_three string `json:"gr_three"` //第三名分数
-	xs_four  string `json:"xs_four"`  //第四名名字
-	gr_four  string `json:"gr_four"`  //第四名分数
+	Xs_one   string `json:"xs_one"`   //第一名名字
+	Gr_one   string `json:"gr_one"`   //第一名分数
+	Xs_two   string `json:"xs_two"`   //第二个名字
+	Gr_two   string `json:"gr_two"`   //第二名分数
+	Xs_three string `json:"xs_three"` //第三名名字
+	Gr_three string `json:"gr_three"` //第三名分数
+	Xs_four  string `json:"xs_four"`  //第四名名字
+	Gr_four  string `json:"gr_four"`  //第四名分数
 }
 
 //榜单格式
@@ -72,9 +72,9 @@ type RankSort struct {
 	score int    //分数
 }
 type Card struct {
-	color  string `json:"color"`  //卡牌颜色
-	number string `json:"number"` //卡牌号码
-	state  string `json:"state"`  //卡牌功能
+	Color  string `json:"color"`  //卡牌颜色
+	Number string `json:"number"` //卡牌号码
+	State  string `json:"state"`  //卡牌功能
 }
 
 //房间信息
@@ -127,10 +127,10 @@ type Userlogin struct {
 
 //用户注册接收的数据格式
 type useregister struct {
-	email    string `json:"email"`    //登录邮箱
-	password string `json:"password"` //密码
-	username string `json:"username"` //用户名
-	code     int    `json:"yzm"`      //邮箱验证码
+	Email    string `json:"email"`    //登录邮箱
+	Password string `json:"password"` //密码
+	Username string `json:"username"` //用户名
+	Code     int    `json:"yzm"`      //邮箱验证码
 }
 
 //用户事件接收数据格式

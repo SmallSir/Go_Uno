@@ -40,12 +40,12 @@ func (user *UserCard) QuickSort(l, r int) {
 //两张牌比大小
 func (user *UserCard) Compare(x Card, y Card) bool {
 	//两张牌颜色相同
-	if x.color == y.color {
+	if x.Color == y.Color {
 		//如果x为功能牌
-		if x.number == "-1" {
+		if x.Number == "-1" {
 			//如果y为功能牌
-			if y.number == "-1" {
-				return x.state < y.state
+			if y.Number == "-1" {
+				return x.State < y.State
 				//如果y不是功能牌
 			} else {
 				return false
@@ -53,16 +53,16 @@ func (user *UserCard) Compare(x Card, y Card) bool {
 			//如果x不是功能牌
 		} else {
 			//如果y是功能牌
-			if y.number == "-1" {
+			if y.Number == "-1" {
 				return true
 				//如果y不是功能牌可以直接比较
 			} else {
-				return x.number < y.number
+				return x.Number < y.Number
 			}
 		}
 		//两张牌颜色不同
 	} else {
-		return x.color < y.color
+		return x.Color < y.Color
 	}
 }
 
@@ -98,7 +98,7 @@ func (user *UserCard) Insert_Card(newcards []Card) {
 //移除牌
 func (user *UserCard) Remove_Card(oldcard Card) {
 	r := user.BinaryInsert(oldcard)
-	new_cards := make([]Card, 0,user.number-1)
+	new_cards := make([]Card, 0, user.number-1)
 	new_cards = append(user.cards[:r], user.cards[r+1:]...)
 	user.cards = new_cards
 	user.number -= 1

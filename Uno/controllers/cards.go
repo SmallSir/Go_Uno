@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"math/rand"
+	"strconv"
 	"time"
 )
 
@@ -33,7 +34,7 @@ func (c *Cards) Start() {
 	//生成常规牌
 	for _, co := range c.card_colors {
 		for j := 0; j < 10; j++ {
-			card := Card{color: co, state: "-1", number: string(j)}
+			card := Card{Color: co, State: "-1", Number: strconv.Itoa(j)}
 			if j == 0 {
 				c.ready_card = append(c.ready_card[:], card)
 			} else {
@@ -42,13 +43,13 @@ func (c *Cards) Start() {
 			}
 		}
 		for _, f := range c.card_function {
-			card := Card{number: "-1", color: co, state: f}
+			card := Card{Number: "-1", Color: co, State: f}
 			c.ready_card = append(c.ready_card[:], card)
 			c.ready_card = append(c.ready_card[:], card)
 		}
 	}
 	for _, w := range c.wild {
-		card := Card{color: "z", state: w, number: "-1"}
+		card := Card{Color: "z", State: w, Number: "-1"}
 		for i := 0; i < 4; i++ {
 			c.ready_card = append(c.ready_card[:], card)
 		}
@@ -62,12 +63,12 @@ func (c *Cards) Shuffle() {
 	for i := c.ready_number - 1; i > 0; i-- {
 		j := rand.Intn(i)
 		tmp := c.ready_card[j]
-		c.ready_card[j].number = c.ready_card[i].number
-		c.ready_card[j].color = c.ready_card[i].color
-		c.ready_card[j].state = c.ready_card[i].state
-		c.ready_card[i].number = tmp.color
-		c.ready_card[i].state = tmp.state
-		c.ready_card[i].color = tmp.color
+		c.ready_card[j].Number = c.ready_card[i].Number
+		c.ready_card[j].Color = c.ready_card[i].Color
+		c.ready_card[j].State = c.ready_card[i].State
+		c.ready_card[i].Number = tmp.Number
+		c.ready_card[i].State = tmp.State
+		c.ready_card[i].Color = tmp.Color
 	}
 }
 

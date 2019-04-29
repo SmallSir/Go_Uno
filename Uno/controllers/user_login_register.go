@@ -20,21 +20,21 @@ var testid []int
 func init() {
 	test = make([]useregister, 4)
 	testid = make([]int, 4)
-	test[0].email = "280690951@qq.com"
-	test[0].password = "1234567"
-	test[0].username = "test1"
+	test[0].Email = "280690951@qq.com"
+	test[0].Password = "1234567"
+	test[0].Username = "test1"
 
-	test[1].email = "921951510@qq.com"
-	test[1].password = "1234567"
-	test[1].username = "吃葡萄不吐葡萄皮"
+	test[1].Email = "921951510@qq.com"
+	test[1].Password = "1234567"
+	test[1].Username = "吃葡萄不吐葡萄皮"
 
-	test[2].email = "280690954@qq.com"
-	test[2].password = "1234567"
-	test[2].username = "hh哈哈"
+	test[2].Email = "280690954@qq.com"
+	test[2].Password = "1234567"
+	test[2].Username = "hh哈哈"
 
-	test[3].email = "280690952@qq.com"
-	test[3].password = "1234567"
-	test[3].username = "##哈哈ss"
+	test[3].Email = "280690952@qq.com"
+	test[3].Password = "1234567"
+	test[3].Username = "##哈哈ss"
 
 	testid[0] = 5
 	testid[1] = 6
@@ -92,8 +92,8 @@ func (User *UserController) Login() {
 	var id int
 	var username string
 	for i, _ := range test {
-		if test[i].email == email && test[i].password == password {
-			username = test[i].username
+		if test[i].Email == email && test[i].Password == password {
+			username = test[i].Username
 			id = testid[i]
 		}
 	}
@@ -127,7 +127,7 @@ func (User *UserController) Register() {
 		password := user.password
 		username := user.username
 	*/
-	yzm := user.code
+	yzm := user.Code
 
 	defer func() {
 		remsg := &ReRoomMsg{}
