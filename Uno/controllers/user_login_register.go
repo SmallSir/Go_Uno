@@ -11,6 +11,7 @@ import (
 	"github.com/go-gomail/gomail"
 
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/orm"
 )
 
 //内容为测试
@@ -44,6 +45,7 @@ func init() {
 
 //用户控制器
 type UserController struct {
+	o orm.Ormer
 	beego.Controller
 }
 

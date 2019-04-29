@@ -8,11 +8,13 @@ import (
 	"strconv"
 
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/orm"
 	"github.com/gorilla/websocket"
 )
 
 type GameController struct {
 	beego.Controller
+	o orm.Ormer
 }
 
 var roomlist *roomtable
