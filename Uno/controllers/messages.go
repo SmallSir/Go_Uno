@@ -42,7 +42,7 @@ type JoinRoom struct {
 	PlayerName string `json:"playername"` //加入玩家的名字
 	Host       bool   `json:"host"`       //是否为当事人
 	State      bool   `json:"state"`      //是否在游戏中重新加入,true表示在游戏中重新进入，false表示没有在游戏中进入
-	Pready     bool   `json:"pready"`     //是否准备
+	Pready     bool   `json:"ready"`      //是否准备
 }
 
 //离开房间返回的数据格式
