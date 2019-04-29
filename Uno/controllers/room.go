@@ -161,15 +161,44 @@ func (rm *PlayerRoom) playRoom() {
 			}
 		case event := <-rm.publish: //事件
 			if event.Type == 0 { //事件为出牌
-				rc := Card{color: event.Ccolor, state: event.Cstate, number: string(event.Cnumber)}
+				rc := Card{Color: event.Ccolor, State: event.Cstate, Number: strconv.Itoa(event.Cnumber)}
 				flag := rm.RemoveCard(event.Position, rc)
 				msg := &Reincident{}
 				msg.State = false
 				if flag == -1 {
 					msg.Type = 0
 					msg.Incident = -1
-					ws := rm.players[event.Position].rwc
-					ws.WriteJSON(msg)
+					if rm.playerno[event.Position] != -1 {
+						ws := rm.players[event.Position].rwc
+						ws.WriteJSON(msg)
+					} else {
+						msg.Type = 4
+						msg.Incident = 1
+						msg.Position = event.Position
+						if rm.getcardsnumber == 0 {
+							rm.GetCard(event.Position, 1)
+						} else {
+							rm.GetCard(event.Position, rm.getcardsnumber)
+							rm.getcardsnumber = 0
+						}
+						msg.CardsNumber = rm.players[event.Position].player_cards.number
+						msg.Direction = rm.dirction
+						msg.State = false
+						for i, _ := range rm.players {
+							if i == event.Position {
+								msg.Cardss = rm.players[event.Position].player_cards.cards
+							}
+							if rm.nextplayer == i {
+								msg.OutPeople = true
+							} else {
+								msg.OutPeople = false
+							}
+							if rm.playerno[i] != -1 {
+								ws := rm.players[i].rwc
+								ws.WriteJSON(msg)
+							}
+						}
+					}
 				} else if flag != 5 { //表示出牌信息正常
 					rm.lastplayer = event.Position
 					msg.Type = 4
@@ -216,14 +245,14 @@ func (rm *PlayerRoom) playRoom() {
 					rm.ScoreSort()
 					msg := &GameOverRank{}
 					msg.Type = 3
-					msg.xs_one = rm.rankmsg[0].name
-					msg.gr_one = string(rm.rankmsg[0].score)
-					msg.xs_two = rm.rankmsg[1].name
-					msg.gr_two = string(rm.rankmsg[1].score)
-					msg.xs_three = rm.rankmsg[2].name
-					msg.gr_three = string(rm.rankmsg[2].score)
-					msg.xs_four = rm.rankmsg[3].name
-					msg.gr_four = string(rm.rankmsg[3].score)
+					msg.Xs_one = rm.rankmsg[0].name
+					msg.Gr_one = string(rm.rankmsg[0].score)
+					msg.Xs_two = rm.rankmsg[1].name
+					msg.Gr_two = string(rm.rankmsg[1].score)
+					msg.Xs_three = rm.rankmsg[2].name
+					msg.Gr_three = string(rm.rankmsg[2].score)
+					msg.Xs_four = rm.rankmsg[3].name
+					msg.Gr_four = string(rm.rankmsg[3].score)
 					for i, _ := range rm.players {
 						if rm.playerno[i] != -1 {
 							ws := rm.players[i].rwc
@@ -283,7 +312,6 @@ func (rm *PlayerRoom) playRoom() {
 								ws := rm.players[j].rwc
 								ws.WriteJSON(msg)
 							}
-
 						}
 					}
 				}
@@ -449,21 +477,21 @@ func (rm *PlayerRoom) RemoveCard(index int, rc Card) int {
 	*/
 	flag := -1
 	p_id := rm.playerno[index]
-	if rc.color == "red" || rc.color == "yellow" || rc.color == "green" || rc.color == "blue" {
-		if rc.color == rm.latest_number || rm.latest_color == "null" { //颜色相同符合条件
+	if rc.Color == "red" || rc.Color == "yellow" || rc.Color == "green" || rc.Color == "blue" {
+		if rc.Color == rm.latest_number || rm.latest_color == "null" { //颜色相同符合条件
 			if rm.latest_state != "raw" {
 				flag = 0
 			}
 		}
-		if rc.number == rm.latest_number && rc.number <= "9" && rc.number >= "0" { //号码相同符合条件
+		if rc.Number == rm.latest_number && rc.Number <= "9" && rc.Number >= "0" { //号码相同符合条件
 			flag = 0
 		}
-		if rc.state == rm.latest_state && (rc.state == "wild" || rc.state == "wildraw") { //功能相同符合条件
+		if rc.State == rm.latest_state && (rc.State == "wild" || rc.State == "wildraw") { //功能相同符合条件
 			flag = 0
 		}
 	}
-	if rc.color == "z" { //万能牌
-		if rc.state == rm.latest_state || (rm.latest_state == "raw" && rc.state == "wildraw") { //万能牌符合条件或者上一个出牌的是+2，这一次可以允许+4
+	if rc.Color == "z" { //万能牌
+		if rc.State == rm.latest_state || (rm.latest_state == "raw" && rc.State == "wildraw") { //万能牌符合条件或者上一个出牌的是+2，这一次可以允许+4
 			flag = 0
 		}
 	}
@@ -475,9 +503,9 @@ func (rm *PlayerRoom) RemoveCard(index int, rc Card) int {
 	//修改这把的牌堆信息
 	rm.room_cards.OutCards(rc)
 	//修改目前信息
-	rm.latest_color = rc.color
-	rm.latest_state = rc.state
-	rm.latest_number = rc.number
+	rm.latest_color = rc.Color
+	rm.latest_state = rc.State
+	rm.latest_number = rc.Number
 	//检查用户出的最后一张牌是不是功能牌，是的话要加一张
 	if rm.players[index].player_cards.number == 0 && rm.latest_number == "-1" {
 		rm.GetCard(p_id, 1)
@@ -573,14 +601,14 @@ func (rm *PlayerRoom) SumScore(index int) int {
 	pcards := rm.players[index].player_cards.cards
 	sum := 0
 	for _, c := range pcards {
-		if c.number == "-1" {
-			if c.color == "z" {
+		if c.Number == "-1" {
+			if c.Color == "z" {
 				sum += 50
 			} else {
 				sum += 20
 			}
 		} else {
-			x, _ := strconv.Atoi(c.number)
+			x, _ := strconv.Atoi(c.Number)
 			sum += x
 		}
 	}
