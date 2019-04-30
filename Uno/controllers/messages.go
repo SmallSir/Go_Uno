@@ -140,7 +140,7 @@ type Incident struct {
 	Sccolor  string `json:"sccolor"`  //事件为选色时选择的颜色
 	Ccolor   string `json:"ccolor"`   //事件为出牌时牌的颜色
 	Cstate   string `json:"cstate"`   //事件为出牌时牌的状态
-	Cnumber  int    `json:"cnumber"`  //事件为出牌时牌的号码
+	Cnumber  string `json:"cnumber"`  //事件为出牌时牌的号码
 	Ready    bool   `json:"ready"`    //事件为准备时状态
 }
 
