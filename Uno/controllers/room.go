@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"errors"
+	"log"
 	"strconv"
 )
 
@@ -166,6 +167,7 @@ FOREND:
 			if event.Type == 0 { //事件为出牌
 				rc := Card{Color: event.Ccolor, State: event.Cstate, Number: event.Cnumber}
 				flag := rm.RemoveCard(event.Position, rc)
+				log.Println(rc)
 				msg := &Reincident{}
 				msg.State = false
 				if flag == -1 {
@@ -231,7 +233,7 @@ FOREND:
 							if rm.nextplayer == i {
 								msg.OutPeople = true
 							} else {
-								msg.OutPeople = true
+								msg.OutPeople = false
 							}
 						}
 						if rm.playerno[i] != -1 {
@@ -500,6 +502,9 @@ func (rm *PlayerRoom) RemoveCard(index int, rc Card) int {
 		if rc.State == rm.latest_state || (rm.latest_state == "raw" && rc.State == "wildraw") { //万能牌符合条件或者上一个出牌的是+2，这一次可以允许+4
 			flag = 0
 		}
+	}
+	if rm.latest_color == "null" {
+		flag = 0
 	}
 	if flag == -1 { //不符合出牌规矩
 		return -1
