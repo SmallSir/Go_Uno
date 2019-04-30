@@ -10,7 +10,7 @@ var Application = PIXI.Application,
 var card_num = false;
 var inde = -1;
 //选中卡牌信息
-var cs_color,cs_state,sc_number;
+var sc_color,sc_state,sc_number;
 //位置对应
 var ps = ["dong","bei","xi","nan"];
 //检查卡牌点击情况
@@ -58,6 +58,7 @@ function cardclick(){ //鼠标点击
         inde = bei_container.getChildIndex(this);
     else
         inde = xi_container.getChildIndex(this);
+    console.log("当鼠标点击时候的索引",inde)
     var x = inde;
     if(card_num == false)
     {
@@ -65,8 +66,6 @@ function cardclick(){ //鼠标点击
         card_num = true;
         if(my_dir == "dong")
         {
-            console.log("这时候的sc",dongcards[x]);
-            console.log("这时候的x",x)
             dongcards[x].sc = true;
             sc_color = dongcards[x].color;
             sc_number = dongcards[x].number;
@@ -96,7 +95,6 @@ function cardclick(){ //鼠标点击
     }
     else
     {
-        console.log("这是true的",dongcards)
         if(my_dir == "dong")
         {
             if(dongcards[x].sc == true)
@@ -361,7 +359,7 @@ function outcardclick()
         var x = 2;
     else
         var x = 3;
-    var msg = {type:0,position:x,ccolor:cs_color,cnumber:sc_number,cstate:sc_state};
+    var msg = {type:0,position:x,ccolor:sc_color,cnumber:sc_number,cstate:sc_state};
     var msgjson = JSON.stringify(msg);
     socket.send(msgjson);
     check();
@@ -1767,6 +1765,7 @@ socket.onmessage = function(event){
             {
                 if(my_dir == "dong")
                 {
+                    dong.removeChild(dong_number);
                     dong_number = new PIXI.Text(data.cardsnumber);
                     dong_number.x = 120,dong_number.y = 150;
                     dong.addChild(dong_number);
@@ -1780,6 +1779,7 @@ socket.onmessage = function(event){
                 }
                 else if(my_dir == "nan")
                 {
+                    nan.removeChild(nan_number);
                     nan_number = new PIXI.Text(data.cardsnumber);
                     nan_number.x = 120,nan_number.y = 150;
                     nan.addChild(nan_number);
@@ -1793,6 +1793,7 @@ socket.onmessage = function(event){
                 }
                 else if(my_dir == "bei")
                 {
+                    bei.removeChild(bei_number);
                     bei_number = new PIXI.Text(data.cardsnumber);
                     bei_number.x = 120,bei_number.y = 150;
                     bei.addChild(bei_number);
@@ -1806,6 +1807,7 @@ socket.onmessage = function(event){
                 }
                 else 
                 {
+                    xi.removeChild(xi_number);
                     xi_number = new PIXI.Text(data.cardsnumber);
                     xi_number.x = 120,xi_number.y = 150;
                     xi.addChild(xi_number);
@@ -1822,21 +1824,25 @@ socket.onmessage = function(event){
             {
                 if(data.position == 0)
                 {
+                    dong.removeChild(dong_number);
                     dong_number = new PIXI.Text(data.cardsnumber);
                     dong.addChild(dong_number);
                 }
                 else if(data.position == 1)
                 {
+                    bei.removeChild(bei_number);
                     bei_number = new PIXI.Text(data.cardsnumber);
                     bei.addChild(bei_number);
                 }
                 else if(data.position == 2)
                 {
+                    xi.removeChild(xi_number)
                     xi_number = new PIXI.Text(data.cardsnumber);
                     xi.addChild(xi_number);
                 }
                 else
-                {    
+                {   
+                    nan.removeChild(nan_number); 
                     nan_number = new PIXI.Text(data.cardsnumber);
                     nan.addChild(nan_number);
                 }
