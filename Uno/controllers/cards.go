@@ -80,7 +80,7 @@ func (c *Cards) OutCards(outcard Card) {
 
 //摸牌
 func (c *Cards) AddCards(number int) []Card {
-	returncard := make([]Card, 0, number)
+	returncard := make([]Card, 0, 108)
 	if c.ready_number < number {
 		returncard = append(c.ready_card[:])
 		number -= c.ready_number
