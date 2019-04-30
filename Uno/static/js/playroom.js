@@ -529,7 +529,7 @@ dong.addChild(dongmark);
 dong.addChild(remaining_dong);
 
 /*测试样例
-dong_number = new PIXI.Text("8");
+dong_number = new PIXI.Text("4");
 dong_name = new PIXI.Text("测试1");
 dong.addChild(dong_number);
 dong.addChild(dong_name);
@@ -553,7 +553,7 @@ nan.addChild(nanmark);
 nan.addChild(remaining_nan);
 
 /*测试样例
-nan_number = new PIXI.Text("20");
+nan_number = new PIXI.Text("10");
 nan_name = new PIXI.Text("WhaleFall");
 nan.addChild(nan_number);
 nan.addChild(nan_name);
@@ -921,12 +921,18 @@ function cardsmsg(color,state,number,flag,i){
 }
 
 /*测试样例
-for(var i = 0;i < 15;i++)
-{
-    addcard(basepath,bluepath,'0.jpg',"dong",i);
-    card = {color : "blue",number : "0", state : "-1",sc : false};
-    dongcards.push(card);
-}
+addcard(basepath,yellowpath,'0.jpg',"dong",0);
+card = {color : "blue",number : "0", state : "-1",sc : false};
+dongcards.push(card);
+addcard(basepath,yellowpath,'7.jpg',"dong",1);
+card = {color : "blue",number : "0", state : "-1",sc : false};
+dongcards.push(card);
+addcard(basepath,greenpath,'4.jpg',"dong",2);
+card = {color : "blue",number : "0", state : "-1",sc : false};
+dongcards.push(card);
+addcard(basepath,greenpath,'2.jpg',"dong",3);
+card = {color : "blue",number : "0", state : "-1",sc : false};
+dongcards.push(card);
 dong_container.scale.x = 0.4,dong_container.scale.y = 0.4;
 dong_container.x = 100;
 dong_container.y = 80;
@@ -944,45 +950,45 @@ app.stage.addChild(dong);
 */
 
 /*测试样例
-for(var i = 0;i < 8;i++)
+for(var i = 0;i < 10;i++)
 {
     var one = new Sprite.fromImage('../static/img/outras/uno_back.jpg')
     one.x = i*35;
     one.anchor.set(0.5);
     one.y = 0;
-    xi_container.addChild(one);
-}
-xi_container.scale.x = 0.3,xi_container.scale.y = 0.3;
-xi_container.x = 100,xi_container.y = -50;
-ximark.x = 0,ximark.y = -100;
-remaining_xi.x = 0,remaining_xi.y = 50;
-xi_number.x = 120,xi_number.y = 50;
-xi_name.x = 180,xi_name.y = 50
-xi.x = 150;
-xi.y = 150;
-xi.rotation = 1.57;
-app.stage.addChild(xi);
-*/
-
-/*测试样例
-for(var i = 0;i < 50;i++)
-{
-    var one = new Sprite.fromImage('../static/img/outras/uno_back.jpg')
-    one.x = i*35;
-    one.y = 0;
-    one.anchor.set(0.5);
     nan_container.addChild(one);
 }
 nan_container.scale.x = 0.3,nan_container.scale.y = 0.3;
-nan_container.x = 50,nan_container.y = -50;
-nanmark.x = -50,nanmark.y = -50;
-remaining_nan.x = -50,remaining_nan.y = 50;
-nan_number.x = 70,nan_number.y = 50;
-nan_name.x = 130,nan_name.y = 50;
-nan.x = 900;
-nan.y = 100;
-nan.rotation = 3.14;
+nan_container.x = 100,nan_container.y = -50;
+nanmark.x = 0,nanmark.y = -100;
+remaining_nan.x = 0,remaining_nan.y = 50;
+nan_number.x = 120,nan_number.y = 50;
+nan_name.x = 180,nan_name.y = 50
+nan.x = 150;
+nan.y = 150;
+nan.rotation = 1.57;
 app.stage.addChild(nan);
+*/
+
+/*测试样例
+for(var i = 0;i < 10;i++)
+{
+    var one = new Sprite.fromImage('../static/img/outras/uno_back.jpg')
+    one.x = i*35;
+    one.y = 0;
+    one.anchor.set(0.5);
+    xi_container.addChild(one);
+}
+xi_container.scale.x = 0.3,xi_container.scale.y = 0.3;
+xi_container.x = 50,xi_container.y = -50;
+ximark.x = -50,ximark.y = -50;
+remaining_xi.x = -50,remaining_xi.y = 50;
+xi_number.x = 70,xi_number.y = 50;
+xi_name.x = 130,xi_name.y = 50;
+xi.x = 900;
+xi.y = 100;
+xi.rotation = 3.14;
+app.stage.addChild(xi);
 */
 
 /*测试样例
@@ -1007,9 +1013,13 @@ app.stage.addChild(bei);
 */
 
 /*测试样例
-for(var i = 0;i < 3;i++)
+for(var i = 0;i < 1;i++)
 {
     addcard(basepath,bluepath,'0.jpg',"center");
+    addcard(basepath,bluepath,'1.jpg',"center");
+    addcard(basepath,redpath,'1.jpg',"center");
+    addcard(basepath,greenpath,'5.jpg',"center");
+    addcard(basepath,yellowpath,'9.jpg',"center");
 }
 */
 
