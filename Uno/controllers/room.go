@@ -68,6 +68,7 @@ func NewRoom(room Room, number int) *PlayerRoom {
 
 //游戏房间
 func (rm *PlayerRoom) playRoom() {
+FOREND:
 	for {
 		select {
 		case sub := <-rm.subscribe: //加入
@@ -136,6 +137,7 @@ func (rm *PlayerRoom) playRoom() {
 					ws.WriteJSON(msg)
 				}
 			}
+			break
 		case unsub := <-rm.unsubscribe: //离开,传进来的是玩家的id
 			msg := &LeaveRoom{}
 			msg.Type = 1
@@ -159,14 +161,15 @@ func (rm *PlayerRoom) playRoom() {
 					ws.WriteJSON(msg)
 				}
 			}
+			break
 		case event := <-rm.publish: //事件
 			if event.Type == 0 { //事件为出牌
-				rc := Card{Color: event.Ccolor, State: event.Cstate, Number: strconv.Itoa(event.Cnumber)}
+				rc := Card{Color: event.Ccolor, State: event.Cstate, Number: event.Cnumber}
 				flag := rm.RemoveCard(event.Position, rc)
 				msg := &Reincident{}
 				msg.State = false
 				if flag == -1 {
-					msg.Type = 0
+					msg.Type = -1
 					msg.Incident = -1
 					if rm.playerno[event.Position] != -1 {
 						ws := rm.players[event.Position].rwc
@@ -185,17 +188,19 @@ func (rm *PlayerRoom) playRoom() {
 						msg.Direction = rm.dirction
 						msg.State = false
 						for i, _ := range rm.players {
-							if i == event.Position {
-								msg.Cardss = rm.players[event.Position].player_cards.cards
-							}
-							if rm.nextplayer == i {
-								msg.OutPeople = true
-							} else {
-								msg.OutPeople = false
-							}
-							if rm.playerno[i] != -1 {
-								ws := rm.players[i].rwc
-								ws.WriteJSON(msg)
+							msg.CardsNumber = rm.players[i].player_cards.number
+							msg.Cardss = rm.players[i].player_cards.cards
+							msg.Position = i
+							for j, _ := range rm.players {
+								if rm.nextplayer == i && j == i {
+									msg.OutPeople = true
+								} else {
+									msg.OutPeople = false
+								}
+								if rm.playerno[j] != -1 {
+									ws := rm.players[j].rwc
+									ws.WriteJSON(msg)
+								}
 							}
 						}
 					}
@@ -303,7 +308,7 @@ func (rm *PlayerRoom) playRoom() {
 						msg.Cardss = rm.players[i].player_cards.cards
 						msg.Position = i
 						for j, _ := range rm.players {
-							if rm.nextplayer == j {
+							if rm.nextplayer == i && j == i {
 								msg.OutPeople = true
 							} else {
 								msg.OutPeople = false
@@ -383,8 +388,9 @@ func (rm *PlayerRoom) playRoom() {
 				}
 			}
 			if rm.players_number == -1 {
-				break
+				break FOREND
 			}
+			break
 		}
 	}
 }

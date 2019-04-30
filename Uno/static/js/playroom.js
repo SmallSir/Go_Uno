@@ -8,7 +8,7 @@ var Application = PIXI.Application,
 
 //统计用户点击牌数目
 var card_num = false;
-var inde;
+var inde = -1;
 //选中卡牌信息
 var cs_color,cs_state,sc_number;
 //位置对应
@@ -17,7 +17,8 @@ var ps = ["dong","bei","xi","nan"];
 function check()
 {
     card_num = false;
-    console.log(inde);
+    if(inde == -1)
+        return;
     if(my_dir == "dong")
     {
         var one = dong_container.getChildAt(inde);
@@ -64,6 +65,8 @@ function cardclick(){ //鼠标点击
         card_num = true;
         if(my_dir == "dong")
         {
+            console.log("这时候的sc",dongcards[x]);
+            console.log("这时候的x",x)
             dongcards[x].sc = true;
             sc_color = dongcards[x].color;
             sc_number = dongcards[x].number;
@@ -93,6 +96,7 @@ function cardclick(){ //鼠标点击
     }
     else
     {
+        console.log("这是true的",dongcards)
         if(my_dir == "dong")
         {
             if(dongcards[x].sc == true)
@@ -177,7 +181,7 @@ yellowbutton.buttonMode = true;
 yellowbutton_text = new PIXI.Text("黄色",buttonstyle);
 yellowbutton_text.interactive = true;
 yellowbutton_text.buttonMode = true;
-yellowbutton.on('pointertap',yellowclick);
+//yellowbutton.on('pointertap',yellowclick);
 yellowbutton_text.on('pointertap',yellowclick);
 
 function redclick(){
@@ -203,7 +207,7 @@ redbutton.buttonMode = true;
 redbutton_text = new PIXI.Text("红色",buttonstyle);
 redbutton_text.interactive = true;
 redbutton_text.buttonMode = true;
-redbutton.on('pointertap',redclick);
+//redbutton.on('pointertap',redclick);
 redbutton_text.on('pointertap',redclick);
 
 function greenclick()
@@ -230,7 +234,7 @@ greenbutton.buttonMode = true;
 greenbutton_text = new PIXI.Text("绿色",buttonstyle);
 greenbutton_text.interactive = true;
 greenbutton_text.buttonMode = true;
-greenbutton.on('pointertap',greenclick);
+//greenbutton.on('pointertap',greenclick);
 greenbutton_text.on('pointertap',greenclick);
 
 function blueclick()
@@ -257,7 +261,7 @@ bluebutton.buttonMode = true;
 bluebutton_text = new PIXI.Text("蓝色",buttonstyle);
 bluebutton_text.interactive = true;
 bluebutton_text.buttonMode = true;
-bluebutton.on('pointertap',blueclick);
+//bluebutton.on('pointertap',blueclick);
 bluebutton_text.on('pointertap',blueclick);
 
 var color_container = new container();
@@ -309,7 +313,7 @@ var ready_people_text = new PIXI.Text("准备",buttonstyle);
 ready_people_text.interactive = true;
 ready_people_text.buttonMode = true;
 ready_people_text.x = 620,ready_people_text.y = 435;
-ready_people.on('pointertap',readyclick);
+//ready_people.on('pointertap',readyclick);
 ready_people_text.on('pointertap',readyclick);
 
 //不准备按钮
@@ -338,7 +342,7 @@ var unready_people_text = new PIXI.Text("取消准备",buttonstyle);
 unready_people_text.interactive = true;
 unready_people_text.buttonMode = true;
 unready_people_text.x = 600,unready_people_text.y = 435;
-unready_people.on('pointertap',unreadyclick);
+//unready_people.on('pointertap',unreadyclick);
 unready_people_text.on('pointertap',unreadyclick);
 
 //出牌按钮
@@ -371,7 +375,7 @@ outcard_text.interactive = true;
 outcard_text.buttonMode = true;
 outcard.drawRoundedRect(500,430,80,35,15);
 outcard_text.x = 520,outcard_text.y = 435;
-outcard.on('pointertap',outcardclick);
+//outcard.on('pointertap',outcardclick);
 outcard_text.on('pointertap',outcardclick);
 
 //摸牌按钮
@@ -404,7 +408,7 @@ getcard_text.interactive = true;
 getcard_text.buttonMode = true;
 getcard.drawRoundedRect(650,430,80,35,15);
 getcard_text.x = 670,getcard_text.y = 435;
-getcard.on('pointertap',getcardclick);
+//getcard.on('pointertap',getcardclick);
 getcard_text.on('pointertap',getcardclick);
 
 //喊UNO按钮
@@ -435,7 +439,7 @@ var uno_text = new PIXI.Text("UNO",buttonstyle);
 uno_text.interactive = true;
 uno_text.buttonMode = true;
 uno_text.x = 620,uno_text.y = 435;
-uno.on('pointertap',unoclick);
+//uno.on('pointertap',unoclick);
 uno_text.on('pointertap',unoclick);
 
 //四副牌
@@ -572,7 +576,7 @@ bei.addChild(bei_name);
 var bsnums;
 function bsdjs(k){
     var clock = '';
-    bsnums = 9;
+    bsnums = 15;
     var countdown1,countdown2;
     var flag = -1;
     clock = setInterval(doLoop, 1000);
@@ -625,7 +629,7 @@ function bsdjs(k){
                 if(k == -1)
                     unoclick();
             }
-            bsnums = 9;//重置时间
+            bsnums = 15;//重置时间
         }
     }
 }
@@ -791,7 +795,6 @@ function addcard(base,color,s,flag,x)
 
 //实现确定牌的内容
 function cardsmsg(color,state,number,flag,i){
-    console.log(color,state,number)
     if(color == "blue")//是蓝牌
     {
         if(number == "0")
@@ -1133,19 +1136,19 @@ socket.onmessage = function(event){
                 dong_container.scale.x = 0.3,dong_container.scale.y = 0.3;
                 dong.rotation = 3.14;
 
-                nanmark.x = 0,nanmark.y = -100;
-                nan_container.x = 100,nan_container.y = -50;
-                remaining_nan.x = 0,remaining_nan.y = 50;
-                nan.x = 150,nan.y = 150;
-                nan_container.scale.x = 0.3,nan_container.scale.y = 0.3;
-                nan.rotation = 1.57;
-
-                beimark.x = -100,beimark.y = 50;
-                bei_container.x = 0,bei_container.y = 100;
-                remaining_bei.x = -100,remaining_bei.y = 150;
-                bei.x = 1050,bei.y = 400;
+                beimark.x = 0,beimark.y = -100
+                bei_container.x = 100,bei_container.y = -50;
+                remaining_bei.x = 0,remaining_bei.y = 50;
+                bei.x = 150,bei.y = 150;
                 bei_container.scale.x = 0.3,bei_container.scale.y = 0.3;
-                bei.rotation = 4.71;
+                bei.rotation = 1.57;
+
+                nanmark.x = -100,nanmark.y = 50;
+                nan_container.x = 0,nan_container.y = 100;
+                remaining_nan.x = -100,remaining_nan.y = 150;
+                nan.x = 1050,nan.y = 400;
+                nan_container.scale.x = 0.3,nan_container.scale.y = 0.3;
+                nan.rotation = 4.71;
             }
             else//表示南
             {
@@ -1274,7 +1277,7 @@ socket.onmessage = function(event){
             }
             else //表示南
             {
-                nan_id = nan.playerid;
+                nan_id = data.playerid;
                 nan_name = new PIXI.Text(data.playername);
                 nan.addChild(nan_name);
                 if(data.ready == true)
@@ -1539,6 +1542,12 @@ socket.onmessage = function(event){
                 app.stage.addChild(ssz);
             }
         }
+        else{
+            if(data.direction == 0)
+                app.stage.addChild(ssz);
+            else
+                app.stage.addChild(nsz);
+        }
         if(data.incident == 0 || data.incident == 1) //0表示出牌1表示摸牌
         {
             if(data.incident == 0 && data.state == false) //出牌事件
@@ -1750,12 +1759,12 @@ socket.onmessage = function(event){
                 {
                     dong_number = new PIXI.Text(data.cardsnumber);
                     dong_number.x = 120,dong_number.y = 150;
+                    dong.addChild(dong_number);
                     dongcards = [];
                     for(var i = 0;i < data.cards.length;i++)
                     {
-                        card = {color:data.cards[i].color,number:data.cards[i].number,sc:false,state:data.cards[i].state};
+                        card = {color:data.cards[i].color,number:data.cards[i].number,sc:false,state:data.cards[i].state,sc:false};
                         dongcards.push(card);
-                        console.log("????",data.cards[i].color,data.cards[i].state,data.cards[i].number)
                         cardsmsg(data.cards[i].color,data.cards[i].state,data.cards[i].number,"dong",i);
                     }
                 }
@@ -1763,10 +1772,11 @@ socket.onmessage = function(event){
                 {
                     nan_number = new PIXI.Text(data.cardsnumber);
                     nan_number.x = 120,nan_number.y = 150;
+                    nan.addChild(nan_number);
                     nancards = [];
                     for(var i = 0;i < data.cards.length;i++)
                     {
-                        card = {color:data.cards[i].color,number:data.cards[i].number,sc:false,state:data.cards[i].state};
+                        card = {color:data.cards[i].color,number:data.cards[i].number,sc:false,state:data.cards[i].state,sc:false};
                         nancards.push(card);
                         cardsmsg(data.cards[i].color,data.cards[i].state,data.cards[i].number,"nan",i);
                     }
@@ -1775,10 +1785,11 @@ socket.onmessage = function(event){
                 {
                     bei_number = new PIXI.Text(data.cardsnumber);
                     bei_number.x = 120,bei_number.y = 150;
+                    bei.addChild(bei_number);
                     beicards = [];
                     for(var i = 0;i < data.cards.length;i++)
                     {
-                        card = {color:data.cards[i].color,number:data.cards[i].number,sc:false,state:data.cards[i].state};
+                        card = {color:data.cards[i].color,number:data.cards[i].number,sc:false,state:data.cards[i].state,sc:false};
                         beicards.push(card);
                         cardsmsg(data.cards[i].color,data.cards[i].state,data.cards[i].number,"bei",i);
                     }
@@ -1787,10 +1798,11 @@ socket.onmessage = function(event){
                 {
                     xi_number = new PIXI.Text(data.cardsnumber);
                     xi_number.x = 120,xi_number.y = 150;
+                    xi.addChild(xi_number);
                     xicards = [];
                     for(var i = 0;i < data.cards.length;i++)
                     {
-                        card = {color:data.cards[i].color,number:data.cards[i].number,sc:false,state:data.cards[i].state};
+                        card = {color:data.cards[i].color,number:data.cards[i].number,sc:false,state:data.cards[i].state,sc:false};
                         xicards.push(card);
                         cardsmsg(data.cards[i].color,data.cards[i].state,data.cards[i].number,"xi",i);
                     }
@@ -1799,13 +1811,25 @@ socket.onmessage = function(event){
             else//事件为其他玩家时更新手里的牌和数量的方式
             {
                 if(data.position == 0)
+                {
                     dong_number = new PIXI.Text(data.cardsnumber);
+                    dong.addChild(dong_number);
+                }
                 else if(data.position == 1)
+                {
                     bei_number = new PIXI.Text(data.cardsnumber);
+                    bei.addChild(bei_number);
+                }
                 else if(data.position == 2)
+                {
                     xi_number = new PIXI.Text(data.cardsnumber);
+                    xi.addChild(xi_number);
+                }
                 else
+                {    
                     nan_number = new PIXI.Text(data.cardsnumber);
+                    nan.addChild(nan_number);
+                }
                 //确定摆放位置
                 if(my_dir == "dong")
                 {
@@ -1875,7 +1899,7 @@ socket.onmessage = function(event){
                     app.stage.addChild(outcard_text);
                     app.stage.addChild(getcard);
                     app.stage.addChild(getcard_text);
-                    bsdjs(-1)
+                    bsdjs(1)
                 }
                 if(data.sc == true)
                 {
@@ -1886,7 +1910,7 @@ socket.onmessage = function(event){
                 {
                     app.stage.addChild(uno);
                     app.stage.addChild(uno_text);
-                    bsdjs(1);
+                    bsdjs(-1);
                 }
             }
         }
@@ -2481,6 +2505,15 @@ socket.onmessage = function(event){
                 }
             }
         }
+        break;
+    case -1://错误
+        alert("出牌内容不符合要求请重新出牌");
+        bsnums = -10;
+        app.stage.addChild(outcard);
+        app.stage.addChild(outcard_text);
+        app.stage.addChild(getcard);
+        app.stage.addChild(getcard_text);
+        bsdjs(1);
         break;
     }
 }
