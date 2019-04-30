@@ -281,6 +281,7 @@ func (game *GameController) ConnectionWebSockets() {
 		var cident Incident
 		err := ws.ReadJSON(&cident)
 		if err != nil {
+			log.Println(err)
 			r.unsubscribe <- playerid
 		}
 		r.publish <- cident
