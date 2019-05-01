@@ -252,10 +252,12 @@ func (game *GameController) ConnectionWebSocket() {
 
 //建立WebSocket
 func (game *GameController) ConnectionWebSockets() {
-	if game.GetSession("roomname") == nil || game.GetSession("id") == nil || game.GetSession("name") == nil {
+	if game.GetSession("id") == nil || game.GetSession("name") == nil {
 		game.Redirect("/", 302)
 	}
-
+	if game.GetSession("roomname") == nil {
+		game.Redirect("/dating/"+strconv.Itoa(game.GetSession("id").(int)), 302)
+	}
 	playerid := game.GetSession("id").(int)
 	playername := game.GetSession("name").(string)
 	roomname := game.GetSession("roomname").(string)
@@ -282,7 +284,11 @@ func (game *GameController) ConnectionWebSockets() {
 		err := ws.ReadJSON(&cident)
 		if err != nil {
 			log.Println(err)
+			if r.game == false {
+				game.DelSession("roomname")
+			}
 			r.unsubscribe <- playerid
+			return
 		}
 		r.publish <- cident
 	}
