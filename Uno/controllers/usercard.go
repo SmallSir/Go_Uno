@@ -69,7 +69,7 @@ func (user *UserCard) Compare(x Card, y Card) bool {
 //二分查找
 func (user *UserCard) BinaryInsert(new_card Card) int {
 	l := -1
-	r := user.number - 1
+	r := user.number
 	for l < r-1 {
 		mid := (l + r) / 2
 		check := user.Compare(user.cards[mid], new_card)
