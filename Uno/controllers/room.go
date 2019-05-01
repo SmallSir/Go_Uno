@@ -485,26 +485,21 @@ func (rm *PlayerRoom) RemoveCard(index int, rc Card) int {
 	*/
 	flag := -1
 	p_id := rm.playerno[index]
-	if rc.Color == "red" || rc.Color == "yellow" || rc.Color == "green" || rc.Color == "blue" {
-		if rc.Color == rm.latest_number || rm.latest_color == "null" { //颜色相同符合条件
-			if rm.latest_state != "raw" {
-				flag = 0
-			}
+	if rc.Color == "red" || rc.Color == "yellow" || rc.Color == "green" || rc.Color == "blue" || rm.latest_color == "null" {
+		if rc.Color == rm.latest_color || rm.latest_color == "null" { //颜色相同符合条件
+			flag = 0
 		}
 		if rc.Number == rm.latest_number && rc.Number <= "9" && rc.Number >= "0" { //号码相同符合条件
 			flag = 0
 		}
-		if rc.State == rm.latest_state && (rc.State == "wild" || rc.State == "wildraw") { //功能相同符合条件
+		if rc.State == rm.latest_state && (rc.State == "reverse" || rc.State == "skip" || rc.State == "raw") { //功能相同符合条件
 			flag = 0
 		}
 	}
 	if rc.Color == "z" { //万能牌
-		if rc.State == rm.latest_state || (rm.latest_state == "raw" && rc.State == "wildraw") { //万能牌符合条件或者上一个出牌的是+2，这一次可以允许+4
+		if rc.State == rm.latest_state || (rm.latest_state == "wild" && rc.State == "wildraw") { //万能牌符合条件或者上一个出牌的是+2，这一次可以允许+4
 			flag = 0
 		}
-	}
-	if rm.latest_color == "null" {
-		flag = 0
 	}
 	if flag == -1 { //不符合出牌规矩
 		return -1
