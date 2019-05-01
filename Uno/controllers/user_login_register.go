@@ -97,7 +97,6 @@ func (User *UserController) Login() {
 	for i, _ := range test {
 		log.Println(email, password, test[i].Email, test[i].Password)
 		if test[i].Email == email && test[i].Password == password {
-			log.Println("good")
 			username = test[i].Username
 			id = testid[i]
 			flag = true
@@ -107,6 +106,7 @@ func (User *UserController) Login() {
 	if flag == false {
 		msg = "用户不存在"
 		url = "/"
+		return
 	}
 	//正确的话设置玩家的id和name到session
 	User.SetSession("id", id)
