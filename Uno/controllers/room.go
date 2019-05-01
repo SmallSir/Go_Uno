@@ -167,7 +167,6 @@ FOREND:
 			if event.Type == 0 { //事件为出牌
 				rc := Card{Color: event.Ccolor, State: event.Cstate, Number: event.Cnumber}
 				flag := rm.RemoveCard(event.Position, rc)
-				log.Println(rc)
 				msg := &Reincident{}
 				msg.State = false
 				if flag == -1 {
@@ -323,6 +322,7 @@ FOREND:
 					}
 				}
 			} else if event.Type == 2 { //事件为选色
+				log.Println("选色", event.Sccolor)
 				rm.SelectColor(event.Sccolor)
 				msg := &Reincident{}
 				msg.Type = 4
@@ -330,7 +330,7 @@ FOREND:
 				msg.Position = event.Position
 				msg.Direction = rm.dirction
 				msg.State = false
-				msg.Wsc = event.Ccolor
+				msg.Wsc = event.Sccolor
 				for i, _ := range rm.players {
 					if rm.nextplayer == i {
 						msg.OutPeople = true
@@ -485,6 +485,11 @@ func (rm *PlayerRoom) RemoveCard(index int, rc Card) int {
 	*/
 	flag := -1
 	p_id := rm.playerno[index]
+	if rm.latest_state == "wildraw" { //意味着如果出了+4，不能再出别的牌，除非一直+4
+		if rc.State == "wildraw" {
+			flag = 0
+		}
+	}
 	if rc.Color == "red" || rc.Color == "yellow" || rc.Color == "green" || rc.Color == "blue" || rm.latest_color == "null" {
 		if rc.Color == rm.latest_color || rm.latest_color == "null" { //颜色相同符合条件
 			flag = 0
@@ -497,7 +502,13 @@ func (rm *PlayerRoom) RemoveCard(index int, rc Card) int {
 		}
 	}
 	if rc.Color == "z" { //万能牌
-		if rc.State == rm.latest_state || (rm.latest_state == "wild" && rc.State == "wildraw") { //万能牌符合条件或者上一个出牌的是+2，这一次可以允许+4
+		if rm.latest_state == "wildraw" {
+			if rc.State == "wildraw" {
+				flag = 0
+			} else {
+				flag = -1
+			}
+		} else {
 			flag = 0
 		}
 	}
@@ -512,6 +523,7 @@ func (rm *PlayerRoom) RemoveCard(index int, rc Card) int {
 	rm.latest_color = rc.Color
 	rm.latest_state = rc.State
 	rm.latest_number = rc.Number
+	log.Println("出牌信息", rc)
 	//检查用户出的最后一张牌是不是功能牌，是的话要加一张
 	if rm.players[index].player_cards.number == 0 && rm.latest_number == "-1" {
 		rm.GetCard(p_id, 1)
@@ -533,15 +545,18 @@ func (rm *PlayerRoom) RemoveCard(index int, rc Card) int {
 		}
 	}
 	if rm.latest_state == "wild" {
+		log.Println("这里出了选色")
 		//表示是选色
 		flag = 4
 	}
 	if rm.latest_state == "wildraw" {
+		log.Println("这里出了+4")
 		rm.getcardsnumber += 4
 		//表示是+4
 		flag = 3
 	}
-	if rm.latest_state == "draw" {
+	if rm.latest_state == "raw" {
+		log.Println("出了+2")
 		rm.getcardsnumber += 2
 		//表示是+2
 		flag = 2
