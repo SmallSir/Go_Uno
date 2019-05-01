@@ -39,6 +39,7 @@ function check()
         var one = bei_container.getChildAt(inde);
         one.y = one.y + 20;
     }
+    inde = -1;
 }
 
 
@@ -1770,6 +1771,7 @@ socket.onmessage = function(event){
                     dong_number.x = 120,dong_number.y = 150;
                     dong.addChild(dong_number);
                     dongcards = [];
+                    dong_container.removeChildren();
                     for(var i = 0;i < data.cards.length;i++)
                     {
                         card = {color:data.cards[i].color,number:data.cards[i].number,sc:false,state:data.cards[i].state,sc:false};
@@ -1784,6 +1786,7 @@ socket.onmessage = function(event){
                     nan_number.x = 120,nan_number.y = 150;
                     nan.addChild(nan_number);
                     nancards = [];
+                    nan_container.removeChildren();
                     for(var i = 0;i < data.cards.length;i++)
                     {
                         card = {color:data.cards[i].color,number:data.cards[i].number,sc:false,state:data.cards[i].state,sc:false};
@@ -1798,6 +1801,7 @@ socket.onmessage = function(event){
                     bei_number.x = 120,bei_number.y = 150;
                     bei.addChild(bei_number);
                     beicards = [];
+                    bei_container.removeChildren();
                     for(var i = 0;i < data.cards.length;i++)
                     {
                         card = {color:data.cards[i].color,number:data.cards[i].number,sc:false,state:data.cards[i].state,sc:false};
@@ -1812,6 +1816,7 @@ socket.onmessage = function(event){
                     xi_number.x = 120,xi_number.y = 150;
                     xi.addChild(xi_number);
                     xicards = [];
+                    xi_container.removeChild();
                     for(var i = 0;i < data.cards.length;i++)
                     {
                         card = {color:data.cards[i].color,number:data.cards[i].number,sc:false,state:data.cards[i].state,sc:false};
@@ -1827,24 +1832,28 @@ socket.onmessage = function(event){
                     dong.removeChild(dong_number);
                     dong_number = new PIXI.Text(data.cardsnumber);
                     dong.addChild(dong_number);
+                    dong_container.removeChildren();
                 }
                 else if(data.position == 1)
                 {
                     bei.removeChild(bei_number);
                     bei_number = new PIXI.Text(data.cardsnumber);
                     bei.addChild(bei_number);
+                    bei_container.removeChildren();
                 }
                 else if(data.position == 2)
                 {
                     xi.removeChild(xi_number)
                     xi_number = new PIXI.Text(data.cardsnumber);
                     xi.addChild(xi_number);
+                    xi_container.removeChildren();
                 }
                 else
                 {   
                     nan.removeChild(nan_number); 
                     nan_number = new PIXI.Text(data.cardsnumber);
                     nan.addChild(nan_number);
+                    nan_container.removeChildren();
                 }
                 //确定摆放位置
                 if(my_dir == "dong")
