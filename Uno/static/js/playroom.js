@@ -59,7 +59,6 @@ function cardclick(){ //鼠标点击
         inde = bei_container.getChildIndex(this);
     else
         inde = xi_container.getChildIndex(this);
-    console.log("当鼠标点击时候的索引",inde)
     var x = inde;
     if(card_num == false)
     {
@@ -701,13 +700,13 @@ function frank(){
 //出牌、点击按钮效果倒计时
 function xgdjs(x){
     var clock = '';
-    var nums = 1;
+    var nums = 2;
     clock = setInterval(doLoop,1000);
     function doLoop(){
         nums--;
         if(nums <= 0){
             clearInterval(clock);
-            nums = 1;
+            nums = 2;
             if(x == 11)
                 app.stage.removeChild(select_green);
             else if(x == 12)
@@ -725,7 +724,7 @@ function xgdjs(x){
             else if(x == 4)
                 app.stage.removeChild(skip);
             else if(x == 0)
-                app.stage.removeChild(uno);
+                app.stage.removeChild(call_uno);
         }
     }
 } 
@@ -733,13 +732,13 @@ function xgdjs(x){
 //榜单倒计时
 function bddjs(){
     var clock = '';
-    var nums = 5;
+    var nums = 8;
     clock = setInterval(doLoop,1000);
     function doLoop(){
         nums--;
         if(nums <= 0){
             clearInterval(clock);
-            nums = 5;
+            nums = 8;
             app.stage.removeChild(rank)
             app.stage.addChild(ready_people);
             app.stage.addChild(ready_people_text);
@@ -1537,7 +1536,7 @@ socket.onmessage = function(event){
     case 4: //比赛信息
         if(data.direction != direction)//修改指针方向，是顺时针还是逆时针
         {
-            if(direction == 1)
+            if(data.direction == 1)
             {
                 app.stage.removeChild(ssz);
                 app.stage.addChild(nsz);
@@ -1913,29 +1912,6 @@ socket.onmessage = function(event){
                         xi_container.addChild(one);
                     else
                         nan_container.addChild(one);
-                }
-            }
-            if(data.outpeople == true) //接下来操作的用户为自己时
-            {
-                bsnums = -10
-                if(data.sc == false && data.uno == false)
-                {
-                    app.stage.addChild(outcard);
-                    app.stage.addChild(outcard_text);
-                    app.stage.addChild(getcard);
-                    app.stage.addChild(getcard_text);
-                    bsdjs(1)
-                }
-                if(data.sc == true)
-                {
-                    app.stage.addChild(color_container);
-                    bsdjs(0);
-                }
-                if(data.uno == true)
-                {
-                    app.stage.addChild(uno);
-                    app.stage.addChild(uno_text);
-                    bsdjs(-1);
                 }
             }
         }
@@ -2528,6 +2504,28 @@ socket.onmessage = function(event){
                         xgdjs(0);
                     }
                 }
+            }
+        }
+        if(data.outpeople == true) //接下来操作的用户为自己时
+        {
+            if(data.sc == false && data.uno == false)
+            {
+                app.stage.addChild(outcard);
+                app.stage.addChild(outcard_text);
+                app.stage.addChild(getcard);
+                app.stage.addChild(getcard_text);
+                bsdjs(1)
+            }
+            if(data.sc == true)
+            {
+                app.stage.addChild(color_container);
+                bsdjs(0);
+            }
+            if(data.uno == true)
+            {
+                app.stage.addChild(uno);
+                app.stage.addChild(uno_text);
+                bsdjs(-1);
             }
         }
         break;
