@@ -628,7 +628,6 @@ function bsdjs(k){
                 if(k == -1)
                     unoclick();
             }
-            bsnums = 15;//重置时间
         }
     }
 }
@@ -912,7 +911,7 @@ function cardsmsg(color,state,number,flag,i){
     }
     else//是功能牌
     {
-        if(state == wild)
+        if(state == "wild")
             addcard(basepath,specialpath,'x.png',flag,i);
         else
             addcard(basepath,specialpath,'j.jpg',flag,i);
@@ -1774,7 +1773,7 @@ socket.onmessage = function(event){
                     dong_container.removeChildren();
                     for(var i = 0;i < data.cards.length;i++)
                     {
-                        card = {color:data.cards[i].color,number:data.cards[i].number,sc:false,state:data.cards[i].state,sc:false};
+                        card = {color:data.cards[i].color,number:data.cards[i].number,state:data.cards[i].state,sc:false};
                         dongcards.push(card);
                         cardsmsg(data.cards[i].color,data.cards[i].state,data.cards[i].number,"dong",i);
                     }
@@ -1789,7 +1788,7 @@ socket.onmessage = function(event){
                     nan_container.removeChildren();
                     for(var i = 0;i < data.cards.length;i++)
                     {
-                        card = {color:data.cards[i].color,number:data.cards[i].number,sc:false,state:data.cards[i].state,sc:false};
+                        card = {color:data.cards[i].color,number:data.cards[i].number,state:data.cards[i].state,sc:false};
                         nancards.push(card);
                         cardsmsg(data.cards[i].color,data.cards[i].state,data.cards[i].number,"nan",i);
                     }
@@ -1804,7 +1803,7 @@ socket.onmessage = function(event){
                     bei_container.removeChildren();
                     for(var i = 0;i < data.cards.length;i++)
                     {
-                        card = {color:data.cards[i].color,number:data.cards[i].number,sc:false,state:data.cards[i].state,sc:false};
+                        card = {color:data.cards[i].color,number:data.cards[i].number,state:data.cards[i].state,sc:false};
                         beicards.push(card);
                         cardsmsg(data.cards[i].color,data.cards[i].state,data.cards[i].number,"bei",i);
                     }
@@ -1816,10 +1815,10 @@ socket.onmessage = function(event){
                     xi_number.x = 120,xi_number.y = 150;
                     xi.addChild(xi_number);
                     xicards = [];
-                    xi_container.removeChild();
+                    xi_container.removeChildren();
                     for(var i = 0;i < data.cards.length;i++)
                     {
-                        card = {color:data.cards[i].color,number:data.cards[i].number,sc:false,state:data.cards[i].state,sc:false};
+                        card = {color:data.cards[i].color,number:data.cards[i].number,state:data.cards[i].state,sc:false};
                         xicards.push(card);
                         cardsmsg(data.cards[i].color,data.cards[i].state,data.cards[i].number,"xi",i);
                     }
@@ -1918,6 +1917,7 @@ socket.onmessage = function(event){
             }
             if(data.outpeople == true) //接下来操作的用户为自己时
             {
+                bsnums = -10
                 if(data.sc == false && data.uno == false)
                 {
                     app.stage.addChild(outcard);
