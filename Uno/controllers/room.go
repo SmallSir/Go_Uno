@@ -276,6 +276,9 @@ FOREND:
 					//数据清零等待重新再开
 					rm.ready_number = 0
 					rm.addcardsnums = 0
+					for i, _ := range rm.players {
+						rm.players[i].state = false
+					}
 					rm.game = false
 				}
 			} else if event.Type == 1 { //事件为准备事件
@@ -505,7 +508,7 @@ func (rm *PlayerRoom) RemoveCard(index int, rc Card) int {
 		flag = 0
 	}
 	if rc.Color == "z" { //万能牌
-		if rm.latest_state == "wildraw" {
+		if rm.latest_state == "wildraw" || rm.latest_state == "raw" {
 			if rc.State == "wildraw" {
 				flag = 0
 			} else {
@@ -527,7 +530,7 @@ func (rm *PlayerRoom) RemoveCard(index int, rc Card) int {
 	rm.latest_state = rc.State
 	rm.latest_number = rc.Number
 	//检查用户出的最后一张牌是不是功能牌，是的话要加一张
-	if rm.players[index].player_cards.number == 0 && rm.latest_number == "-1" {
+	if rm.players[index].player_cards.number == 1 && rm.players[index].player_cards.cards[0].Number == "-1" {
 		rm.GetCard(p_id, 1)
 	}
 	if rm.latest_state == "reverse" {

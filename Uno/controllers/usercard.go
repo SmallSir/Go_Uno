@@ -70,6 +70,9 @@ func (user *UserCard) Compare(x Card, y Card) bool {
 func (user *UserCard) BinaryInsert(new_card Card) int {
 	l := -1
 	r := user.number
+	if user.number == 0 {
+		return 0
+	}
 	for l < r-1 {
 		mid := (l + r) / 2
 		check := user.Compare(user.cards[mid], new_card)
