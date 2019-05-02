@@ -684,6 +684,7 @@ function frank(){
     nan_container.removeChildren();
     bei_container.removeChildren();
     center_cards.removeChildren();
+    ready_number = 0;
     if(direction == 0)
         app.stage.removeChild(ssz);
     else
@@ -739,9 +740,18 @@ function bddjs(){
         if(nums <= 0){
             clearInterval(clock);
             nums = 8;
-            app.stage.removeChild(rank)
+            app.stage.removeChild(rank);
+            rank.removeChild(xs_one);
+            rank.removeChild(gr_one);
+            rank.removeChild(xs_two);
+            rank.removeChild(gr_two);
+            rank.removeChild(xs_three);
+            rank.removeChild(gr_three);
+            rank.removeChild(xs_four);
+            rank.removeChild(gr_four);
+
             app.stage.addChild(ready_people);
-            app.stage.addChild(ready_people_text);
+            app.stage.addChild(ready_people_text)
             ready_number = 0;
         }
     }
@@ -1357,13 +1367,25 @@ socket.onmessage = function(event){
         else //如果玩家是在非游戏状态离开，则移除玩家名即可
         {
             if(data.position == 0)
+            {
                 dong.removeChild(dong_name);
+                app.stage.removeChild(ready_dong);
+            }
             else if(data.position == 1)
+            {
                 bei.removeChild(bei_name);
+                app.stage.removeChild(ready_bei);
+            }
             else if(data.position == 2)
+            {
                 xi.removeChild(xi_name);
+                app.stage.removeChild(ready_xi);
+            }
             else
+            {
                 nan.removeChild(nan_name);
+                app.stage.removeChild(ready_nan);
+            }
         }
         break;
     case 2: //准备与取消准备
@@ -1710,7 +1732,7 @@ socket.onmessage = function(event){
                             if(data.position == 0)
                                 reverse.x = 800,reverse.y = 200;
                             else if(data.position == 1)
-                                ready_beie.x = 300,reverse.y = 300;
+                                reverse.x = 300,reverse.y = 300;
                             else if(data.position == 2)
                                 reverse.x = 600,reverse.y = 400;
                             else
@@ -2542,6 +2564,7 @@ socket.onmessage = function(event){
         {
             if(data.sc == false && data.uno == false)
             {
+
                 app.stage.addChild(outcard);
                 app.stage.addChild(outcard_text);
                 app.stage.addChild(getcard);
