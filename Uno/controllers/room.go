@@ -123,6 +123,7 @@ FOREND:
 				msg.State = true
 				ws := sub.rwc
 
+				//给重连玩家发送目前的情况
 				for i, p := range rm.players {
 					msg.Position = i
 					msg.CardsNumber = p.player_cards.number
@@ -136,6 +137,7 @@ FOREND:
 					}
 					ws.WriteJSON(msg)
 				}
+				//给其他玩家发送玩家重连信息
 			}
 			break
 		case unsub := <-rm.unsubscribe: //离开,传进来的是玩家的id
@@ -215,10 +217,10 @@ FOREND:
 					msg.CardsNumber = rm.players[event.Position].player_cards.number
 					msg.Cardss = rm.players[event.Position].player_cards.cards
 					msg.Direction = rm.dirction
-					if flag == 1 {
-						msg.Uno = true
-					} else if flag == 3 || flag == 4 {
+					if flag == 3 || flag == 4 {
 						msg.Sc = true
+					} else if flag == 1 {
+						msg.Uno = true
 					}
 					for i, _ := range rm.players {
 						if flag == 1 || flag == 3 || flag == 4 { //表示玩家出的是wild牌或者喊UNO
@@ -332,15 +334,31 @@ FOREND:
 				msg.Direction = rm.dirction
 				msg.State = false
 				msg.Wsc = event.Sccolor
-				for i, _ := range rm.players {
-					if rm.nextplayer == i {
-						msg.OutPeople = true
-					} else {
-						msg.OutPeople = false
+				flag := rm.CheckUno(rm.players[event.Position].player_id)
+				if flag == true {
+					msg.Uno = true
+					for i, _ := range rm.players {
+						if event.Position == i {
+							msg.OutPeople = true
+						} else {
+							msg.OutPeople = false
+						}
+						if rm.playerno[i] != -1 {
+							ws := rm.players[i].rwc
+							ws.WriteJSON(msg)
+						}
 					}
-					if rm.playerno[i] != -1 {
-						ws := rm.players[i].rwc
-						ws.WriteJSON(msg)
+				} else {
+					for i, _ := range rm.players {
+						if rm.nextplayer == i {
+							msg.OutPeople = true
+						} else {
+							msg.OutPeople = false
+						}
+						if rm.playerno[i] != -1 {
+							ws := rm.players[i].rwc
+							ws.WriteJSON(msg)
+						}
 					}
 				}
 			} else if event.Type == 3 { //事件为喊UNO
@@ -432,6 +450,9 @@ func (rm *PlayerRoom) AddPlayer(pl *Player) (bool, int) {
 func (rm *PlayerRoom) RemovePlayer(playerid int) (bool, int, error) {
 	for j, p := range rm.players {
 		if p.player_id == playerid {
+			if p.state == true && rm.game == false {
+				rm.ready_number--
+			}
 			rm.players[j].deregister()
 			rm.stay_number--
 			rm.playerno[j] = -1
@@ -530,8 +551,8 @@ func (rm *PlayerRoom) RemoveCard(index int, rc Card) int {
 	rm.latest_state = rc.State
 	rm.latest_number = rc.Number
 	//检查用户出的最后一张牌是不是功能牌，是的话要加一张
-	if rm.players[index].player_cards.number == 1 && rm.players[index].player_cards.cards[0].Number == "-1" {
-		rm.GetCard(p_id, 1)
+	if rm.players[index].player_cards.number == 0 && rc.Number == "-1" {
+		rm.players[index].player_cards.Insert_Card(rm.room_cards.AddCards(1))
 	}
 	if rm.latest_state == "reverse" {
 		rm.dirction = 1 - rm.dirction
@@ -548,16 +569,16 @@ func (rm *PlayerRoom) RemoveCard(index int, rc Card) int {
 	if rm.latest_state == "wild" {
 		//表示是选色
 		flag = 4
-	}
-	if rm.latest_state == "wildraw" {
+	} else if rm.latest_state == "wildraw" {
 		rm.getcardsnumber += 4
 		//表示是+4
 		flag = 3
-	}
-	if rm.latest_state == "raw" {
+	} else if rm.latest_state == "raw" {
 		rm.getcardsnumber += 2
 		//表示是+2
-		flag = 2
+	}
+	if flag != 0 {
+		return flag
 	}
 	//检查是否需要喊UNO
 	check := rm.CheckUno(p_id)
@@ -579,7 +600,8 @@ func (rm *PlayerRoom) SelectColor(color string) {
 
 //获得摸牌信息
 func (rm *PlayerRoom) GetCard(index int, rn int) {
-	rm.players[index].player_cards.Insert_Card(rm.room_cards.AddCards(rn))
+	addcards := rm.room_cards.AddCards(rn)
+	rm.players[index].player_cards.Insert_Card(addcards)
 	if rm.dirction == 0 {
 		rm.nextplayer = (rm.nextplayer + 3) % 4
 	} else {
