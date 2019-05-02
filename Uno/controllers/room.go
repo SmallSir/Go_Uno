@@ -403,11 +403,13 @@ func (rm *PlayerRoom) AddPlayer(pl *Player) (bool, int) {
 	index := -1
 	flag := false
 	//检查该玩家是否存在房间内
-	for i, p := range rm.playerno {
-		if p == pl.player_id {
-			index = i
-			flag = true
-			break
+	if rm.game == true {
+		for i, p := range rm.players {
+			if p.player_id == pl.player_id {
+				index = i
+				flag = true
+				break
+			}
 		}
 	}
 	//给玩家安排位置
@@ -485,13 +487,13 @@ func (rm *PlayerRoom) RemoveCard(index int, rc Card) int {
 	*/
 	flag := -1
 	p_id := rm.playerno[index]
-	if rm.latest_state == "wildraw" { //意味着如果出了+4，不能再出别的牌，除非一直+4
+	if rm.latest_state == "wildraw" && rm.latest_color == "z" { //意味着如果出了+4，不能再出别的牌，除非一直+4
 		if rc.State == "wildraw" {
 			flag = 0
 		}
 	}
 	if rc.Color == "red" || rc.Color == "yellow" || rc.Color == "green" || rc.Color == "blue" || rm.latest_color == "null" {
-		if rc.Color == rm.latest_color || rm.latest_color == "null" { //颜色相同符合条件
+		if (rc.Color == rm.latest_color || rm.latest_color == "null") && rm.latest_state != "wildraw" && rm.latest_state != "raw" { //颜色相同符合条件
 			flag = 0
 		}
 		if rc.Number == rm.latest_number && rc.Number <= "9" && rc.Number >= "0" { //号码相同符合条件
@@ -500,6 +502,9 @@ func (rm *PlayerRoom) RemoveCard(index int, rc Card) int {
 		if rc.State == rm.latest_state && (rc.State == "reverse" || rc.State == "skip" || rc.State == "raw") { //功能相同符合条件
 			flag = 0
 		}
+	}
+	if (rm.latest_state == "wildraw" || rm.latest_state == "raw") && rm.getcardsnumber == 0 {
+		flag = 0
 	}
 	if rc.Color == "z" { //万能牌
 		if rm.latest_state == "wildraw" {
@@ -531,32 +536,26 @@ func (rm *PlayerRoom) RemoveCard(index int, rc Card) int {
 	if rm.latest_state == "reverse" {
 		rm.dirction = 1 - rm.dirction
 	}
-	if rm.dirction == 0 {
-		if rm.latest_state == "skip" {
-			rm.nextplayer = (rm.nextplayer + 2) % 4
+	if rm.latest_state == "skip" {
+		rm.nextplayer = (rm.nextplayer + 2) % 4
+	} else {
+		if rm.dirction == 0 {
+			rm.nextplayer = (rm.nextplayer + 3) % 4
 		} else {
 			rm.nextplayer = (rm.nextplayer + 1) % 4
 		}
-	} else {
-		if rm.latest_state == "skip" {
-			rm.nextplayer = (rm.nextplayer + 2) % 4
-		} else {
-			rm.nextplayer = (rm.nextplayer + 3) % 4
-		}
 	}
+	log.Println(rm.nextplayer)
 	if rm.latest_state == "wild" {
-		log.Println("这里出了选色")
 		//表示是选色
 		flag = 4
 	}
 	if rm.latest_state == "wildraw" {
-		log.Println("这里出了+4")
 		rm.getcardsnumber += 4
 		//表示是+4
 		flag = 3
 	}
 	if rm.latest_state == "raw" {
-		log.Println("出了+2")
 		rm.getcardsnumber += 2
 		//表示是+2
 		flag = 2
@@ -583,9 +582,9 @@ func (rm *PlayerRoom) SelectColor(color string) {
 func (rm *PlayerRoom) GetCard(index int, rn int) {
 	rm.players[index].player_cards.Insert_Card(rm.room_cards.AddCards(rn))
 	if rm.dirction == 0 {
-		rm.nextplayer = (rm.nextplayer + 1) % 4
-	} else {
 		rm.nextplayer = (rm.nextplayer + 3) % 4
+	} else {
+		rm.nextplayer = (rm.nextplayer + 1) % 4
 	}
 }
 
