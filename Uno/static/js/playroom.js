@@ -1042,8 +1042,40 @@ function checkready()//检查是否所有用户均准备
     }
 }
 
-//var userid = {{.id}}
-//var roomname = {{.roomname}}
+var exitstyle = new PIXI.TextStyle({
+    fontFamily: 'Arial',
+    fontSize: 30,
+    fill:"red",
+    fontStyle: 'italic',
+    fontWeight: 'bold',
+    dropShadow: true,
+    dropShadowColor: '#000000',
+    dropShadowBlur: 4,
+    dropShadowAngle: Math.PI / 6,
+    dropShadowDistance: 6,
+});
+var exit_room = new PIXI.Text("离开房间",exitstyle)
+exit_room.interactive = true;
+exit_room.buttonMode = true;
+exit_room.on('pointertap',leave);
+app.stage.addChild(exit_room);
+exit_room.x = 1300,exit_room.y = 0;
+//离开房间
+function leave(){
+    $.ajax({
+        type:'post',
+        url: '/leave',
+        contentType: "application/json",
+        dataType: "json",
+        success:function(ret){
+                window.location = ret.url;
+        },
+        error:function(ret){
+            alert("退出失败");
+        }
+    }) 
+}
+
 //创建webscoket
 socket = new WebSocket('ws://' + window.location.host + '/uno');//websocket的内容需要修改
 socket.onmessage = function(event){

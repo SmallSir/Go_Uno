@@ -106,17 +106,18 @@ type Rankname struct {
 
 //返回到大厅的rank排行榜信息
 type Rank struct {
-	State bool     `json:"state"` //检测是否存在问题
-	One   Rankname `json:"one"`   //第一名
-	Two   Rankname `json:"two"`   //第二名
-	Three Rankname `json:"three"` //第三名
-	Four  Rankname `json:"four"`  //第四名
-	Five  Rankname `json:"five"`  //第五名
-	Six   Rankname `json:"six"`   //第六名
-	Seven Rankname `json:"seven"` //第七名
-	Eight Rankname `json:"eight"` //第八名
-	Nine  Rankname `json:"nine"`  //第九名
-	Ten   Rankname `json:"ten"`   //第十名
+	State    bool     `json:"state"`     //检测是否存在问题
+	One      Rankname `json:"one"`       //第一名
+	Two      Rankname `json:"two"`       //第二名
+	Three    Rankname `json:"three"`     //第三名
+	Four     Rankname `json:"four"`      //第四名
+	Five     Rankname `json:"five"`      //第五名
+	Six      Rankname `json:"six"`       //第六名
+	Seven    Rankname `json:"seven"`     //第七名
+	Eight    Rankname `json:"eight"`     //第八名
+	Nine     Rankname `json:"nine"`      //第九名
+	Ten      Rankname `json:"ten"`       //第十名
+	UserName string   `jsong:"username"` //用户名
 }
 
 //用户登录接收的数据格式

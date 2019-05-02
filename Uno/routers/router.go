@@ -19,12 +19,16 @@ func init() {
 	beego.Router("/emailyzm", &controllers.UserController{}, "post:EmailCheck")
 	//主页面
 	beego.Router("/dating/?:id", &controllers.GameController{}, "get:Dating")
+	//退出大厅
+	beego.Router("/exit", &controllers.GameController{}, "post:ExitDaTing")
 	//显示榜单
 	beego.Router("/rank", &controllers.GameController{}, "post:GetRank")
 	//创建房间
 	beego.Router("/create", &controllers.GameController{}, "post:Register")
 	//进入房间
 	beego.Router("/join", &controllers.GameController{}, "post:Join")
+	//离开房间
+	beego.Router("/leave", &controllers.GameController{}, "post:Leave")
 	//房间
 	beego.Router("/uno", &controllers.GameController{}, "get:ConnectionWebSockets")
 	beego.Router("/game/?:userid/?:roomid", &controllers.GameController{}, "get:ConnectionWebSocket")

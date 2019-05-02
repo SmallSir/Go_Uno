@@ -98,12 +98,24 @@ func (game *GameController) GetRank() {
 	ranklist[9].User = true
 	remsg.Ten = ranklist[9]
 
+	remsg.UserName = game.GetSession("name").(string)
 	defer func() {
 		ret, _ := json.Marshal(remsg)
 		game.Data["json"] = string(ret)
 		game.EnableRender = false
 		game.ServeJSON()
 	}()
+}
+
+//退出
+func (game *GameController) ExitDaTing() {
+	game.DelSession("id")
+	game.DelSession("name")
+	reurl := &GetUrl{}
+	ret, _ := json.Marshal(reurl)
+	game.Data["json"] = string(ret)
+	game.EnableRender = false
+	game.ServeJSON()
 }
 
 //创建房间
@@ -232,9 +244,11 @@ func (game *GameController) Join() {
 }
 
 func (game *GameController) ConnectionWebSocket() {
-	//检查Session
-	if game.GetSession("roomname") == nil || game.GetSession("id") == nil || game.GetSession("name") == nil {
+	if game.GetSession("id") == nil || game.GetSession("name") == nil {
 		game.Redirect("/", 302)
+	}
+	if game.GetSession("roomname") == nil {
+		game.Redirect("/dating/"+strconv.Itoa(game.GetSession("id").(int)), 302)
 	}
 	//获取玩家的昵称和id，以及所在房间
 	roomname := game.GetSession("roomname").(string)
@@ -248,6 +262,17 @@ func (game *GameController) ConnectionWebSocket() {
 	game.Data["name"] = playername
 	game.Data["id"] = playerid
 	game.TplName = "playroom.html"
+}
+
+//离开房间
+func (game *GameController) Leave() {
+	reulr := GetUrl{}
+	reulr.Url = "/dating/" + strconv.Itoa(game.GetSession("id").(int))
+	game.DelSession("roomname")
+	ret, _ := json.Marshal(reulr)
+	game.Data["json"] = string(ret)
+	game.EnableRender = false
+	game.ServeJSON()
 }
 
 //建立WebSocket

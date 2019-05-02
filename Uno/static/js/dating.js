@@ -29,8 +29,25 @@ exitgame.y = 20;
 exitgame.interactive = true;
 exitgame.buttonMode = true;
 app.stage.addChild(exitgame); //点击退出后会跳转到前端网页
+exitgame.on('pointertap',exit_dating);
 
-//exitgame.on("click",check());
+function exit_dating(){
+    $.ajax({
+        type:'post',
+        url: '/exit',
+        data: JSON.stringify({
+            exit:"离开",
+            }),
+        contentType: "application/json",
+        dataType: "json",
+        success:function(ret){
+            window.location = "/";
+        },
+        error:function(ret){
+            alert("无法退出");
+        }
+    }) 
+}
 
 //用户名
 var usernamestyle = new PIXI.TextStyle({
@@ -39,11 +56,6 @@ var usernamestyle = new PIXI.TextStyle({
     fontStyle: 'italic',
     fontWeight: 'bold',
 })
-var username = new PIXI.Text("邱振豪",usernamestyle);
-username.x = 20
-username.y = 20
-app.stage.addChild(username) //username来源是前端发送的内容
-
 
 //排行榜
 var style = new PIXI.TextStyle({
@@ -232,6 +244,12 @@ $.ajax({
             rank.addChild(teng);
             teng.x = 120,teng.y = 480;
         }
+
+        //显示用户名称
+        var username = new PIXI.Text(data.UserName,usernamestyle);
+        username.x = 20
+        username.y = 20
+        app.stage.addChild(username) //username来源是前端发送的内容
     },
     error:function(ret){
         console.log(ret)
@@ -301,8 +319,8 @@ joinroom.y = 400;
 
 
 
-createroom.on('pointerdown', oncreate);
-joinroom.on('pointerdown',onjoin);
+createroom.on('pointertap', oncreate);
+joinroom.on('pointertap',onjoin);
 
 function oncreate(){
     $.ajax({
