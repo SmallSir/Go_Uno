@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"errors"
-	"log"
 	"strconv"
 )
 
@@ -252,13 +251,13 @@ FOREND:
 					msg := &GameOverRank{}
 					msg.Type = 3
 					msg.Xs_one = rm.rankmsg[0].name
-					msg.Gr_one = string(rm.rankmsg[0].score)
+					msg.Gr_one = strconv.Itoa(rm.rankmsg[0].score)
 					msg.Xs_two = rm.rankmsg[1].name
-					msg.Gr_two = string(rm.rankmsg[1].score)
+					msg.Gr_two = strconv.Itoa(rm.rankmsg[1].score)
 					msg.Xs_three = rm.rankmsg[2].name
-					msg.Gr_three = string(rm.rankmsg[2].score)
+					msg.Gr_three = strconv.Itoa(rm.rankmsg[2].score)
 					msg.Xs_four = rm.rankmsg[3].name
-					msg.Gr_four = string(rm.rankmsg[3].score)
+					msg.Gr_four = strconv.Itoa(rm.rankmsg[3].score)
 					for i, _ := range rm.players {
 						if rm.playerno[i] != -1 {
 							ws := rm.players[i].rwc
@@ -322,7 +321,6 @@ FOREND:
 					}
 				}
 			} else if event.Type == 2 { //事件为选色
-				log.Println("选色", event.Sccolor)
 				rm.SelectColor(event.Sccolor)
 				msg := &Reincident{}
 				msg.Type = 4
@@ -468,8 +466,8 @@ func (rm *PlayerRoom) PlayGame() {
 	//rm.latest_id = -1
 	rm.room_cards.Start()
 	for i, _ := range rm.players {
-		rm.players[i].player_cards.cards = append(rm.room_cards.AddCards(7)[:])
-		rm.players[i].player_cards.number = 7
+		rm.players[i].player_cards.cards = append(rm.room_cards.AddCards(3)[:])
+		rm.players[i].player_cards.number = 3
 		rm.players[i].player_cards.Sort()
 	}
 }
@@ -528,7 +526,6 @@ func (rm *PlayerRoom) RemoveCard(index int, rc Card) int {
 	rm.latest_color = rc.Color
 	rm.latest_state = rc.State
 	rm.latest_number = rc.Number
-	log.Println("出牌信息", rc)
 	//检查用户出的最后一张牌是不是功能牌，是的话要加一张
 	if rm.players[index].player_cards.number == 0 && rm.latest_number == "-1" {
 		rm.GetCard(p_id, 1)
@@ -545,7 +542,6 @@ func (rm *PlayerRoom) RemoveCard(index int, rc Card) int {
 			rm.nextplayer = (rm.nextplayer + 1) % 4
 		}
 	}
-	log.Println(rm.nextplayer)
 	if rm.latest_state == "wild" {
 		//表示是选色
 		flag = 4
