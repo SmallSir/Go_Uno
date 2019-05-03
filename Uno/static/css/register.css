@@ -35,6 +35,10 @@ body{
     background: linear-gradient(to bottom right, #000000, #656565);
     background-size: 100%;
 }
+html{
+    height: 100%;
+    overflow-y: hidden;
+}
 .login-form{
 	
 	padding:100px 0px 50px 0px;

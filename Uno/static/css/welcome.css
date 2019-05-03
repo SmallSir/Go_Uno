@@ -29,6 +29,10 @@ nav.horizontal ul li{	display: inline-block;}/* horizontal menu */
 img{max-width:100%;}
 /*end reset*/
 /*--header start here--*/
+html{
+    overflow-y: hidden;
+    width: 100%;
+}
 body{
     font-family: 'Montserrat', sans-serif;
     font-size: 100%;
