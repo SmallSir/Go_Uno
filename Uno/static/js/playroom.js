@@ -684,6 +684,12 @@ function frank(){
     nan_container.removeChildren();
     bei_container.removeChildren();
     center_cards.removeChildren();
+
+    dong.removeChild(dong_exit);
+    xi.removeChild(xi_exit);
+    nan.removeChild(nan_exit);
+    bei.removeChild(bei_exit);
+
     ready_number = 0;
     if(direction == 0)
         app.stage.removeChild(ssz);
@@ -1238,6 +1244,74 @@ socket.onmessage = function(event){
             {
                 app.stage.addChild(ready_people);
                 app.stage.addChild(ready_people_text);
+            } 
+            else {
+                direction = data.direction
+                if(data.direction == 0)
+                    app.stage.addChild(ssz);
+                else
+                    app.stage.addChild(nsz);
+                //添加玩家的牌信息
+                if(data.position == 0)
+                {
+                    dong.removeChild(dong_number);
+                    dong_number = new PIXI.Text(data.number);
+                    dong_number.x = 120,dong_number.y = 150;
+                    dong.addChild(dong_number);
+                    dongcards = [];
+                    dong_container.removeChildren();
+                    for(var i = 0;i < data.cards.length;i++)
+                    {
+                        card = {color:data.cards[i].color,number:data.cards[i].number,state:data.cards[i].state,sc:false};
+                        dongcards.push(card);
+                        cardsmsg(data.cards[i].color,data.cards[i].state,data.cards[i].number,"dong",i);
+                    }
+                }
+                else if(data.position == 1)
+                {
+                    bei.removeChild(bei_number);
+                    bei_number = new PIXI.Text(data.number);
+                    bei_number.x = 120,bei_number.y = 150;
+                    bei.addChild(bei_number);
+                    beicards = [];
+                    bei_container.removeChildren();
+                    for(var i = 0;i < data.cards.length;i++)
+                    {
+                        card = {color:data.cards[i].color,number:data.cards[i].number,state:data.cards[i].state,sc:false};
+                        beicards.push(card);
+                        cardsmsg(data.cards[i].color,data.cards[i].state,data.cards[i].number,"bei",i);
+                    }
+                }
+                else if(data.position == 2)
+                {
+                    xi.removeChild(xi_number);
+                    xi_number = new PIXI.Text(data.number);
+                    xi_number.x = 120,xi_number.y = 150;
+                    xi.addChild(xi_number);
+                    xicards = [];
+                    xi_container.removeChildren();
+                    for(var i = 0;i < data.cards.length;i++)
+                    {
+                        card = {color:data.cards[i].color,number:data.cards[i].number,state:data.cards[i].state,sc:false};
+                        xicards.push(card);
+                        cardsmsg(data.cards[i].color,data.cards[i].state,data.cards[i].number,"xi",i);
+                    }
+                }
+                else
+                {
+                    nan.removeChild(nan_number);
+                    nan_number = new PIXI.Text(data.number);
+                    nan_number.x = 120,nan_number.y = 150;
+                    nan.addChild(nan_number);
+                    nancards = [];
+                    nan_container.removeChildren();
+                    for(var i = 0;i < data.cards.length;i++)
+                    {
+                        card = {color:data.cards[i].color,number:data.cards[i].number,state:data.cards[i].state,sc:false};
+                        nancards.push(card);
+                        cardsmsg(data.cards[i].color,data.cards[i].state,data.cards[i].number,"nan",i);
+                    }
+                }
             }
             app.stage.addChild(dong);
             app.stage.addChild(xi);
@@ -1349,6 +1423,172 @@ socket.onmessage = function(event){
                     nan_name.x = 180,nan_name.y = 150;
                 else
                     nan_name.x = 130,nan_name.y = 50;
+            }
+            if(data.state == true)
+            {
+                if(data.position == 0)
+                    dong.removeChild(dong_exit);
+                else if(data.position == 1)
+                    bei.removeChild(bei_exit);
+                else if(data.position == 2)
+                    xi.removeChild(xi_exit);
+                else
+                    nan.removeChild(nan_exit);
+                if(my_dir == data.re)
+                {
+                    if(my_dir == "dong")
+                    {
+                        dong.removeChild(dong_number);
+                        dong_number = new PIXI.Text(data.number);
+                        dong_number.x = 120,dong_number.y = 150;
+                        dong.addChild(dong_number);
+                        dongcards = [];
+                        dong_container.removeChildren();
+                        for(var i = 0;i < data.cards.length;i++)
+                        {
+                            card = {color:data.cards[i].color,number:data.cards[i].number,state:data.cards[i].state,sc:false};
+                            dongcards.push(card);
+                                cardsmsg(data.cards[i].color,data.cards[i].state,data.cards[i].number,"dong",i);
+                        }
+                    }         
+                    else if(my_dir == "nan")
+                    {
+                        nan.removeChild(nan_number);
+                        nan_number = new PIXI.Text(data.number);
+                        nan_number.x = 120,nan_number.y = 150;
+                        nan.addChild(nan_number);
+                        nancards = [];
+                        nan_container.removeChildren();
+                        for(var i = 0;i < data.cards.length;i++)
+                        {
+                            card = {color:data.cards[i].color,number:data.cards[i].number,state:data.cards[i].state,sc:false};
+                            nancards.push(card);
+                            cardsmsg(data.cards[i].color,data.cards[i].state,data.cards[i].number,"nan",i);
+                        }
+                    }
+                    else if(my_dir == "bei")
+                    {
+                        bei.removeChild(bei_number);
+                        bei_number = new PIXI.Text(data.number);
+                        bei_number.x = 120,bei_number.y = 150;
+                        bei.addChild(bei_number);
+                        beicards = [];
+                        bei_container.removeChildren();
+                        for(var i = 0;i < data.cards.length;i++)
+                        {
+                            card = {color:data.cards[i].color,number:data.cards[i].number,state:data.cards[i].state,sc:false};
+                            beicards.push(card);
+                            cardsmsg(data.cards[i].color,data.cards[i].state,data.cards[i].number,"bei",i);
+                        }
+                    }
+                    else 
+                    {
+                        xi.removeChild(xi_number);
+                        xi_number = new PIXI.Text(data.number);
+                        xi_number.x = 120,xi_number.y = 150;
+                        xi.addChild(xi_number);
+                        xicards = [];
+                        xi_container.removeChildren();
+                        for(var i = 0;i < data.cards.length;i++)
+                        {
+                            card = {color:data.cards[i].color,number:data.cards[i].number,state:data.cards[i].state,sc:false};
+                            xicards.push(card);
+                            cardsmsg(data.cards[i].color,data.cards[i].state,data.cards[i].number,"xi",i);
+                        }
+                    }
+                }
+                if(data.re != ps[data.position])
+                {
+                    if(data.position == 0)
+                    {
+                        dong.removeChild(dong_number);
+                        dong_number = new PIXI.Text(data.number);
+                        dong.addChild(dong_number);
+                        dong_container.removeChildren();
+                    }
+                    else if(data.position == 1)
+                    {
+                        bei.removeChild(bei_number);
+                        bei_number = new PIXI.Text(data.number);
+                        bei.addChild(bei_number);
+                        bei_container.removeChildren();
+                    }
+                    else if(data.position == 2)
+                    {
+                        xi.removeChild(xi_number)
+                        xi_number = new PIXI.Text(data.number);
+                        xi.addChild(xi_number);
+                        xi_container.removeChildren();
+                    }
+                    else
+                    {   
+                        nan.removeChild(nan_number); 
+                        nan_number = new PIXI.Text(data.number);
+                        nan.addChild(nan_number);
+                        nan_container.removeChildren();
+                    }
+                    //确定摆放位置
+                    if(my_dir == "dong")
+                    {
+                        if(data.position == 0)
+                            dong_number.x = 120,dong_number.y = 150;
+                        else if(data.position == 1)
+                            bei_number.x = 20,bei_number.y = 150;
+                        else if(data.position == 2)
+                            xi_number.x = 70,xi_number.y = 50;
+                        else
+                            nan_number.x = 120,nan_number.y = 50;
+                    }
+                    else if(my_dir == "xi")
+                    {
+                        if(data.position == 0)
+                            dong_number.x = 70,dong_number.y = 50;
+                        else if(data.position == 1)
+                            bei_number.x = 120,bei_number.y = 50;
+                        else if(data.position == 2)
+                            xi_number.x = 120,xi_number.y = 150;
+                        else
+                            nan_number.x = 20,nan_number.y = 150;
+                    }
+                    else if(my_dir == "bei")
+                    {
+                        if(data.position == 0)
+                            dong_number.x = 120,dong_number.y = 50;
+                        else if(data.position == 1)
+                            bei_number.x = 120,bei_number.y = 150;
+                        else if(data.position == 2)
+                            xi_number.x = 20,xi_number.y = 150;
+                        else
+                            nan_number.x = 70,nan_number.y = 50;
+                    }
+                    else
+                    {
+                    if(data.position == 0)
+                        dong_number.x = 20,dong_number.y = 150;
+                    else if(data.position == 1)
+                        bei_number.x = 70,bei_number.y = 50;
+                    else if(data.position == 2)
+                        xi_number.x = 120,xi_number.y = 50;
+                    else
+                        nan_number.x = 120,nan_number.y = 150;
+                    }
+                    for(var i = 0;i < data.number;i++)
+                    {
+                        console.log("lalal")
+                        var one = new Sprite.fromImage('/static/img/outras/uno_back.jpg')
+                        one.x = i*35;
+                        one.y = 0;
+                        one.anchor.set(0.5);
+                        if(data.position == 0)
+                            dong_container.addChild(one);
+                        else if(data.position == 1)
+                            bei_container.addChild(one);
+                        else if(data.position == 2)
+                            xi_container.addChild(one);
+                        else
+                            nan_container.addChild(one);
+                    }
+                }
             }
         }
         break;
@@ -2564,7 +2804,6 @@ socket.onmessage = function(event){
         {
             if(data.sc == false && data.uno == false)
             {
-
                 app.stage.addChild(outcard);
                 app.stage.addChild(outcard_text);
                 app.stage.addChild(getcard);

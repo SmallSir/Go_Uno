@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"errors"
+	"log"
 	"strconv"
 )
 
@@ -114,33 +115,52 @@ FOREND:
 					ws.WriteJSON(jr)
 				}
 			} else { //用户是在游戏中退出重连
-				msg := &Reincident{}
-				msg.Type = 4
+				//向离线玩家发送所有玩家的目前状态
+				msg := &JoinRoom{}
+				msg.Type = 0
 				msg.State = true
-				msg.Incident = 0
-				msg.Direction = rm.dirction
-				msg.Sc = false
-				msg.State = true
-				ws := sub.rwc
-
-				//给重连玩家发送目前的情况
-				for i, p := range rm.players {
-					msg.Position = i
-					msg.CardsNumber = p.player_cards.number
-					if rm.nextplayer == i {
-						msg.OutPeople = true
+				msg.ReConnect = rm.GetPosition(index)
+				for i, _ := range rm.players {
+					if i == index {
+						msg.Host = true
+						msg.Cards = rm.players[i].player_cards.cards
+						log.Println("重连用户为", i, "他的手牌信息为", msg.Cards)
+						log.Println("重连用户为", i, "他的手牌信息", rm.players[i].player_cards.cards)
+						if rm.nextplayer == index {
+							msg.OutPeople = true
+						} else {
+							msg.OutPeople = false
+						}
 					} else {
+						msg.Host = false
 						msg.OutPeople = false
 					}
-					if p.player_id == sub.player_id {
-						msg.Cardss = p.player_cards.cards
+					msg.Position = i
+					msg.PlayerId = rm.players[i].player_id
+					msg.PlayerName = rm.players[i].player_name
+					msg.Number = rm.players[i].player_cards.number
+					if rm.playerno[index] != -1 {
+						ws := rm.players[index].rwc
+						ws.WriteJSON(msg)
 					}
-					ws.WriteJSON(msg)
 				}
+
 				//给其他玩家发送玩家重连信息
+				for i, _ := range rm.players {
+					msg := &JoinRoom{}
+					msg.ReConnect = rm.GetPosition(index)
+					msg.Type = 0
+					msg.Position = index
+					msg.State = true
+					if i != index && rm.playerno[index] != -1 {
+						ws := rm.players[i].rwc
+						ws.WriteJSON(msg)
+					}
+				}
 			}
 			break
 		case unsub := <-rm.unsubscribe: //离开,传进来的是玩家的id
+			log.Println("有人离开", unsub)
 			msg := &LeaveRoom{}
 			msg.Type = 1
 			if rm.game == true {
@@ -161,6 +181,13 @@ FOREND:
 				if rm.playerno[i] != -1 {
 					ws := rm.players[i].rwc
 					ws.WriteJSON(msg)
+				}
+			}
+			if rm.nextplayer == index && rm.game == true {
+				log.Println("需要进这里")
+				flag := rm.GetNextPlayer()
+				if flag == false {
+					break FOREND
 				}
 			}
 			break
@@ -239,6 +266,12 @@ FOREND:
 						if rm.playerno[i] != -1 {
 							ws := rm.players[i].rwc
 							ws.WriteJSON(msg)
+						}
+					}
+					if rm.playerno[rm.nextplayer] == -1 {
+						flag := rm.GetNextPlayer()
+						if flag == false {
+							break FOREND
 						}
 					}
 				} else { //游戏获胜
@@ -407,6 +440,12 @@ FOREND:
 						ws.WriteJSON(msg)
 					}
 				}
+				if rm.playerno[rm.nextplayer] == -1 {
+					flag := rm.GetNextPlayer()
+					if flag == false {
+						break FOREND
+					}
+				}
 			}
 			if rm.players_number == -1 {
 				break FOREND
@@ -425,6 +464,7 @@ func (rm *PlayerRoom) AddPlayer(pl *Player) (bool, int) {
 	if rm.game == true {
 		for i, p := range rm.players {
 			if p.player_id == pl.player_id {
+				rm.playerno[i] = pl.player_id
 				index = i
 				flag = true
 				break
@@ -441,8 +481,11 @@ func (rm *PlayerRoom) AddPlayer(pl *Player) (bool, int) {
 			}
 		}
 	}
-	//添加玩家信息
-	rm.players[index] = pl
+	//添加玩家信息,如果是
+	if flag == false {
+		rm.players[index] = pl
+	}
+	rm.players[index].rwc = pl.rwc
 	return flag, index
 }
 
@@ -490,8 +533,8 @@ func (rm *PlayerRoom) PlayGame() {
 	//rm.latest_id = -1
 	rm.room_cards.Start()
 	for i, _ := range rm.players {
-		rm.players[i].player_cards.cards = append(rm.room_cards.AddCards(3)[:])
-		rm.players[i].player_cards.number = 3
+		rm.players[i].player_cards.cards = append(rm.room_cards.AddCards(7)[:])
+		rm.players[i].player_cards.number = 7
 		rm.players[i].player_cards.Sort()
 	}
 }
@@ -501,8 +544,7 @@ func (rm *PlayerRoom) RemoveCard(index int, rc Card) int {
 	/*不同返回值的效果不同
 	-1表示出牌不符合规则
 	0表示正常出牌
-	1表示这个人要喊UNO
-	2表示玩家打了+2下一个人摸牌或者继续+2或者+4
+	1表示这个人要喊UN表示玩家打了+2下一个人摸牌或者继续+2或者+4
 	3表示玩家打了+4下一个人摸牌或者继续+4
 	4表示玩家打了wild选择颜色
 	5表示玩家获胜
@@ -670,4 +712,77 @@ func (rm *PlayerRoom) ScoreSort() {
 			}
 		}
 	}
+}
+
+func (rm *PlayerRoom) GetNextPlayer() bool {
+	//直到找到一个没有离开的玩家轮到他进行操作了
+	check := rm.nextplayer
+	for {
+		for i, _ := range rm.playerno {
+			log.Println("玩家位置", i, "状态", rm.playerno[i])
+		}
+		log.Println("接下来的玩家是", rm.nextplayer)
+		lmsg := &Reincident{}
+		lmsg.Type = 4
+		lmsg.Incident = 1
+		//lmsg.Position = rm.nextplayer
+		lmsg.Direction = rm.dirction
+		lmsg.State = false
+		//离线玩家会执行摸牌操作
+		if rm.playerno[rm.nextplayer] == -1 {
+			if rm.getcardsnumber != 0 {
+				rm.players[rm.nextplayer].player_cards.Insert_Card(rm.room_cards.AddCards(rm.getcardsnumber))
+				rm.getcardsnumber = 0
+			} else {
+				rm.players[rm.nextplayer].player_cards.Insert_Card(rm.room_cards.AddCards(1))
+			}
+			lmsg.Position = rm.nextplayer
+			lmsg.CardsNumber = rm.players[rm.nextplayer].player_cards.number
+			lmsg.OutPeople = false
+			for i, _ := range rm.players {
+				if rm.playerno[i] != -1 {
+					ws := rm.players[i].rwc
+					ws.WriteJSON(lmsg)
+				}
+			}
+			rm.lastplayer = rm.nextplayer
+			if rm.dirction == 0 {
+				rm.nextplayer = (rm.nextplayer + 3) % 4
+			} else {
+				rm.nextplayer = (rm.nextplayer + 1) % 4
+			}
+		} else {
+			lmsg.Position = rm.lastplayer
+			lmsg.CardsNumber = rm.players[rm.lastplayer].player_cards.number
+			for i, _ := range rm.players {
+				if rm.nextplayer == i {
+					lmsg.OutPeople = true
+				} else {
+					lmsg.OutPeople = false
+				}
+				if rm.playerno[i] != -1 {
+					ws := rm.players[i].rwc
+					ws.WriteJSON(lmsg)
+				}
+			}
+			break
+		}
+		if check == rm.nextplayer {
+			return false
+		}
+	}
+	return true
+}
+
+func (rm *PlayerRoom) GetPosition(index int) string {
+	if index == 0 {
+		return "dong"
+	}
+	if index == 1 {
+		return "bei"
+	}
+	if index == 2 {
+		return "xi"
+	}
+	return "nan"
 }

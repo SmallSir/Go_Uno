@@ -43,6 +43,10 @@ type JoinRoom struct {
 	Host       bool   `json:"host"`       //是否为当事人
 	State      bool   `json:"state"`      //是否在游戏中重新加入,true表示在游戏中重新进入，false表示没有在游戏中进入
 	Pready     bool   `json:"ready"`      //是否准备
+	Number     int    `json:"number"`     //牌数量
+	Cards      []Card `json:"cards"`      //牌
+	OutPeople  bool   `json:"outpeople"`  //是否轮到操作
+	ReConnect  string `json:"re"`         //重连的玩家位置
 }
 
 //离开房间返回的数据格式
