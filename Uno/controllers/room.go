@@ -1,9 +1,14 @@
 package controllers
 
 import (
+	"Go_Uno/Uno/models"
 	"errors"
 	"log"
 	"strconv"
+
+	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/orm"
+	"github.com/garyburd/redigo/redis"
 )
 
 type PlayerRoom struct {
@@ -160,7 +165,6 @@ FOREND:
 			}
 			break
 		case unsub := <-rm.unsubscribe: //离开,传进来的是玩家的id
-			log.Println("有人离开", unsub)
 			msg := &LeaveRoom{}
 			msg.Type = 1
 			if rm.game == true {
@@ -173,8 +177,8 @@ FOREND:
 				continue
 			}
 			if err != nil {
-				//将房间信息从redis中删除
-				rm.players_number = -1
+				roomlist.RemoveRoom(rm.player_room.room_name)
+				break FOREND
 			}
 			msg.Position = index
 			for i, _ := range rm.players {
@@ -184,7 +188,6 @@ FOREND:
 				}
 			}
 			if rm.nextplayer == index && rm.game == true {
-				log.Println("需要进这里")
 				flag := rm.GetNextPlayer()
 				if flag == false {
 					break FOREND
@@ -299,13 +302,12 @@ FOREND:
 							ws.WriteJSON(msg)
 						}
 					}
-					/*
-						redis修改积分
-					*/
+					go rm.ReScore()
 					//将游戏中已经离开的玩家清除房间
 					for i, p := range rm.playerno {
 						if p == -1 {
 							rm.unsubscribe <- rm.players[i].player_id
+							rm.userleaveroom(rm.players[i].player_id)
 						}
 					}
 					//数据清零等待重新再开
@@ -447,9 +449,6 @@ FOREND:
 					}
 				}
 			}
-			if rm.players_number == -1 {
-				break FOREND
-			}
 			break
 		}
 	}
@@ -493,8 +492,11 @@ func (rm *PlayerRoom) AddPlayer(pl *Player) (bool, int) {
 func (rm *PlayerRoom) RemovePlayer(playerid int) (bool, int, error) {
 	for j, p := range rm.players {
 		if p.player_id == playerid {
-			if p.state == true && rm.game == false {
+			if p.state == true {
 				rm.ready_number--
+			}
+			if rm.game == false {
+				rm.userleaveroom(playerid)
 			}
 			rm.players[j].deregister()
 			rm.stay_number--
@@ -785,4 +787,70 @@ func (rm *PlayerRoom) GetPosition(index int) string {
 		return "xi"
 	}
 	return "nan"
+}
+
+//将玩家的分数分配到数据库中
+func (rm *PlayerRoom) ReScore() {
+	scores := []int{3, 1, -1, -3}
+
+	//redis
+	conn, err := redis.Dial("tcp", beego.AppConfig.String("redis_ip")+":"+beego.AppConfig.String("redis_port"))
+	if err != nil {
+		log.Println("更新积分时候，redis发生问题")
+		return
+	}
+	if _, err := conn.Do("AUTH", "12345"); err != nil {
+		conn.Close()
+		log.Println("redis密码不对")
+		return
+	}
+	// 函数退出时关闭连接
+	defer conn.Close()
+
+	for i, _ := range rm.rankmsg {
+		//获取数据库中用户的信息
+		o := orm.NewOrm()
+		user := models.User{Id: rm.rankmsg[i].id}
+		if o.Read(&user) == nil {
+			user.Score = user.Score + scores[i]
+			if _, err := o.Update(&user); err == nil {
+				log.Println("更新完成")
+			}
+		}
+		id := strconv.Itoa(user.Id)
+		new_score := strconv.Itoa(user.Score + scores[i])
+
+		_, err := conn.Do("zrem", "rank", id)
+
+		if err != nil {
+			log.Println("无法删除redis排行榜中的信息")
+		}
+		_, err = conn.Do("zadd", "rank", new_score, id)
+
+		if err != nil {
+			log.Println("无法更新排行榜")
+		}
+	}
+}
+
+func (rm *PlayerRoom) userleaveroom(id int) {
+	//将玩家与房间进行捆绑
+	conn, err := redis.Dial("tcp", beego.AppConfig.String("redis_ip")+":"+beego.AppConfig.String("redis_port"))
+	if err != nil {
+		log.Println("无法打开redis服务器，完成用户和房间的解绑")
+		return
+	}
+	if _, err := conn.Do("AUTH", "12345"); err != nil {
+		conn.Close()
+		log.Println("redis密码不对")
+		return
+	}
+	// 函数退出时关闭连接
+	defer conn.Close()
+	//直接删除即可
+	_, err = conn.Do("HDEL", "room", id)
+	if err != nil {
+		log.Println("无法将用户", id, "解绑房间")
+	}
+	log.Println(strconv.Itoa(id), "已经移除")
 }
