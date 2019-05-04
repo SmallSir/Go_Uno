@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"Go_Uno/Uno/models"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -9,6 +10,7 @@ import (
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
+	"github.com/garyburd/redigo/redis"
 	"github.com/gorilla/websocket"
 )
 
@@ -21,16 +23,16 @@ var roomlist *roomtable
 
 /*
 以下为测试样例
-*/
 var ranklist []Rankname
+*/
 
 //初始化房间表
 func init() {
 	roomlist = newRoomTable()
 	/*
-		以下为测试样例
+			以下为测试样例
+		ranklist = make([]Rankname, 10)
 	*/
-	ranklist = make([]Rankname, 10)
 }
 
 //大厅页面
@@ -51,54 +53,95 @@ func (game *GameController) GetRank() {
 	if game.GetSession("id") == nil || url != strconv.Itoa(game.GetSession("id").(int)) {
 		remsg.State = false
 	}
-	/*
-		把从redis获取的内容全部传递到remsg中即可
-	*/
+
+	//获取榜单信息
+	conn, err := redis.Dial("tcp", beego.AppConfig.String("redis_ip")+":"+beego.AppConfig.String("redis_port"))
+	if err != nil {
+		return
+	}
+	if _, err := conn.Do("AUTH", "12345"); err != nil {
+		conn.Close()
+		log.Println("redis密码不对")
+		return
+	}
+	// 函数退出时关闭连接
+	defer conn.Close()
+	user_map, err := redis.IntMap(conn.Do("ZREVRANGE", "rank", 0, 10, "withscores"))
+	if err != nil {
+		log.Println("获取榜单失败")
+	}
+	ranklist := make([]Rankname, 10)
+	i := 0
+	o := orm.NewOrm()
+	for user := range user_map {
+		id, _ := strconv.Atoi(user)
+		rankuser := models.User{Id: id}
+		o.Read(&rankuser)
+		ranklist[i].Username = rankuser.Name
+		ranklist[i].Usergrades = user_map[user]
+		ranklist[i].User = true
+		i += 1
+	}
+	if len(user_map) < 10 {
+		for i := len(user_map); i < 10; i += 1 {
+			ranklist[i].User = false
+		}
+	}
+	remsg.One = ranklist[0]
+	remsg.Two = ranklist[1]
+	remsg.Three = ranklist[2]
+	remsg.Four = ranklist[3]
+	remsg.Five = ranklist[4]
+	remsg.Six = ranklist[5]
+	remsg.Seven = ranklist[6]
+	remsg.Eight = ranklist[7]
+	remsg.Nine = ranklist[8]
+	remsg.Ten = ranklist[9]
+	remsg.UserName = game.GetSession("name").(string)
 	/*
 		以下为测试样例
+		ranklist[0].Usergrades = 1500
+		ranklist[0].Username = "大佬大佬"
+		ranklist[0].User = true
+		remsg.One = ranklist[0]
+		ranklist[1].Usergrades = 1499
+		ranklist[1].Username = "bilibili比利"
+		ranklist[1].User = true
+		remsg.Two = ranklist[1]
+		ranklist[2].Usergrades = 1200
+		ranklist[2].Username = "!!哈哈"
+		ranklist[2].User = true
+		remsg.Three = ranklist[2]
+		ranklist[3].Usergrades = 1150
+		ranklist[3].Username = "嘟嘟嘟嘟"
+		ranklist[3].User = true
+		remsg.Four = ranklist[3]
+		ranklist[4].Usergrades = 1000
+		ranklist[4].Username = "smallsir"
+		ranklist[4].User = true
+		remsg.Five = ranklist[4]
+		ranklist[5].Usergrades = 900
+		ranklist[5].Username = "哈哈"
+		ranklist[5].User = true
+		remsg.Six = ranklist[5]
+		ranklist[6].Usergrades = 800
+		ranklist[6].Username = "4545"
+		ranklist[6].User = true
+		remsg.Seven = ranklist[6]
+		ranklist[7].Usergrades = 700
+		ranklist[7].Username = "daskd"
+		ranklist[7].User = true
+		remsg.Eight = ranklist[7]
+		ranklist[8].Usergrades = 500
+		ranklist[8].Username = "最后的测试"
+		ranklist[8].User = true
+		remsg.Nine = ranklist[8]
+		ranklist[9].Usergrades = 100
+		ranklist[9].Username = "吃葡萄不吐葡萄皮"
+		ranklist[9].User = true
+		remsg.Ten = ranklist[9]
 	*/
-	ranklist[0].Usergrades = 1500
-	ranklist[0].Username = "大佬大佬"
-	ranklist[0].User = true
-	remsg.One = ranklist[0]
-	ranklist[1].Usergrades = 1499
-	ranklist[1].Username = "bilibili比利"
-	ranklist[1].User = true
-	remsg.Two = ranklist[1]
-	ranklist[2].Usergrades = 1200
-	ranklist[2].Username = "!!哈哈"
-	ranklist[2].User = true
-	remsg.Three = ranklist[2]
-	ranklist[3].Usergrades = 1150
-	ranklist[3].Username = "嘟嘟嘟嘟"
-	ranklist[3].User = true
-	remsg.Four = ranklist[3]
-	ranklist[4].Usergrades = 1000
-	ranklist[4].Username = "smallsir"
-	ranklist[4].User = true
-	remsg.Five = ranklist[4]
-	ranklist[5].Usergrades = 900
-	ranklist[5].Username = "哈哈"
-	ranklist[5].User = true
-	remsg.Six = ranklist[5]
-	ranklist[6].Usergrades = 800
-	ranklist[6].Username = "4545"
-	ranklist[6].User = true
-	remsg.Seven = ranklist[6]
-	ranklist[7].Usergrades = 700
-	ranklist[7].Username = "daskd"
-	ranklist[7].User = true
-	remsg.Eight = ranklist[7]
-	ranklist[8].Usergrades = 500
-	ranklist[8].Username = "最后的测试"
-	ranklist[8].User = true
-	remsg.Nine = ranklist[8]
-	ranklist[9].Usergrades = 100
-	ranklist[9].Username = "吃葡萄不吐葡萄皮"
-	ranklist[9].User = true
-	remsg.Ten = ranklist[9]
 
-	remsg.UserName = game.GetSession("name").(string)
 	defer func() {
 		ret, _ := json.Marshal(remsg)
 		game.Data["json"] = string(ret)
@@ -178,8 +221,14 @@ func (game *GameController) Register() {
 	roomlist.CreateRoom(roomname, roompassword)
 	r := roomlist.rooms[roomname]
 	go r.playRoom()
-	//房间信息发送给redis
 
+	oldname, check := game.userjoinroom(playerid, roomname)
+	if check != true {
+		if oldname != "" && oldname != roomname {
+			msg = "你已经加入了一个房间，游戏还没结束哦，快去吧，房间号是" + oldname
+			return
+		}
+	}
 	//设置seesion中的房间名称
 	game.SetSession("roomname", roomname)
 	ok = true
@@ -234,6 +283,14 @@ func (game *GameController) Join() {
 	if r.stay_number == 4 {
 		msg = "房间人数已经满了，无法在进入"
 		return
+	}
+
+	oldname, check := game.userjoinroom(playerid, roomname)
+	if check != true {
+		if oldname != "" && oldname != roomname {
+			msg = "你已经加入了一个房间，游戏还没结束哦，快去吧，房间号是" + oldname
+			return
+		}
 	}
 
 	//设置seesion中的房间名称
@@ -317,4 +374,45 @@ func (game *GameController) ConnectionWebSockets() {
 		}
 		r.publish <- cident
 	}
+}
+
+func (game *GameController) userjoinroom(id int, roomname string) (string, bool) {
+	//将玩家与房间进行捆绑
+	conn, err := redis.Dial("tcp", beego.AppConfig.String("redis_ip")+":"+beego.AppConfig.String("redis_port"))
+	if err != nil {
+		log.Println("无法打开redis服务器，完成用户和房间的捆绑")
+		return "", false
+	}
+	if _, err := conn.Do("AUTH", "12345"); err != nil {
+		conn.Close()
+		log.Println("redis密码不对")
+		return "", false
+	}
+	// 函数退出时关闭连接
+	defer conn.Close()
+	//先检查用户有没有在其他房间且房间正在游戏，如果有的话就不能加入
+	isExist, err := redis.Bool(conn.Do("hexists", "room", id))
+	if err != nil {
+		log.Println("无法获取用户信息")
+		return "", false
+	}
+	if isExist == true {
+		room, err := redis.String(conn.Do("hget", "room", id))
+		if err != nil {
+			log.Println("用户已存在某个房间，无法获取")
+			return "", false
+		} else {
+			if room == roomname {
+				return "", true
+			} else {
+				return room, false
+			}
+		}
+	}
+	_, err = conn.Do("hset", "room", id, roomname)
+	if err != nil {
+		log.Println("无法添加用户和房间")
+		return "", false
+	}
+	return "", true
 }
