@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"Go_Uno/Uno/models"
 	"crypto/tls"
 	"encoding/json"
 	"log"
@@ -8,16 +9,15 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/garyburd/redigo/redis"
+
 	"github.com/go-gomail/gomail"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 )
 
-//内容为测试
-var test []useregister
-var testid []int
-
+/*以下是测试样例
 func init() {
 	test = make([]useregister, 4)
 	testid = make([]int, 4)
@@ -42,10 +42,10 @@ func init() {
 	testid[2] = 7
 	testid[3] = 10
 }
+*/
 
 //用户控制器
 type UserController struct {
-	o orm.Ormer
 	beego.Controller
 }
 
@@ -87,57 +87,88 @@ func (User *UserController) Login() {
 		User.ServeJSON()
 	}()
 
-	/*检查账号密码*/
-	/*
-		以下测试样例
-	*/
-	var id int
-	var username string
-	flag := false
-	for i, _ := range test {
-		log.Println(email, password, test[i].Email, test[i].Password)
-		if test[i].Email == email && test[i].Password == password {
-			username = test[i].Username
-			id = testid[i]
-			flag = true
-			break
+	//获取数据库中用户的信息
+	o := orm.NewOrm()
+	player := models.User{Id: -1}
+	err = o.Raw("select id,name from user where email = ? and password = ?", email, password).QueryRow(&player)
+	log.Println(player)
+	if err != nil || player.Id == -1 {
+		if err != nil {
+			msg = err.Error()
+		} else {
+			msg = "用户不存在，请确认帐号和密码"
 		}
-	}
-	if flag == false {
-		msg = "用户不存在"
 		url = "/"
 		return
 	}
+
+	/*
+		以下测试样例
+		var id int
+		var username string
+		flag := false
+		for i, _ := range test {
+			log.Println(email, password, test[i].Email, test[i].Password)
+			if test[i].Email == email && test[i].Password == password {
+				username = test[i].Username
+				id = testid[i]
+				flag = true
+				break
+			}
+		}
+		if flag == false {
+			msg = "用户不存在"
+			url = "/"
+			return
+		}
+	*/
 	//正确的话设置玩家的id和name到session
-	User.SetSession("id", id)
-	User.SetSession("name", username)
+	User.SetSession("id", player.Id)
+	User.SetSession("name", player.Name)
 
 	ok = true
-	url = "/dating/" + strconv.Itoa(id)
+	url = "/dating/" + strconv.Itoa(player.Id)
 
 }
 
 //Register 是实现用户注册功能
 func (User *UserController) Register() {
-	User.TplName = "register.html"
 	//返回信息
 	ok := false
 	msg := ""
 	url := ""
 
 	//获取玩家注册信息
-	user := useregister{}
+	user := Useregister{}
 	err := json.Unmarshal(User.Ctx.Input.RequestBody, &user)
 	if err != nil {
 		msg = "信息出错，重新填写"
 		return
 	}
-	/*
-		email := user.email
-		password := user.password
-		username := user.username
-	*/
+	email := user.Email
+	password := user.Password
+	username := user.Username
 	yzm := user.Code
+
+	//检查邮箱是否注册
+	o := orm.NewOrm()
+	x := models.User{Email: email, Id: -1}
+	err = o.Raw("select id from user where email = ?", email).QueryRow(&x)
+	log.Println(err)
+	if err == nil || x.Id != -1 {
+		msg = "邮箱已被注册"
+		url = "/register"
+		return
+	}
+
+	//检查用户名是否注册
+	y := models.User{Name: username, Id: -1}
+	err = o.Raw("select id from user where name = ?", username).QueryRow(&y)
+	if err == nil || y.Id != -1 {
+		msg = "用户名已被注册"
+		url = "/register"
+		return
+	}
 
 	defer func() {
 		remsg := &ReRoomMsg{}
@@ -151,22 +182,62 @@ func (User *UserController) Register() {
 	}()
 
 	//检查验证码与邮箱是否一一对应
-
-	/*
-		以下是测试样例
-	*/
-	if yzm != 12345 {
-		msg = "验证码错误"
+	conn, err := redis.Dial("tcp", beego.AppConfig.String("redis_ip")+":"+beego.AppConfig.String("redis_port"))
+	if err != nil {
+		msg = err.Error()
 		return
 	}
+	if _, err := conn.Do("AUTH", "12345"); err != nil {
+		conn.Close()
+		log.Println("redis密码不对")
+		return
+	}
+	// 函数退出时关闭连接
+	defer conn.Close()
+	//先检查验证码是否存在，然后在获取检查内容是否合格
+	isExit, err := redis.Bool(conn.Do("EXISTS", email))
+	if err != nil {
+		log.Println("数据库有问题，无法查询邮箱-验证码")
+	}
+	if isExit == false {
+		msg = "验证码已失效，请重新申请"
+		url = "/register"
+		return
+	}
+	redisyzm, err := redis.Int(conn.Do("get", email))
+	if err != nil {
+		msg = "无法获取验证码，请稍后再试"
+		url = "/register"
+		return
+	}
+	strredisyzm := strconv.Itoa(redisyzm)
+	if yzm != strredisyzm {
+		msg = "验证码不正确，请重新输入"
+		url = "/register"
+		return
+	}
+	log.Println("注册环节过了redis")
+	/*
+		以下是测试样例
+		if yzm != 12345 {
+			msg = "验证码错误"
+			return
+		}
+	*/
+
+	//将注册信息放到数据库
+	newuser := models.User{Name: username, Password: password, Score: 0, Email: email}
+	id, err := o.Insert(&newuser)
+	if err == nil {
+		log.Print(id)
+	} else {
+		msg = err.Error()
+		url = "/register"
+		return
+	}
+	msg = "注册完成"
 	url = "/"
 	ok = true
-	/*
-		检测用户名的唯一性
-	*/
-	/*
-		用户信息输入到MySQL
-	*/
 	return
 }
 
@@ -176,8 +247,6 @@ func (User *UserController) EmailCheck() {
 	user := Userlogin{}
 	err := json.Unmarshal(User.Ctx.Input.RequestBody, &user)
 	email := user.Email
-	log.Println(User.Ctx.Input.RequestBody)
-	log.Println(user)
 	//返回信息
 	ok := false
 	msg := ""
@@ -194,10 +263,6 @@ func (User *UserController) EmailCheck() {
 		User.EnableRender = false
 		User.ServeJSON()
 	}()
-
-	/*
-		应检查邮箱是否已经注册过，注册过则报错
-	*/
 
 	//生成一个六位验证码
 	yzm := int(rand.New(rand.NewSource(time.Now().UnixNano())).Int31n(1000000))
@@ -215,9 +280,37 @@ func (User *UserController) EmailCheck() {
 		return
 	}
 
-	/*
-		把验证码和邮箱同时发送到redis数据库保留，并限时2分钟
-	*/
+	log.Println(yzm)
+	//将验证码存到redis
+	conn, err := redis.Dial("tcp", beego.AppConfig.String("redis_ip")+":"+beego.AppConfig.String("redis_port"))
+	if err != nil {
+		log.Println("无法连接数据库，无法实现验证码存到redis")
+		return
+	}
+	if _, err := conn.Do("AUTH", "12345"); err != nil {
+		conn.Close()
+		log.Println("redis密码不对")
+		return
+	}
+	// 函数退出时关闭连接
+	defer conn.Close()
+	//操作方法是先查找email是否有存在的验证码，有的话删除，没有的话就正常添加
+	isExit, err := redis.Bool(conn.Do("EXISTS", email))
+	if err != nil {
+		log.Println("数据库有问题，无法查询邮箱-验证码")
+	}
+	if isExit == true {
+		_, err = conn.Do("del", email)
+		if err != nil {
+			log.Println("数据库有问题，无法删除验证码")
+		}
+	}
+	_, err = conn.Do("set", email, yzm, "EX", "60")
+	if err != nil {
+		msg = "无法添加验证码,请稍后再试"
+		return
+	}
+
 	ok = true
 	msg = "成功发送验证码，请前往邮箱查看"
 	return
