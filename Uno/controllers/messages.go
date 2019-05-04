@@ -131,11 +131,11 @@ type Userlogin struct {
 }
 
 //用户注册接收的数据格式
-type useregister struct {
+type Useregister struct {
 	Email    string `json:"email"`    //登录邮箱
 	Password string `json:"password"` //密码
 	Username string `json:"username"` //用户名
-	Code     int    `json:"yzm"`      //邮箱验证码
+	Code     string `json:"yzm"`      //邮箱验证码
 }
 
 //用户事件接收数据格式
