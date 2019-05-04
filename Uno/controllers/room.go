@@ -52,6 +52,8 @@ type PlayerRoom struct {
 	game bool
 	//榜单信息
 	rankmsg []RankSort
+	//上一次的行为状态
+	lastflag int
 }
 
 //创建房间
@@ -187,6 +189,49 @@ FOREND:
 					ws.WriteJSON(msg)
 				}
 			}
+			if rm.lastplayer == index && rm.game == true {
+				if rm.lastflag == 3 || rm.lastflag == 4 {
+					rm.SelectColor("blue")
+					msg := &Reincident{}
+					msg.Type = 4
+					msg.Incident = 2
+					msg.Position = index
+					msg.Direction = rm.dirction
+					msg.State = false
+					msg.Wsc = "blue"
+					for i, _ := range rm.players {
+						if rm.nextplayer == i {
+							msg.OutPeople = true
+						} else {
+							msg.OutPeople = false
+						}
+						if rm.playerno[i] != -1 {
+							ws := rm.players[i].rwc
+							ws.WriteJSON(msg)
+						}
+					}
+				} else if rm.lastflag == 1 {
+					msg := &Reincident{}
+					msg.Type = 4
+					msg.Wuno = true
+					msg.Incident = 3
+					msg.Position = index
+					msg.Direction = rm.dirction
+					for i, _ := range rm.players {
+						if rm.nextplayer == i {
+							msg.OutPeople = true
+						} else {
+							msg.OutPeople = false
+						}
+						if rm.playerno[i] != -1 {
+							ws := rm.players[i].rwc
+							ws.WriteJSON(msg)
+						}
+					}
+				}
+				rm.lastplayer = -1
+				rm.lastflag = -1
+			}
 			if rm.nextplayer == index && rm.game == true {
 				flag := rm.GetNextPlayer()
 				if flag == false {
@@ -255,8 +300,10 @@ FOREND:
 					for i, _ := range rm.players {
 						if flag == 1 || flag == 3 || flag == 4 { //表示玩家出的是wild牌或者喊UNO
 							if rm.lastplayer == i {
+								rm.lastflag = flag
 								msg.OutPeople = true
 							} else {
+								rm.lastflag = flag
 								msg.OutPeople = false
 							}
 						} else {
