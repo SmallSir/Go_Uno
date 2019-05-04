@@ -14,7 +14,7 @@ func init() {
 	//注册页面
 	beego.Router("/register", &controllers.UserController{}, "get:GetRegister")
 	//注册
-	beego.Router("/register", &controllers.UserController{}, "post:Register")
+	beego.Router("/regist", &controllers.UserController{}, "post:Register")
 	//发送邮箱验证码
 	beego.Router("/emailyzm", &controllers.UserController{}, "post:EmailCheck")
 	//主页面

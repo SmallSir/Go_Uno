@@ -109,8 +109,8 @@ function registeruser(){
     data["email"] = mail;
     $.ajax({
         type:'post',
-        url: '/register',
-        data:JSON.stringify(data),
+        url: '/regist',
+        data: JSON.stringify(data),
         contentType: "application/json",
         dataType: "json",
         success:function(ret){
