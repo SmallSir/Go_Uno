@@ -31,7 +31,7 @@ img{max-width:100%;}
 /*--header start here--*/
 html{
     overflow-y: hidden;
-    width: 100%;
+    height: 100%;
 }
 body{
     font-family: 'Montserrat', sans-serif;
@@ -40,8 +40,7 @@ body{
     background-size: 100%;
 
 }
-.login-form{
-	
+.login-form{	
 	padding:100px 0px 50px 0px;
 }
 .login-form h1{
