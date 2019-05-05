@@ -59,29 +59,36 @@ func (game *GameController) GetRank() {
 	if err != nil {
 		return
 	}
-	if _, err := conn.Do("AUTH", "12345"); err != nil {
+	/*if _, err := conn.Do("AUTH", "12345"); err != nil {
 		conn.Close()
 		log.Println("redis密码不对")
 		return
-	}
+	}*/
 	// 函数退出时关闭连接
 	defer conn.Close()
-	user_map, err := redis.IntMap(conn.Do("ZREVRANGE", "rank", 0, 10, "withscores"))
+	user_map, err := redis.Ints(conn.Do("ZREVRANGE", "rank", 0, 10))
 	if err != nil {
 		log.Println("获取榜单失败")
 	}
 	ranklist := make([]Rankname, 10)
 	i := 0
 	o := orm.NewOrm()
-	for user := range user_map {
-		id, _ := strconv.Atoi(user)
-		rankuser := models.User{Id: id}
+	for j, _ := range user_map {
+		rankuser := models.User{Id: user_map[j]}
 		o.Read(&rankuser)
 		ranklist[i].Username = rankuser.Name
-		ranklist[i].Usergrades = user_map[user]
 		ranklist[i].User = true
+		score, err := redis.Int(conn.Do("ZSCORE", "rank", user_map[j]))
+		if err != nil {
+			log.Println("进来了")
+			ranklist[i].User = false
+			i += 1
+			continue
+		}
+		ranklist[i].Usergrades = score
 		i += 1
 	}
+
 	if len(user_map) < 10 {
 		for i := len(user_map); i < 10; i += 1 {
 			ranklist[i].User = false
@@ -383,11 +390,11 @@ func (game *GameController) userjoinroom(id int, roomname string) (string, bool)
 		log.Println("无法打开redis服务器，完成用户和房间的捆绑")
 		return "", false
 	}
-	if _, err := conn.Do("AUTH", "12345"); err != nil {
+	/*if _, err := conn.Do("AUTH", "12345"); err != nil {
 		conn.Close()
 		log.Println("redis密码不对")
 		return "", false
-	}
+	}*/
 	// 函数退出时关闭连接
 	defer conn.Close()
 	//先检查用户有没有在其他房间且房间正在游戏，如果有的话就不能加入
