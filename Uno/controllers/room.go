@@ -582,8 +582,8 @@ func (rm *PlayerRoom) PlayGame() {
 	//rm.latest_id = -1
 	rm.room_cards.Start()
 	for i, _ := range rm.players {
-		rm.players[i].player_cards.cards = append(rm.room_cards.AddCards(7)[:])
-		rm.players[i].player_cards.number = 7
+		rm.players[i].player_cards.cards = append(rm.room_cards.AddCards(5)[:])
+		rm.players[i].player_cards.number = 5
 		rm.players[i].player_cards.Sort()
 	}
 }
@@ -615,13 +615,13 @@ func (rm *PlayerRoom) RemoveCard(index int, rc Card) int {
 		if rc.State == rm.latest_state && (rc.State == "reverse" || rc.State == "skip" || rc.State == "raw") { //功能相同符合条件
 			flag = 0
 		}
-	}
-	if (rm.latest_state == "wildraw" || rm.latest_state == "raw") && rm.getcardsnumber == 0 {
-		flag = 0
+		if (rm.latest_state == "wildraw" || rm.latest_state == "raw") && rm.getcardsnumber == 0 && (rc.Color == rm.latest_color || rc.Number == rm.latest_number) {
+			flag = 0
+		}
 	}
 	if rc.Color == "z" { //万能牌
 		if rm.latest_state == "wildraw" || rm.latest_state == "raw" {
-			if rc.State == "wildraw" {
+			if rc.State == "wildraw" || (rc.State == "wild" && rm.getcardsnumber == 0) {
 				flag = 0
 			} else {
 				flag = -1
@@ -846,11 +846,11 @@ func (rm *PlayerRoom) ReScore() {
 		log.Println("更新积分时候，redis发生问题")
 		return
 	}
-	if _, err := conn.Do("AUTH", "12345"); err != nil {
+	/*if _, err := conn.Do("AUTH", "12345"); err != nil {
 		conn.Close()
 		log.Println("redis密码不对")
 		return
-	}
+	}*/
 	// 函数退出时关闭连接
 	defer conn.Close()
 
@@ -864,8 +864,16 @@ func (rm *PlayerRoom) ReScore() {
 				log.Println("更新完成")
 			}
 		}
+		user = models.User{Id: rm.rankmsg[i].id}
+		score := user.Score + scores[i]
+		//检查两个数据库分数是否一致
+		if o.Read(&user) == nil {
+			if score != user.Score {
+				score = user.Score
+			}
+		}
 		id := strconv.Itoa(user.Id)
-		new_score := strconv.Itoa(user.Score + scores[i])
+		new_score := strconv.Itoa(score)
 
 		_, err := conn.Do("zrem", "rank", id)
 
@@ -887,11 +895,11 @@ func (rm *PlayerRoom) userleaveroom(id int) {
 		log.Println("无法打开redis服务器，完成用户和房间的解绑")
 		return
 	}
-	if _, err := conn.Do("AUTH", "12345"); err != nil {
+	/*if _, err := conn.Do("AUTH", "12345"); err != nil {
 		conn.Close()
 		log.Println("redis密码不对")
 		return
-	}
+	}*/
 	// 函数退出时关闭连接
 	defer conn.Close()
 	//直接删除即可
