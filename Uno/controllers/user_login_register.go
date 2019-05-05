@@ -187,11 +187,11 @@ func (User *UserController) Register() {
 		msg = err.Error()
 		return
 	}
-	if _, err := conn.Do("AUTH", "12345"); err != nil {
+	/*if _, err := conn.Do("AUTH", "12345"); err != nil {
 		conn.Close()
 		log.Println("redis密码不对")
 		return
-	}
+	}*/
 	// 函数退出时关闭连接
 	defer conn.Close()
 	//先检查验证码是否存在，然后在获取检查内容是否合格
@@ -287,11 +287,11 @@ func (User *UserController) EmailCheck() {
 		log.Println("无法连接数据库，无法实现验证码存到redis")
 		return
 	}
-	if _, err := conn.Do("AUTH", "12345"); err != nil {
+	/*if _, err := conn.Do("AUTH", "12345"); err != nil {
 		conn.Close()
 		log.Println("redis密码不对")
 		return
-	}
+	}*/
 	// 函数退出时关闭连接
 	defer conn.Close()
 	//操作方法是先查找email是否有存在的验证码，有的话删除，没有的话就正常添加
