@@ -273,7 +273,7 @@ func (User *UserController) EmailCheck() {
 	m.SetAddressHeader("To", email, email)
 	m.SetHeader("Subject", "UNO账号注册验证码")
 	m.SetBody("text/html", sendemail)
-	d := gomail.NewPlainDialer("smtp.qq.com", 25, "280690956@qq.com", "ylrwvidjqlagbhjb")
+	d := gomail.NewPlainDialer("smtp.qq.com", 465, "280690956@qq.com", "ylrwvidjqlagbhjb")
 	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 	if err := d.DialAndSend(m); err != nil {
 		msg = err.Error()
